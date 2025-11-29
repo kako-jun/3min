@@ -1,30 +1,56 @@
-# 3min. Calendar - 開発者向けドキュメント
+# 3分カレンダー - 開発者向けドキュメント
 
 ## 概要
 
-**3min. Calendar** は、Instagram共有用の正方形カレンダー画像を作成するモバイルファーストWebアプリ。
+**3分カレンダー** は、小規模店舗・個人事業主向けの「営業カレンダー画像作成アプリ」。
 
-### 狙い
+カップラーメンの3分タイマーにかけた名前の通り、たった3分で今月の営業カレンダーを作成し、SNSでシェアできる。
 
-- 月間カレンダーに日ごとのメモを入力
-- 1080x1080pxの正方形画像としてキャプチャ
-- AndroidではWeb Share APIでInstagram等に直接シェア
-- PCではPNG画像としてダウンロード
+### ターゲットユーザー
+
+- 飲食店、旅館、美容室などの個人経営者
+- ITリテラシーが高くない人でも使える
+- 世界中の小規模事業者（国際化対応）
+
+### 主な用途
+
+- 月間営業カレンダーの作成
+- 定休日・予約状況の一括入力
+- Instagram等SNSへの画像シェア
+
+---
+
+## アプリの思想
+
+### 「頑張る個人経営者の味方」
+
+- **シンプルさ**: 余計な機能は付けない。3分で完了できることが最優先
+- **画像比率の一致**: ブラウザ表示と出力画像の比率が完全一致（これが最重要）
+- **オフライン動作**: バックエンドなし、IndexedDBでローカル保存
+- **国際対応**: 日本語/英語、世界20カ国の祝日対応
+
+### デザイン原則
+
+- テーマはプリセットから選択（細かいカスタマイズは提供しない）
+- 定型入力ボタン（休/◯/△/✕/満）で素早く入力
+- モバイルファースト（主な利用シーンはスマホ→Instagram）
 
 ---
 
 ## 技術スタック
 
-| カテゴリ       | 技術               | バージョン |
-| -------------- | ------------------ | ---------- |
-| フレームワーク | React + TypeScript | 18.3 / 5.7 |
-| ビルドツール   | Vite               | 5.4        |
-| 状態管理       | Zustand            | 5.0        |
-| スタイリング   | Tailwind CSS       | 3.4        |
-| 日付操作       | date-fns           | 4.1        |
-| 画像キャプチャ | html2canvas        | -          |
-| PWA            | vite-plugin-pwa    | 1.1        |
-| データ保存     | IndexedDB          | -          |
+| カテゴリ       | 技術                    | 用途                     |
+| -------------- | ----------------------- | ------------------------ |
+| フレームワーク | React 18 + TypeScript 5 | UI構築                   |
+| ビルドツール   | Vite 5                  | 高速な開発環境           |
+| 状態管理       | Zustand 5               | シンプルなグローバル状態 |
+| スタイリング   | Tailwind CSS 3          | ユーティリティファースト |
+| 日付操作       | date-fns 4              | 軽量な日付ライブラリ     |
+| 祝日判定       | date-holidays           | 世界の祝日対応           |
+| 国際化         | i18next + react-i18next | 多言語対応               |
+| 画像キャプチャ | html2canvas             | DOM→Canvas変換           |
+| PWA            | vite-plugin-pwa         | オフライン対応           |
+| データ保存     | IndexedDB               | ブラウザローカルDB       |
 
 ---
 
@@ -32,23 +58,30 @@
 
 ```
 src/
-├── main.tsx              # エントリーポイント
-├── App.tsx               # ルートコンポーネント
-├── index.css             # Tailwind読み込み
-├── vite-env.d.ts         # 型定義
+├── main.tsx                  # エントリーポイント
+├── App.tsx                   # ルートコンポーネント（テーマ適用）
+├── index.css                 # Tailwind読み込み
 ├── lib/
-│   ├── types.ts          # 型定義（DayEntry, Settings, CalendarState）
-│   ├── store.ts          # Zustandストア
-│   ├── storage.ts        # IndexedDB永続化
-│   ├── calendar.ts       # date-fnsを使ったカレンダーロジック
-│   └── capture.ts        # html2canvasによる画像キャプチャ
+│   ├── types.ts              # 型定義（Theme, Settings, Template等）
+│   ├── store.ts              # Zustandストア（状態管理の中心）
+│   ├── storage.ts            # IndexedDB操作（entries, settings, templates）
+│   ├── calendar.ts           # カレンダーロジック（グリッド生成）
+│   ├── capture.ts            # 画像キャプチャ（html2canvas）
+│   ├── holidays.ts           # 祝日判定（20カ国対応）
+│   ├── theme.ts              # テーマユーティリティ
+│   └── i18n/
+│       ├── index.ts          # i18n初期化
+│       ├── ja.json           # 日本語翻訳
+│       └── en.json           # 英語翻訳
 └── components/
-    ├── Calendar.tsx      # メインレイアウト（レスポンシブ）
-    ├── MonthSelector.tsx # 年月ナビゲーション
-    ├── SettingsBar.tsx   # 週開始日スイッチ
-    ├── CalendarGrid.tsx  # カレンダーグリッド（forwardRefでキャプチャ対応）
-    ├── DayEditor.tsx     # 31日分の編集領域
-    └── ActionButtons.tsx # シェア/ダウンロードボタン
+    ├── Calendar.tsx          # メインレイアウト
+    ├── AppHeader.tsx         # アプリ名とキャッチコピー
+    ├── MonthSelector.tsx     # 年月ナビゲーション
+    ├── CalendarGrid.tsx      # カレンダーグリッド（画像キャプチャ対象）
+    ├── DayEditor.tsx         # 日ごとの編集領域
+    ├── QuickInputButtons.tsx # 定型入力ボタン
+    ├── ActionButtons.tsx     # シェア/ダウンロードボタン
+    └── SettingsPanel.tsx     # 設定モーダル
 ```
 
 ---
@@ -60,7 +93,7 @@ src/
 ```typescript
 interface DayEntry {
   date: string // YYYY-MM-DD（主キー）
-  text: string // 入力テキスト
+  text: string // 「休」「◯」「10:00-18:00」等
 }
 ```
 
@@ -69,7 +102,21 @@ interface DayEntry {
 ```typescript
 interface Settings {
   weekStartsOn: 0 | 1 // 0: 日曜始まり, 1: 月曜始まり
-  theme: 'dark' | 'light'
+  theme: ThemeId // 'dark' | 'light' | 'cafe' | 'nature' | 'ocean' | 'sunset'
+  language: 'ja' | 'en'
+  country: CountryCode // 'JP' | 'US' | 'GB' | ... （20カ国）
+  shopName: string // カレンダーに表示する店名
+  showHolidays: boolean // 祝日を色分け表示するか
+}
+```
+
+### Template（定休日パターン）
+
+```typescript
+interface Template {
+  id: string
+  name: string // 「毎週水曜定休」等
+  weekdayDefaults: Record<number, string> // 曜日ごとのデフォルト値
 }
 ```
 
@@ -77,65 +124,57 @@ interface Settings {
 
 ## 主要機能
 
-### カレンダー表示
+### カレンダー表示（CalendarGrid.tsx）
 
-- date-fnsで月のグリッドを生成（うるう年等は自動計算）
-- 曜日ヘッダー（日曜赤、土曜青）
-- 当月/前後月の日付を区別表示
-- 今日をハイライト（ring-2 ring-blue-500）
+- 6行7列の固定グリッド（aspect-square）
+- テーマカラーに完全対応（インラインstyle）
+- 祝日は日曜色で表示（showHolidays有効時）
+- 店名をカレンダー上部に表示
 
-### 編集領域
+### 定型入力（QuickInputButtons.tsx）
 
-- 31日分の縦並びリスト
-- 各行: 日付 + テキスト入力 + コピー📋 + ペースト📥
-- 入力は即座にIndexedDBに保存
-- システムクリップボードとアプリ内クリップボードの両対応
+| ボタン | 日本語 | 英語   | 用途       |
+| ------ | ------ | ------ | ---------- |
+| 休     | 休     | Closed | 定休日     |
+| ◯      | ◯      | ◯      | 空きあり   |
+| △      | △      | △      | 残りわずか |
+| ✕      | ✕      | ✕      | 予約済み   |
+| 満     | 満     | Full   | 満席/満室  |
 
 ### 画像キャプチャ（capture.ts）
 
-- **出力サイズ**: 1080x1080px（Instagram推奨）
-- **パディング**: 40px
-- **背景色**: #1f2937（gray-800）
-- html2canvasで要素をクローン→キャプチャ
+- **重要**: ブラウザ表示と出力画像の比率が完全一致すること
+- html2canvasでDOM要素を直接キャプチャ（scale: 2で高解像度）
+- Web Share API対応時はシェア、非対応時はクリップボードコピー
 
-### シェア/ダウンロード
+### 設定パネル（SettingsPanel.tsx）
 
-- **シェアボタン**: Web Share API → 非対応時はクリップボードにコピー
-- **保存ボタン**: PNGとしてダウンロード
-- ファイル名: `calendar-YYYY-MM.png`
+- 言語切り替え（日本語/英語）
+- 国/地域選択（祝日判定用、20カ国）
+- テーマ選択（6種類のプリセット）
+- 店名入力
+- 祝日表示ON/OFF
+- 週の開始日（日曜/月曜）
 
 ---
 
-## レスポンシブデザイン
+## テーマシステム
 
-### モバイル（< 1024px）
+6種類のプリセットテーマ。カスタムカラーは意図的に非対応。
 
-```
-◀ 2025年11月 ▶ [今日]
-         日曜 ⚪── 月曜
+```typescript
+type ThemeId = 'dark' | 'light' | 'cafe' | 'nature' | 'ocean' | 'sunset'
 
-┌────────────────┐
-│   カレンダー    │
-└────────────────┘
-  [📤 シェア] [💾 保存]
-
-[ 1 (土)] [入力...] 📋 📥
-[ 2 (日)] [入力...] 📋 📥
-...
-```
-
-### デスクトップ（≥ 1024px）
-
-```
-◀ 2025年11月 ▶ [今日]
-              日曜 ⚪── 月曜
-
-┌────────────────┐ ┌────────────────┐
-│                │ │ [ 1] [...] 📋📥│
-│   カレンダー    │ │ [ 2] [...] 📋📥│
-│                │ │ (スクロール可)  │
-└────────────────┘ └────────────────┘
-  [📤 シェア] [💾 保存]
+interface ThemeColors {
+  bg: string // 背景色
+  surface: string // カード等の背景
+  text: string // 通常テキスト
+  textMuted: string // 薄いテキスト
+  accent: string // アクセント色
+  sunday: string // 日曜・祝日の色
+  saturday: string // 土曜の色
+  holiday: string // 祝日の色
+}
 ```
 
 ---
@@ -143,10 +182,34 @@ interface Settings {
 ## IndexedDB構造
 
 - **DB名**: `3min-calendar-db`
-- **バージョン**: 1
+- **バージョン**: 2
 - **ストア**:
   - `entries`: 日ごとのテキスト（keyPath: `date`）
   - `settings`: 設定（keyPath: `key`）
+  - `templates`: テンプレート（keyPath: `id`）
+
+---
+
+## 国際化（i18n）
+
+- i18next + react-i18next
+- ブラウザ言語を自動検出
+- 設定で手動切り替え可能
+- 翻訳ファイル: `src/lib/i18n/ja.json`, `en.json`
+
+### 翻訳キー構造
+
+```json
+{
+  "app": { "title": "アプリ名", "tagline": "キャッチコピー" },
+  "calendar": { "today": "今日", "yearMonth": "年月表示" },
+  "weekdays": { "sun": "日", "mon": "月", ... },
+  "settings": { ... },
+  "actions": { ... },
+  "quickInput": { ... },
+  "themes": { ... }
+}
+```
 
 ---
 
@@ -162,21 +225,39 @@ npm run lint         # フォーマットチェック + 型チェック
 
 ---
 
-## 設計思想
+## コミット時の自動チェック（husky）
 
-- **モバイルファースト**: 主な用途はスマホからInstagramへのシェア
-- **オフライン対応**: IndexedDBでローカル保存、バックエンド不要
-- **シンプル**: 1画面完結、余計な機能なし
-- **agasteer参考**: 同プロジェクトの構造・コードスタイルを踏襲
+- pre-commit: `npm run lint`
+- フォーマット: Prettier
+- 型チェック: TypeScript
+
+---
+
+## 設計上の注意点
+
+### 画像比率の一致（最重要）
+
+CalendarGridは`aspect-square`で固定。キャプチャ時もこの比率を維持すること。
+比率がずれるとユーザー体験が大きく損なわれる。
+
+### コンポーネント分離
+
+リファクタリングを避けるため、最初からコンポーネント化を徹底。
+共通ロジックはlib/に切り出す。
+
+### テーマのハードコード
+
+テーマカラーはTailwindクラスではなくインラインstyleで適用。
+これにより動的なテーマ切り替えが可能。
 
 ---
 
 ## 今後の拡張候補
 
-- [ ] ライトテーマ対応
-- [ ] 複数月の一括編集
-- [ ] テンプレート機能（毎月の定型イベント）
+- [ ] テンプレート機能の完全実装（UI）
 - [ ] エクスポート/インポート（JSON）
+- [ ] より多くの国の祝日対応
+- [ ] 年間カレンダー表示
 
 ---
 
