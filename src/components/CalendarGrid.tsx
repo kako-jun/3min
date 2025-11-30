@@ -28,23 +28,42 @@ export const CalendarGrid = forwardRef<HTMLDivElement>(function CalendarGrid(_, 
   return (
     <div
       ref={ref}
-      className="aspect-square w-full max-w-[500px] rounded-lg p-3"
+      className="relative aspect-square w-full max-w-[500px] overflow-hidden rounded-lg p-3"
       style={{ backgroundColor: theme.surface }}
     >
-      {/* 店名 */}
-      {settings.shopName && (
-        <div className="mb-1 text-center text-sm font-medium" style={{ color: theme.text }}>
-          {settings.shopName}
+      {/* 背景画像 */}
+      {settings.backgroundImage && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `url(${settings.backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: settings.backgroundOpacity,
+          }}
+        />
+      )}
+
+      {/* 店名（ロゴと文字） */}
+      {(settings.shopLogo || settings.shopName) && (
+        <div
+          className="relative mb-1 flex items-center justify-center gap-2 text-sm font-medium"
+          style={{ color: theme.text }}
+        >
+          {settings.shopLogo && (
+            <img src={settings.shopLogo} alt="Shop logo" className="h-6 w-6 object-contain" />
+          )}
+          {settings.shopName && <span>{settings.shopName}</span>}
         </div>
       )}
 
       {/* タイトル */}
-      <div className="mb-2 text-center text-lg font-bold" style={{ color: theme.text }}>
+      <div className="relative mb-2 text-center text-lg font-bold" style={{ color: theme.text }}>
         {t('calendar.yearMonth', yearMonthParams)}
       </div>
 
       {/* 曜日ヘッダー */}
-      <div className="mb-1 grid grid-cols-7 gap-1">
+      <div className="relative mb-1 grid grid-cols-7 gap-1">
         {weekdays.map((day) => (
           <div
             key={day.dayOfWeek}
@@ -64,7 +83,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement>(function CalendarGrid(_, 
       </div>
 
       {/* 日付グリッド（6行7列、正方形セル） */}
-      <div className="grid flex-1 grid-cols-7 grid-rows-6 gap-1">
+      <div className="relative grid flex-1 grid-cols-7 grid-rows-6 gap-1">
         {days.map((day) => {
           const dayOfWeek = day.date.getDay()
           const isSunday = dayOfWeek === 0

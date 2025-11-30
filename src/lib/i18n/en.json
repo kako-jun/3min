@@ -25,7 +25,12 @@
     "appTheme": "Appearance",
     "calendarTheme": "Calendar theme",
     "shopName": "Shop name",
-    "showHolidays": "Show holidays"
+    "shopLogo": "Shop logo",
+    "showHolidays": "Show holidays",
+    "backgroundImage": "Background image",
+    "selectImage": "Select image",
+    "removeImage": "Remove",
+    "backgroundOpacity": "Background opacity"
   },
   "actions": {
     "share": "Share",

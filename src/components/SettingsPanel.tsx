@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -12,10 +12,13 @@ import {
   faCalendarDay,
   faGlobe,
   faStore,
+  faImage,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { SUPPORTED_COUNTRIES, type CountryCode } from '../lib/holidays'
 import { APP_THEMES, type AppTheme } from '../lib/types'
+import { processImageFile } from '../lib/image'
 
 const APP_THEME_IDS: AppTheme[] = ['light', 'dark']
 const LANGUAGES = ['ja', 'en'] as const
@@ -29,6 +32,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const { t, i18n } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const updateSettings = useCalendarStore((state) => state.updateSettings)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   // モーダルが開いている間、背景のスクロールを無効化
   useEffect(() => {
@@ -64,6 +69,51 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
   const handleShowHolidaysChange = (show: boolean) => {
     updateSettings({ showHolidays: show })
+  }
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const webpDataUrl = await processImageFile(file)
+      updateSettings({ backgroundImage: webpDataUrl })
+    } catch (error) {
+      console.error('Failed to process image:', error)
+    }
+
+    // 同じファイルを再選択できるようにリセット
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveImage = () => {
+    updateSettings({ backgroundImage: null })
+  }
+
+  const handleOpacityChange = (opacity: number) => {
+    updateSettings({ backgroundOpacity: opacity })
+  }
+
+  const handleLogoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const webpDataUrl = await processImageFile(file)
+      updateSettings({ shopLogo: webpDataUrl })
+    } catch (error) {
+      console.error('Failed to process logo:', error)
+    }
+
+    if (logoInputRef.current) {
+      logoInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveLogo = () => {
+    updateSettings({ shopLogo: null })
   }
 
   return (
@@ -280,6 +330,139 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 }}
                 placeholder={t('settings.shopName')}
               />
+            </div>
+
+            {/* 店名ロゴ設定 */}
+            <div>
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faImage} className="w-4" />
+                {t('settings.shopLogo')}
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoSelect}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => logoInputRef.current?.click()}
+                  className="rounded px-3 py-2 text-sm transition-opacity hover:opacity-80"
+                  style={{
+                    backgroundColor: appTheme.bg,
+                    color: appTheme.text,
+                    border: `1px solid ${appTheme.textMuted}`,
+                  }}
+                >
+                  {t('settings.selectImage')}
+                </button>
+                {settings.shopLogo && (
+                  <button
+                    onClick={handleRemoveLogo}
+                    className="flex items-center gap-1 rounded px-3 py-2 text-sm transition-opacity hover:opacity-80"
+                    style={{
+                      backgroundColor: '#dc2626',
+                      color: '#ffffff',
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    {t('settings.removeImage')}
+                  </button>
+                )}
+              </div>
+              {settings.shopLogo && (
+                <div className="mt-2">
+                  <img
+                    src={settings.shopLogo}
+                    alt="Logo preview"
+                    className="h-16 w-16 rounded object-contain"
+                    style={{ border: `1px solid ${appTheme.textMuted}` }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 背景画像設定 */}
+            <div>
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faImage} className="w-4" />
+                {t('settings.backgroundImage')}
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded px-3 py-2 text-sm transition-opacity hover:opacity-80"
+                  style={{
+                    backgroundColor: appTheme.bg,
+                    color: appTheme.text,
+                    border: `1px solid ${appTheme.textMuted}`,
+                  }}
+                >
+                  {t('settings.selectImage')}
+                </button>
+                {settings.backgroundImage && (
+                  <button
+                    onClick={handleRemoveImage}
+                    className="flex items-center gap-1 rounded px-3 py-2 text-sm transition-opacity hover:opacity-80"
+                    style={{
+                      backgroundColor: '#dc2626',
+                      color: '#ffffff',
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    {t('settings.removeImage')}
+                  </button>
+                )}
+              </div>
+              {settings.backgroundImage && (
+                <div className="mt-2">
+                  <img
+                    src={settings.backgroundImage}
+                    alt="Background preview"
+                    className="h-16 w-16 rounded object-cover"
+                    style={{ border: `1px solid ${appTheme.textMuted}` }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 背景の濃さ（画像が設定されている場合のみ有効） */}
+            <div
+              className={`transition-opacity ${settings.backgroundImage ? '' : 'pointer-events-none opacity-40'}`}
+            >
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                {t('settings.backgroundOpacity')}
+              </label>
+              <input
+                type="range"
+                min="0.05"
+                max="0.5"
+                step="0.05"
+                value={settings.backgroundOpacity}
+                onChange={(e) => handleOpacityChange(parseFloat(e.target.value))}
+                disabled={!settings.backgroundImage}
+                className="w-full"
+              />
+              <div className="mt-1 text-right text-xs" style={{ color: appTheme.textMuted }}>
+                {Math.round(settings.backgroundOpacity * 100)}%
+              </div>
             </div>
           </div>
         </div>

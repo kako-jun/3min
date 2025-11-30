@@ -105,7 +105,10 @@ export interface Settings {
   language: 'ja' | 'en'
   country: CountryCode
   shopName: string
+  shopLogo: string | null // 店名ロゴ画像（Base64）
   showHolidays: boolean
+  backgroundImage: string | null // Base64エンコードされた背景画像
+  backgroundOpacity: number // 背景画像の透明度 (0-1)
 }
 
 /** @deprecated 後方互換用 */
@@ -171,7 +174,10 @@ export const defaultSettings: Settings = {
   language: 'ja',
   country: 'JP',
   shopName: '',
+  shopLogo: null,
   showHolidays: true,
+  backgroundImage: null,
+  backgroundOpacity: 0.15,
 }
 
 /** アプリテーマの色定義 */
