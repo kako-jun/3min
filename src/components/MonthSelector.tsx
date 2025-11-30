@@ -15,7 +15,7 @@ export function MonthSelector({ title }: MonthSelectorProps) {
   const theme = THEMES[settings.theme]
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-center gap-4">
       <button
         onClick={goToPrevMonth}
         className="rounded px-4 py-2 text-2xl transition-opacity hover:opacity-70"
