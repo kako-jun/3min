@@ -1,4 +1,18 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faGear,
+  faXmark,
+  faPalette,
+  faSun,
+  faMoon,
+  faLanguage,
+  faCalendarWeek,
+  faCalendarDay,
+  faGlobe,
+  faStore,
+} from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { SUPPORTED_COUNTRIES, type CountryCode } from '../lib/holidays'
 import { APP_THEMES, type AppTheme } from '../lib/types'
@@ -15,6 +29,18 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const { t, i18n } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const updateSettings = useCalendarStore((state) => state.updateSettings)
+
+  // モーダルが開いている間、背景のスクロールを無効化
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
@@ -51,13 +77,16 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">{t('actions.settings')}</h2>
+          <h2 className="flex items-center gap-2 text-lg font-bold">
+            <FontAwesomeIcon icon={faGear} />
+            {t('actions.settings')}
+          </h2>
           <button
             onClick={onClose}
             style={{ color: appTheme.textMuted }}
             className="hover:opacity-70"
           >
-            ✕
+            <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
 
@@ -66,7 +95,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <div className="space-y-3">
             {/* アプリの外観 */}
             <div className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: appTheme.textMuted }}>
+              <span
+                className="flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faPalette} className="w-4" />
                 {t('settings.appTheme')}
               </span>
               <div className="flex gap-2">
@@ -74,7 +107,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   <button
                     key={themeId}
                     onClick={() => handleAppThemeChange(themeId)}
-                    className={`rounded px-3 py-1 text-sm transition-colors ${
+                    className={`flex items-center gap-1 rounded px-3 py-1 text-sm transition-colors ${
                       settings.appTheme === themeId ? 'ring-2' : 'opacity-70 hover:opacity-100'
                     }`}
                     style={{
@@ -84,6 +117,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       '--tw-ring-color': appTheme.accent,
                     }}
                   >
+                    <FontAwesomeIcon icon={themeId === 'light' ? faSun : faMoon} />
                     {t(`appThemes.${themeId}`)}
                   </button>
                 ))}
@@ -92,7 +126,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
             {/* 言語設定 */}
             <div>
-              <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faLanguage} className="w-4" />
                 {t('settings.language')}
               </label>
               <select
@@ -121,7 +159,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <div className="space-y-3">
             {/* 週の開始日 */}
             <div className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: appTheme.textMuted }}>
+              <span
+                className="flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faCalendarWeek} className="w-4" />
                 {t('settings.weekStart')}
               </span>
               <div className="flex items-center gap-2">
@@ -159,7 +201,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
             {/* 祝日表示 */}
             <div className="flex items-center justify-between">
-              <span className="text-sm" style={{ color: appTheme.textMuted }}>
+              <span
+                className="flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faCalendarDay} className="w-4" />
                 {t('settings.showHolidays')}
               </span>
               <button
@@ -181,7 +227,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             <div
               className={`transition-opacity ${settings.showHolidays ? '' : 'pointer-events-none opacity-40'}`}
             >
-              <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faGlobe} className="w-4" />
                 {t('settings.country')}
               </label>
               <select
@@ -211,7 +261,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <div className="space-y-3">
             {/* 店名設定 */}
             <div>
-              <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
+              <label
+                className="mb-1 flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faStore} className="w-4" />
                 {t('settings.shopName')}
               </label>
               <input

@@ -15,6 +15,9 @@
     "lint": "npm run format:check && tsc --noEmit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
     "date-fns": "^4.1.0",
     "date-holidays": "^3.26.5",
     "html2canvas": "^1.4.1",

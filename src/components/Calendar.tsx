@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { getYearMonthParams } from '../lib/calendar'
 import { APP_THEMES } from '../lib/types'
@@ -24,28 +26,24 @@ export function Calendar() {
   const filename = `calendar-${view.year}-${String(view.month + 1).padStart(2, '0')}`
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
-      {/* アプリヘッダー */}
-      <div className="flex items-start justify-between">
+    <div className="mx-auto max-w-6xl px-2 py-1">
+      {/* アプリヘッダー + 月セレクター */}
+      <div className="flex items-center justify-between">
         <AppHeader />
+        <MonthSelector title={title} />
         <button
           onClick={() => setSettingsOpen(true)}
-          className="rounded px-3 py-1 text-sm transition-colors hover:opacity-80"
+          className="rounded px-2 py-0.5 text-xs transition-colors hover:opacity-80"
           style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
         >
-          ⚙️ {t('actions.settings')}
+          <FontAwesomeIcon icon={faGear} />
         </button>
       </div>
 
-      {/* 月セレクター */}
-      <div className="mt-2">
-        <MonthSelector title={title} />
-      </div>
-
       {/* レスポンシブ: モバイルは縦並び、デスクトップは横並び */}
-      <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start">
+      <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:items-start">
         {/* カレンダーグリッド + テーマセレクター + アクションボタン */}
-        <div className="flex flex-col items-center gap-4 lg:w-1/2">
+        <div className="flex flex-col items-center gap-2 lg:w-1/2">
           <CalendarGrid ref={calendarRef} />
           <CalendarThemeSelector />
           <ActionButtons calendarRef={calendarRef} filename={filename} />

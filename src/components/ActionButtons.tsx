@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faShareFromSquare, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { shareImage, downloadImage, copyImageToClipboard } from '../lib/capture'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES } from '../lib/types'
@@ -69,7 +71,7 @@ export function ActionButtons({ calendarRef, filename }: ActionButtonsProps) {
           className="flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white transition-opacity hover:opacity-80 disabled:opacity-50"
           style={{ backgroundColor: appTheme.accent }}
         >
-          <span>📤</span>
+          <FontAwesomeIcon icon={faShareFromSquare} />
           <span>{t('actions.share')}</span>
         </button>
 
@@ -80,7 +82,7 @@ export function ActionButtons({ calendarRef, filename }: ActionButtonsProps) {
           className="flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
           style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
         >
-          <span>💾</span>
+          <FontAwesomeIcon icon={faDownload} />
           <span>{t('actions.download')}</span>
         </button>
       </div>

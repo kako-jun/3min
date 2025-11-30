@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy, faClipboard } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
-import { format, getDaysInMonth, isToday } from 'date-fns'
+import { format, getDaysInMonth } from 'date-fns'
 import { QuickInputButtons } from './QuickInputButtons'
 import { APP_THEMES } from '../lib/types'
 
@@ -29,14 +31,7 @@ function DayRow({ date, text, onTextChange, onCopy, onPaste, onQuickInput }: Day
   const weekdayName = t(`weekdays.${weekdayKeys[dayOfWeek]}`)
 
   return (
-    <div
-      className={`rounded p-2 ${isToday(date) ? 'ring-1' : ''}`}
-      style={{
-        backgroundColor: appTheme.surface,
-        // @ts-expect-error CSS custom property for Tailwind ring color
-        '--tw-ring-color': isToday(date) ? appTheme.accent : undefined,
-      }}
-    >
+    <div className="rounded p-2" style={{ backgroundColor: appTheme.surface }}>
       <div className="flex items-center gap-2">
         {/* 日付表示 */}
         <div
@@ -81,7 +76,7 @@ function DayRow({ date, text, onTextChange, onCopy, onPaste, onQuickInput }: Day
           style={{ backgroundColor: appTheme.bg, color: appTheme.text }}
           title={t('actions.copy')}
         >
-          📋
+          <FontAwesomeIcon icon={faCopy} />
         </button>
 
         {/* ペーストボタン */}
@@ -91,7 +86,7 @@ function DayRow({ date, text, onTextChange, onCopy, onPaste, onQuickInput }: Day
           style={{ backgroundColor: appTheme.bg, color: appTheme.text }}
           title={t('actions.paste')}
         >
-          📥
+          <FontAwesomeIcon icon={faClipboard} />
         </button>
       </div>
 

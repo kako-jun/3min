@@ -83,7 +83,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement>(function CalendarGrid(_, 
           return (
             <div
               key={day.dateString}
-              className={`aspect-square overflow-hidden rounded p-1 ${day.isToday ? 'ring-2' : ''}`}
+              className={`aspect-square rounded p-1 ${day.isToday ? 'ring-2' : ''}`}
               style={{
                 backgroundColor: day.isCurrentMonth ? theme.bg : `${theme.bg}80`,
                 // @ts-expect-error ringColor is a valid Tailwind CSS-in-JS property
@@ -99,8 +99,15 @@ export const CalendarGrid = forwardRef<HTMLDivElement>(function CalendarGrid(_, 
               </div>
               {text && (
                 <div
-                  className="mt-0.5 truncate text-[10px] leading-tight"
-                  style={{ color: theme.text }}
+                  className="mt-0.5 text-[10px] leading-tight"
+                  style={{
+                    color: theme.text,
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    wordBreak: 'break-all',
+                  }}
                   title={text}
                 >
                   {text}

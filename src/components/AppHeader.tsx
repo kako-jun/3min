@@ -8,11 +8,11 @@ export function AppHeader() {
   const appTheme = APP_THEMES[settings.appTheme]
 
   return (
-    <header className="py-2 text-center">
-      <h1 className="text-xl font-bold" style={{ color: appTheme.text }}>
+    <header className="text-left">
+      <h1 className="text-base font-bold leading-tight" style={{ color: appTheme.text }}>
         {t('app.title')}
       </h1>
-      <p className="text-xs" style={{ color: appTheme.textMuted }}>
+      <p className="text-[10px] leading-tight" style={{ color: appTheme.textMuted }}>
         {t('app.tagline')}
       </p>
     </header>
