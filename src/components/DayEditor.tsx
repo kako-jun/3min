@@ -1,7 +1,8 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useCalendarStore } from '../lib/store'
 import { format, addDays } from 'date-fns'
 import { QuickInputButtons } from './QuickInputButtons'
@@ -269,6 +270,23 @@ export function DayEditor() {
   const appTheme = APP_THEMES[settings.appTheme]
   const [clipboard, setClipboard] = useState('')
 
+  // アニメーション方向を追跡（1: 下へ移動=次の日を選択, -1: 上へ移動=前の日を選択）
+  const prevSelectedDateRef = useRef<string | null>(null)
+  const [direction, setDirection] = useState(0)
+
+  useEffect(() => {
+    if (
+      selectedDate &&
+      prevSelectedDateRef.current &&
+      selectedDate !== prevSelectedDateRef.current
+    ) {
+      const prev = new Date(prevSelectedDateRef.current).getTime()
+      const curr = new Date(selectedDate).getTime()
+      setDirection(curr > prev ? 1 : -1)
+    }
+    prevSelectedDateRef.current = selectedDate
+  }, [selectedDate])
+
   const getEntryText = useCallback(
     (date: string) => {
       const entry = entries.find((e) => e.date === date)
@@ -360,22 +378,56 @@ export function DayEditor() {
     }
   })
 
+  // アニメーションバリアント
+  const rowVariants = {
+    initial: (dir: number) => ({
+      y: dir * 20,
+      opacity: 0,
+    }),
+    animate: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 500,
+        damping: 30,
+      },
+    },
+    exit: (dir: number) => ({
+      y: dir * -20,
+      opacity: 0,
+      transition: {
+        duration: 0.15,
+      },
+    }),
+  }
+
   return (
-    <div className="flex flex-col gap-2">
-      {daysToShow.map(({ date, dateString, text, isSelected }) => (
-        <DayRow
-          key={dateString}
-          date={date}
-          text={text}
-          isSelected={isSelected}
-          onTextChange={updateEntry}
-          onCopy={handleCopy}
-          onPaste={handlePaste}
-          onQuickInput={handleQuickInput}
-          onEmojiSelect={handleEmojiSelect}
-          onSelect={setSelectedDate}
-        />
-      ))}
+    <div className="flex flex-col gap-2 overflow-hidden">
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
+        {daysToShow.map(({ date, dateString, text, isSelected }) => (
+          <motion.div
+            key={dateString}
+            custom={direction}
+            variants={rowVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <DayRow
+              date={date}
+              text={text}
+              isSelected={isSelected}
+              onTextChange={updateEntry}
+              onCopy={handleCopy}
+              onPaste={handlePaste}
+              onQuickInput={handleQuickInput}
+              onEmojiSelect={handleEmojiSelect}
+              onSelect={setSelectedDate}
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }

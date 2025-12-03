@@ -1,5 +1,6 @@
 import { forwardRef, useRef, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import { useCalendarStore } from '../lib/store'
 import { getCalendarDays, getWeekdayHeaders, getYearMonthParams } from '../lib/calendar'
 import { isHoliday, getHolidayName } from '../lib/holidays'
@@ -191,15 +192,26 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
           return (
             <div
               key={day.dateString}
-              className={`aspect-square p-0.5 ${isLinedStyle ? '' : 'rounded'} ${isSelected ? 'ring-2 ring-inset' : ''} ${day.isCurrentMonth ? 'cursor-pointer' : ''} ${isLinedStyle && day.isCurrentMonth ? 'transition-colors hover:bg-black/5' : ''}`}
-              style={{
-                ...linedCellStyle,
-                // @ts-expect-error ringColor is a valid Tailwind CSS-in-JS property
-                '--tw-ring-color': isSelected ? theme.accent : undefined,
-              }}
+              className={`relative aspect-square p-0.5 ${isLinedStyle ? '' : 'rounded'} ${day.isCurrentMonth ? 'cursor-pointer' : ''} ${isLinedStyle && day.isCurrentMonth ? 'transition-colors hover:bg-black/5' : ''}`}
+              style={linedCellStyle}
               title={holidayName || undefined}
               onClick={() => day.isCurrentMonth && setSelectedDate(day.dateString)}
             >
+              {/* 選択枠（アニメーション付き） */}
+              {isSelected && (
+                <motion.div
+                  layoutId="calendar-selection"
+                  className={`pointer-events-none absolute inset-0 ${isLinedStyle ? '' : 'rounded'}`}
+                  style={{
+                    boxShadow: `inset 0 0 0 2px ${theme.accent}`,
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 500,
+                    damping: 30,
+                  }}
+                />
+              )}
               <div
                 className={`text-right text-[11px] leading-tight ${day.isToday ? 'font-bold' : ''}`}
                 style={{ color: getDayColor() }}
