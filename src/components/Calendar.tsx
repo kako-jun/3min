@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faCopy } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { getYearMonthParams } from '../lib/calendar'
 import { APP_THEMES } from '../lib/types'
@@ -17,9 +17,18 @@ export function Calendar() {
   const { t } = useTranslation()
   const view = useCalendarStore((state) => state.view)
   const settings = useCalendarStore((state) => state.settings)
+  const copyFromPreviousMonth = useCalendarStore((state) => state.copyFromPreviousMonth)
   const appTheme = APP_THEMES[settings.appTheme]
   const calendarRef = useRef<HTMLDivElement>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [isCopying, setIsCopying] = useState(false)
+
+  const handleCopyFromPrev = async () => {
+    if (isCopying) return
+    setIsCopying(true)
+    await copyFromPreviousMonth()
+    setIsCopying(false)
+  }
 
   const yearMonthParams = getYearMonthParams(view.year, view.month)
   const title = t('calendar.yearMonth', yearMonthParams)
@@ -47,6 +56,15 @@ export function Calendar() {
           <CalendarGrid ref={calendarRef} />
           <div className="flex items-center gap-3">
             <CalendarThemeSelector />
+            <button
+              onClick={handleCopyFromPrev}
+              disabled={isCopying}
+              className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-80 disabled:opacity-50"
+              style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
+              title={t('actions.copyFromPrev')}
+            >
+              <FontAwesomeIcon icon={faCopy} />
+            </button>
             <ActionButtons calendarRef={calendarRef} filename={filename} />
           </div>
         </div>

@@ -38,7 +38,8 @@
     "copy": "Copy",
     "paste": "Paste",
     "clear": "Clear",
-    "settings": "Settings"
+    "settings": "Settings",
+    "copyFromPrev": "Copy from last month"
   },
   "time": {
     "from": "From",
