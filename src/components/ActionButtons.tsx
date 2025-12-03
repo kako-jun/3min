@@ -62,35 +62,33 @@ export function ActionButtons({ calendarRef, filename }: ActionButtonsProps) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="flex gap-2">
-        {/* シェアボタン */}
-        <button
-          onClick={handleShare}
-          disabled={isProcessing}
-          className="flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white transition-opacity hover:opacity-80 disabled:opacity-50"
-          style={{ backgroundColor: appTheme.accent }}
-        >
-          <FontAwesomeIcon icon={faShareFromSquare} />
-          <span>{t('actions.share')}</span>
-        </button>
+    <div className="flex items-center gap-2">
+      {/* シェアボタン */}
+      <button
+        onClick={handleShare}
+        disabled={isProcessing}
+        className="flex h-8 w-8 items-center justify-center rounded-full text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+        style={{ backgroundColor: appTheme.accent }}
+        title={t('actions.share')}
+      >
+        <FontAwesomeIcon icon={faShareFromSquare} />
+      </button>
 
-        {/* ダウンロードボタン */}
-        <button
-          onClick={handleDownload}
-          disabled={isProcessing}
-          className="flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-          style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
-        >
-          <FontAwesomeIcon icon={faDownload} />
-          <span>{t('actions.download')}</span>
-        </button>
-      </div>
+      {/* ダウンロードボタン */}
+      <button
+        onClick={handleDownload}
+        disabled={isProcessing}
+        className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-80 disabled:opacity-50"
+        style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
+        title={t('actions.download')}
+      >
+        <FontAwesomeIcon icon={faDownload} />
+      </button>
 
       {/* メッセージ表示 */}
       {message && (
         <div
-          className="rounded px-3 py-1 text-sm"
+          className="rounded px-2 py-0.5 text-xs"
           style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
         >
           {message}

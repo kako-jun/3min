@@ -42,11 +42,13 @@ export function Calendar() {
 
       {/* レスポンシブ: モバイルは縦並び、デスクトップは横並び */}
       <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:items-start">
-        {/* カレンダーグリッド + テーマセレクター + アクションボタン */}
+        {/* カレンダーグリッド + コントロール（テーマ＆アクション） */}
         <div className="flex flex-col items-center gap-2 lg:w-1/2">
           <CalendarGrid ref={calendarRef} />
-          <CalendarThemeSelector />
-          <ActionButtons calendarRef={calendarRef} filename={filename} />
+          <div className="flex items-center gap-3">
+            <CalendarThemeSelector />
+            <ActionButtons calendarRef={calendarRef} filename={filename} />
+          </div>
         </div>
         {/* 日ごとの編集領域 */}
         <div className="lg:w-1/2">
