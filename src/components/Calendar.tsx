@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { getYearMonthParams } from '../lib/calendar'
 import { APP_THEMES } from '../lib/types'
@@ -67,11 +67,11 @@ export function Calendar() {
             <button
               onClick={handleCopyFromPrev}
               disabled={isCopying}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-80 disabled:opacity-50"
+              className="flex items-center gap-1 rounded-full px-3 py-1 text-xs transition-opacity hover:opacity-80 disabled:opacity-50"
               style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
-              title={t('actions.copyFromPrev')}
             >
-              <FontAwesomeIcon icon={faCopy} />
+              <FontAwesomeIcon icon={faRotateLeft} />
+              <span>{t('actions.copyFromPrevShort')}</span>
             </button>
             <ActionButtons calendarRef={calendarRef} filename={filename} />
           </div>

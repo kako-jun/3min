@@ -40,7 +40,8 @@
     "paste": "ペースト",
     "clear": "クリア",
     "settings": "設定",
-    "copyFromPrev": "先月からコピー"
+    "copyFromPrev": "先月からコピー",
+    "copyFromPrevShort": "先月から"
   },
   "time": {
     "from": "開始",
