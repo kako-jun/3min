@@ -22,15 +22,11 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
-  height: 100%;
-  /* モバイルで余分なスクロールを防止 */
-  overflow: hidden;
+  min-height: 100%;
 }
 
 #root {
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  min-height: 100%;
   /* iOS Safariでスムーズスクロール */
   -webkit-overflow-scrolling: touch;
 }

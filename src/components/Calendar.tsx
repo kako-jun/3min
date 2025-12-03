@@ -43,7 +43,7 @@ export function Calendar() {
   const filename = `calendar-${view.year}-${String(view.month + 1).padStart(2, '0')}`
 
   return (
-    <div className="mx-auto max-w-6xl px-2 py-1">
+    <div className="mx-auto max-w-6xl px-2">
       {/* アプリヘッダー + 月セレクター */}
       <div className="flex items-center justify-between">
         <AppHeader />

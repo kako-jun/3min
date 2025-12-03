@@ -26,7 +26,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-full pb-4" style={{ backgroundColor: appTheme.bg, color: appTheme.text }}>
+    <div className="min-h-full pb-8" style={{ backgroundColor: appTheme.bg, color: appTheme.text }}>
       <Calendar />
     </div>
   )

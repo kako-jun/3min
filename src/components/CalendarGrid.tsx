@@ -212,58 +212,59 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
                   }}
                 />
               )}
-              <div
-                className={`text-right text-[11px] leading-tight ${day.isToday ? 'font-bold' : ''}`}
-                style={{ color: getDayColor() }}
-              >
-                {day.day}
-              </div>
-              {text &&
-                (() => {
-                  const segments = parseStampedText(text, t)
-                  const stamps = segments.filter((s) => s.type === 'stamp')
-                  const texts = segments.filter((s) => s.type === 'text')
-                  const textContent = texts.map((s) => s.text).join('')
+              {(() => {
+                const segments = text ? parseStampedText(text, t) : []
+                const stamps = segments.filter((s) => s.type === 'stamp')
+                const texts = segments.filter((s) => s.type === 'text')
+                const textContent = texts.map((s) => s.text).join('')
 
-                  return (
-                    <div className="mt-0.5 flex flex-col overflow-hidden">
-                      {/* スタンプ行（スタンプがあれば表示） */}
-                      {stamps.length > 0 && (
-                        <div className="flex flex-wrap gap-0.5">
-                          {stamps.map((stamp, i) => (
-                            <span
-                              key={i}
-                              className="inline-block shrink-0 rounded px-1 font-bold"
-                              style={{
-                                backgroundColor: stamp.style.bgColor,
-                                color: stamp.style.textColor,
-                                fontSize: STAMP_FONT_SIZE,
-                                lineHeight: '1.4',
-                              }}
-                            >
-                              {stamp.text}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {/* テキスト行（テキストがあれば表示） */}
-                      {textContent && (
-                        <div
-                          className="font-bold"
-                          style={{
-                            color: theme.text,
-                            wordBreak: 'break-all',
-                            lineHeight: '1.2',
-                            fontSize: getTextFontSize(textContent),
-                          }}
-                          title={textContent}
-                        >
-                          {textContent}
-                        </div>
-                      )}
+                return (
+                  <>
+                    {/* 上部行: スタンプ（左上）と日付（右上） */}
+                    <div className="flex items-start justify-between">
+                      {/* スタンプ（左上固定） */}
+                      <div className="flex flex-wrap gap-0.5">
+                        {stamps.map((stamp, i) => (
+                          <span
+                            key={i}
+                            className="inline-block shrink-0 rounded px-0.5 font-bold"
+                            style={{
+                              backgroundColor: stamp.style.bgColor,
+                              color: stamp.style.textColor,
+                              fontSize: STAMP_FONT_SIZE,
+                              lineHeight: '1.3',
+                            }}
+                          >
+                            {stamp.text}
+                          </span>
+                        ))}
+                      </div>
+                      {/* 日付（右上固定） */}
+                      <div
+                        className={`shrink-0 text-[11px] leading-tight ${day.isToday ? 'font-bold' : ''}`}
+                        style={{ color: getDayColor() }}
+                      >
+                        {day.day}
+                      </div>
                     </div>
-                  )
-                })()}
+                    {/* 本文テキスト（下部） */}
+                    {textContent && (
+                      <div
+                        className="mt-0.5 overflow-hidden font-bold"
+                        style={{
+                          color: theme.text,
+                          wordBreak: 'break-all',
+                          lineHeight: '1.2',
+                          fontSize: getTextFontSize(textContent),
+                        }}
+                        title={textContent}
+                      >
+                        {textContent}
+                      </div>
+                    )}
+                  </>
+                )
+              })()}
             </div>
           )
         })}
