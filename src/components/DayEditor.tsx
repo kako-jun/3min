@@ -147,6 +147,7 @@ function DayRow({
             value={text}
             onChange={(e) => onTextChange(dateString, e.target.value)}
             onFocus={handleFocus}
+            maxLength={25}
             className="w-full rounded border py-1 pl-2 pr-7 text-sm focus:outline-none"
             style={{
               backgroundColor: appTheme.bg,
