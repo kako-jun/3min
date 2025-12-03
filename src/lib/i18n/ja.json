@@ -80,5 +80,8 @@
   "languages": {
     "ja": "日本語",
     "en": "English"
+  },
+  "editor": {
+    "selectDay": "カレンダーの日付をクリックして編集"
   }
 }
