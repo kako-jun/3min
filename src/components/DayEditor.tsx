@@ -196,7 +196,7 @@ function DayRow({
       </div>
 
       {/* クイック入力ボタンと時刻入力 */}
-      <div className="mt-2 flex flex-wrap items-center gap-2">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
         <QuickInputButtons
           onSelect={(value) => {
             handleFocus()
