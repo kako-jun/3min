@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { QRCodeCanvas } from 'qrcode.react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload, faShareNodes, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
@@ -9,6 +10,21 @@ import { AppHeader } from './AppHeader'
 import { SettingsPanel } from './SettingsPanel'
 
 const QR_SIZES = [128, 256, 512] as const
+
+// 任天堂風ホワンホワンアニメーション
+const qrAnimation = {
+  initial: { scale: 0.8, opacity: 0 },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 300,
+      damping: 15,
+    },
+  },
+  exit: { scale: 0.8, opacity: 0 },
+}
 
 export function QRPage() {
   const { t } = useTranslation()
@@ -132,28 +148,43 @@ export function QRPage() {
         className="mb-4 flex items-center justify-center rounded p-4"
         style={{ backgroundColor: appTheme.surface }}
       >
-        <div ref={qrRef}>
-          {isValidUrl ? (
-            <QRCodeCanvas
-              value={url}
-              size={size}
-              level="M"
-              includeMargin
-              bgColor="#ffffff"
-              fgColor="#000000"
-            />
-          ) : (
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: size,
-                height: size,
-                color: appTheme.textMuted,
-              }}
-            >
-              <span className="text-sm">{t('qr.urlPlaceholder')}</span>
-            </div>
-          )}
+        <div ref={qrRef} style={{ width: size, height: size }}>
+          <AnimatePresence mode="wait">
+            {isValidUrl ? (
+              <motion.div
+                key={url}
+                variants={qrAnimation}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <QRCodeCanvas
+                  value={url}
+                  size={size}
+                  level="M"
+                  includeMargin
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="placeholder"
+                variants={qrAnimation}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="flex items-center justify-center"
+                style={{
+                  width: size,
+                  height: size,
+                  color: appTheme.textMuted,
+                }}
+              >
+                <span className="text-sm">{t('qr.urlPlaceholder')}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
