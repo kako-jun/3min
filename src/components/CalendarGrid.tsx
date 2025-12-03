@@ -44,22 +44,21 @@ export const CalendarGrid = forwardRef<HTMLDivElement>(function CalendarGrid(_, 
         />
       )}
 
-      {/* 店名（ロゴと文字） */}
-      {(settings.shopLogo || settings.shopName) && (
-        <div
-          className="relative mb-1 flex items-center justify-center gap-2 text-sm font-medium"
-          style={{ color: theme.text }}
-        >
+      {/* ヘッダー：店名（左）と年月（右） */}
+      <div
+        className="relative mb-2 flex items-center justify-between"
+        style={{ color: theme.text }}
+      >
+        {/* 店名（ロゴと文字） */}
+        <div className="flex items-center gap-1 text-sm font-medium">
           {settings.shopLogo && (
-            <img src={settings.shopLogo} alt="Shop logo" className="h-6 w-6 object-contain" />
+            <img src={settings.shopLogo} alt="Shop logo" className="h-5 w-5 object-contain" />
           )}
           {settings.shopName && <span>{settings.shopName}</span>}
         </div>
-      )}
 
-      {/* タイトル */}
-      <div className="relative mb-2 text-center text-lg font-bold" style={{ color: theme.text }}>
-        {t('calendar.yearMonth', yearMonthParams)}
+        {/* 年月 */}
+        <div className="text-lg font-bold">{t('calendar.yearMonth', yearMonthParams)}</div>
       </div>
 
       {/* 曜日ヘッダー */}
