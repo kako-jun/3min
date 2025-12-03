@@ -6,7 +6,8 @@ import { useCalendarStore } from '../lib/store'
 import { format, addDays } from 'date-fns'
 import { QuickInputButtons } from './QuickInputButtons'
 import { EmojiPicker } from './EmojiPicker'
-import { APP_THEMES } from '../lib/types'
+import { APP_THEMES, THEMES } from '../lib/types'
+import { isHoliday } from '../lib/holidays'
 
 /** 30分刻みの時刻オプションを生成 */
 const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
@@ -84,11 +85,13 @@ function DayRow({
   const { t } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const appTheme = APP_THEMES[settings.appTheme]
+  const calendarTheme = THEMES[settings.calendarTheme]
   const dayOfWeek = date.getDay()
   const isSunday = dayOfWeek === 0
   const isSaturday = dayOfWeek === 6
   const dateString = format(date, 'yyyy-MM-dd')
   const dayNumber = date.getDate()
+  const holiday = settings.showHolidays && isHoliday(date)
 
   // 曜日名（言語対応）
   const weekdayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
@@ -124,7 +127,12 @@ function DayRow({
         <div
           className="w-14 shrink-0 text-center text-sm font-medium"
           style={{
-            color: isSunday ? appTheme.accent : isSaturday ? appTheme.accent : appTheme.text,
+            color:
+              isSunday || holiday
+                ? calendarTheme.sunday
+                : isSaturday
+                  ? calendarTheme.saturday
+                  : appTheme.text,
           }}
         >
           <span className="text-lg">{dayNumber}</span>
