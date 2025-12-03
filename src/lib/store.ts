@@ -35,6 +35,9 @@ interface CalendarActions {
   removeTemplate: (id: string) => Promise<void>
   applyTemplate: (templateId: string, year: number, month: number) => Promise<void>
 
+  // 先月からコピー
+  copyFromPreviousMonth: () => Promise<void>
+
   // 設定
   updateSettings: (settings: Partial<Settings>) => Promise<void>
 }
@@ -179,5 +182,77 @@ export const useCalendarStore = create<
     }
 
     set({ settings })
+  },
+
+  // 先月からコピー（曜日パターンを推測して適用）
+  copyFromPreviousMonth: async () => {
+    const { view, entries } = get()
+    const { format, getDaysInMonth } = await import('date-fns')
+
+    // 先月の年月を計算
+    const prevYear = view.month === 0 ? view.year - 1 : view.year
+    const prevMonth = view.month === 0 ? 11 : view.month - 1
+
+    // 先月のエントリをフィルタリング
+    const prevMonthPrefix = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-`
+    const prevMonthEntries = entries.filter(
+      (e) => e.date.startsWith(prevMonthPrefix) && e.text.trim() !== ''
+    )
+
+    if (prevMonthEntries.length === 0) {
+      return // 先月のデータがなければ何もしない
+    }
+
+    // 曜日ごとにテキストを集計（0=日曜〜6=土曜）
+    const weekdayCounts: Record<number, Record<string, number>> = {
+      0: {},
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {},
+      6: {},
+    }
+
+    for (const entry of prevMonthEntries) {
+      const date = new Date(entry.date)
+      const dayOfWeek = date.getDay()
+      const text = entry.text
+      const counts = weekdayCounts[dayOfWeek]
+      if (counts) {
+        counts[text] = (counts[text] || 0) + 1
+      }
+    }
+
+    // 各曜日で最も多く使われたテキストを取得
+    const weekdayDefaults: Record<number, string> = {}
+    for (let dow = 0; dow < 7; dow++) {
+      const counts = weekdayCounts[dow]
+      if (!counts) continue
+      let maxCount = 0
+      let mostCommon = ''
+      for (const [text, count] of Object.entries(counts)) {
+        if (count > maxCount) {
+          maxCount = count
+          mostCommon = text
+        }
+      }
+      if (mostCommon) {
+        weekdayDefaults[dow] = mostCommon
+      }
+    }
+
+    // 今月の各日に適用
+    const daysInMonth = getDaysInMonth(new Date(view.year, view.month))
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(view.year, view.month, day)
+      const dayOfWeek = date.getDay()
+      const defaultText = weekdayDefaults[dayOfWeek]
+      if (defaultText) {
+        const dateString = format(date, 'yyyy-MM-dd')
+        await get().updateEntry(dateString, defaultText)
+      }
+    }
   },
 }))
