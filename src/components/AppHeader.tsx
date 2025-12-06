@@ -44,36 +44,44 @@ export function AppHeader() {
 
   return (
     <header className="text-left">
-      <div className="relative inline-block" ref={dropdownRef}>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1 text-sm font-bold leading-none transition-opacity hover:opacity-80"
-          style={{ color: appTheme.text }}
-        >
-          {t(currentPage.titleKey)}
-          <FontAwesomeIcon icon={faChevronDown} className="text-xs" />
-        </button>
+      <div className="flex gap-2">
+        <img src="/logo.webp" alt="" className="mt-[5px] h-9 w-9" />
+        <div>
+          <div className="relative inline-block" ref={dropdownRef}>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex items-center gap-1 text-sm font-bold leading-tight transition-opacity hover:opacity-80"
+              style={{ color: appTheme.text }}
+            >
+              {t(currentPage.titleKey)}
+              <FontAwesomeIcon icon={faChevronDown} className="text-xs" />
+            </button>
 
-        {isOpen && (
-          <div
-            className="absolute left-0 top-full z-50 mt-1 min-w-max rounded shadow-lg"
-            style={{ backgroundColor: appTheme.surface }}
-          >
-            {PAGES.map((page) => (
-              <button
-                key={page.path}
-                onClick={() => handleSelect(page.path)}
-                className="block w-full px-4 py-2 text-left text-sm transition-opacity hover:opacity-70"
-                style={{
-                  color: appTheme.text,
-                  backgroundColor: page.path === currentPage.path ? appTheme.bg : 'transparent',
-                }}
+            {isOpen && (
+              <div
+                className="absolute left-0 top-full z-50 mt-1 min-w-max rounded shadow-lg"
+                style={{ backgroundColor: appTheme.surface }}
               >
-                {t(page.titleKey)}
-              </button>
-            ))}
+                {PAGES.map((page) => (
+                  <button
+                    key={page.path}
+                    onClick={() => handleSelect(page.path)}
+                    className="block w-full px-4 py-2 text-left text-sm transition-opacity hover:opacity-70"
+                    style={{
+                      color: appTheme.text,
+                      backgroundColor: page.path === currentPage.path ? appTheme.bg : 'transparent',
+                    }}
+                  >
+                    {t(page.titleKey)}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+          <p className="mt-0.5 text-[10px] leading-tight" style={{ color: appTheme.textMuted }}>
+            {t('app.tagline')}
+          </p>
+        </div>
       </div>
     </header>
   )

@@ -10,7 +10,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
       },
       manifest: {
         name: '3 min. Calendar',
@@ -22,14 +22,20 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/icon-192.png',
+            src: '/icon-192.webp',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/webp',
           },
           {
-            src: '/icon-512.png',
+            src: '/icon-512.webp',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/webp',
+          },
+          {
+            src: '/apple-touch-icon.webp',
+            sizes: '180x180',
+            type: 'image/webp',
+            purpose: 'apple touch icon',
           },
         ],
       },
