@@ -44,8 +44,15 @@ export function AppHeader() {
 
   return (
     <header className="text-left">
-      <div className="flex gap-2">
-        <img src="/logo.webp" alt="" className="mt-[5px] h-9 w-9" />
+      <div className="flex gap-1">
+        <img
+          src="/logo.webp"
+          alt=""
+          className="mt-[5px] h-9 w-9"
+          style={{
+            filter: settings.appTheme === 'light' ? 'brightness(0)' : 'brightness(0) invert(1)',
+          }}
+        />
         <div>
           <div className="relative inline-block" ref={dropdownRef}>
             <button
