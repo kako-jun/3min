@@ -25,6 +25,16 @@ export function Calendar() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [isCopying, setIsCopying] = useState(false)
   const [comment, setComment] = useState('')
+  const [isWideScreen, setIsWideScreen] = useState(false)
+
+  // 画面幅を監視（lg: 1024px以上）
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)')
+    setIsWideScreen(mediaQuery.matches)
+    const handler = (e: MediaQueryListEvent) => setIsWideScreen(e.matches)
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [])
 
   // 月が変わったらコメントを読み込む
   useEffect(() => {
@@ -78,7 +88,7 @@ export function Calendar() {
         </div>
         {/* 日ごとの編集領域 */}
         <div className="lg:w-1/2">
-          <DayEditor />
+          <DayEditor showAllDays={isWideScreen} />
           {/* コメント入力欄 */}
           <div className="mt-2">
             <input

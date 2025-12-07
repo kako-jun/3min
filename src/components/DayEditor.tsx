@@ -4,12 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faClipboard } from '@fortawesome/free-solid-svg-icons'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCalendarStore } from '../lib/store'
-import { format, addDays } from 'date-fns'
+import { format, addDays, getDaysInMonth } from 'date-fns'
 import { QuickInputButtons } from './QuickInputButtons'
 import { EmojiPicker } from './EmojiPicker'
 import { APP_THEMES, THEMES } from '../lib/types'
 import type { DayEntry } from '../lib/types'
 import { isHoliday } from '../lib/holidays'
+
+interface DayEditorProps {
+  showAllDays?: boolean
+}
 
 /** 30分刻みの時刻オプションを生成 */
 const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
@@ -285,7 +289,7 @@ function DayRow({ date, entry, isSelected, onUpdate, onCopy, onPaste, onSelect }
   )
 }
 
-export function DayEditor() {
+export function DayEditor({ showAllDays = false }: DayEditorProps) {
   const { t } = useTranslation()
   const view = useCalendarStore((state) => state.view)
   const getEntry = useCalendarStore((state) => state.getEntry)
@@ -295,6 +299,8 @@ export function DayEditor() {
   const settings = useCalendarStore((state) => state.settings)
   const appTheme = APP_THEMES[settings.appTheme]
   const [clipboard, setClipboard] = useState<Partial<DayEntry>>({})
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const selectedRowRef = useRef<HTMLDivElement>(null)
 
   // アニメーション方向を追跡（1: 下へ移動=次の日を選択, -1: 上へ移動=前の日を選択）
   const prevSelectedDateRef = useRef<string | null>(null)
@@ -336,11 +342,25 @@ export function DayEditor() {
     [clipboard, updateEntry]
   )
 
-  // 選択された日がない、または現在表示中の月と異なる場合
-  if (
-    !selectedDate ||
-    !selectedDate.startsWith(`${view.year}-${String(view.month + 1).padStart(2, '0')}`)
-  ) {
+  const currentMonthPrefix = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
+  const isValidSelection = selectedDate && selectedDate.startsWith(currentMonthPrefix)
+
+  // showAllDaysモード: 月の全日を生成
+  const allDaysOfMonth = showAllDays
+    ? Array.from({ length: getDaysInMonth(new Date(view.year, view.month)) }, (_, i) => {
+        const date = new Date(view.year, view.month, i + 1)
+        const dateString = format(date, 'yyyy-MM-dd')
+        return {
+          date,
+          dateString,
+          entry: getEntry(dateString),
+          isSelected: dateString === selectedDate,
+        }
+      })
+    : []
+
+  // 選択された日がない、または現在表示中の月と異なる場合（通常モードのみ）
+  if (!showAllDays && !isValidSelection) {
     return (
       <div
         className="rounded p-4 text-center text-sm"
@@ -351,24 +371,31 @@ export function DayEditor() {
     )
   }
 
-  const selectedDateObj = new Date(selectedDate)
+  // 通常モード: 選択日の前後1日を含む3日分
+  const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date(view.year, view.month, 1)
+  const daysToShow = showAllDays
+    ? allDaysOfMonth
+    : [-1, 0, 1]
+        .map((offset) => {
+          const date = addDays(selectedDateObj, offset)
+          const dateString = format(date, 'yyyy-MM-dd')
+          return {
+            date,
+            dateString,
+            entry: getEntry(dateString),
+            isSelected: offset === 0,
+          }
+        })
+        .filter((day) => day.dateString.startsWith(currentMonthPrefix))
 
-  // 前後1日を含む3日分の日付を生成（ただし当月の日のみ）
-  const currentMonthPrefix = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
-  const daysToShow = [-1, 0, 1]
-    .map((offset) => {
-      const date = addDays(selectedDateObj, offset)
-      const dateString = format(date, 'yyyy-MM-dd')
-      return {
-        date,
-        dateString,
-        entry: getEntry(dateString),
-        isSelected: offset === 0,
-      }
-    })
-    .filter((day) => day.dateString.startsWith(currentMonthPrefix))
+  // 選択日が変わったらスクロール（showAllDaysモードのみ）
+  useEffect(() => {
+    if (showAllDays && selectedRowRef.current && scrollContainerRef.current) {
+      selectedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [showAllDays, selectedDate])
 
-  // アニメーションバリアント（オーバーシュートなし）
+  // アニメーションバリアント（オーバーシュートなし）- 通常モードのみ使用
   const rowVariants = {
     initial: (dir: number) => ({
       y: dir * 20,
@@ -394,6 +421,28 @@ export function DayEditor() {
     }),
   }
 
+  // showAllDaysモード: スクロール可能なリスト
+  if (showAllDays) {
+    return (
+      <div ref={scrollContainerRef} className="flex max-h-[500px] flex-col gap-1 overflow-y-auto">
+        {daysToShow.map(({ date, dateString, entry, isSelected }) => (
+          <div key={dateString} ref={isSelected ? selectedRowRef : undefined}>
+            <DayRow
+              date={date}
+              entry={entry}
+              isSelected={isSelected}
+              onUpdate={updateEntry}
+              onCopy={handleCopy}
+              onPaste={handlePaste}
+              onSelect={setSelectedDate}
+            />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // 通常モード: アニメーション付き3日表示
   return (
     <div className="flex flex-col gap-2 overflow-hidden">
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
