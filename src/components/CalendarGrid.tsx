@@ -39,6 +39,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
   const weekdays = getWeekdayHeaders(settings.weekStartsOn)
   const yearMonthParams = getYearMonthParams(view.year, view.month)
   const isLinedStyle = settings.gridStyle === 'lined'
+  const rowCount = Math.ceil(days.length / 7) // 5行または6行
 
   // カレンダー画像用のテーマ
   const theme = THEMES[settings.calendarTheme]
@@ -81,7 +82,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
   return (
     <div
       ref={ref}
-      className="relative aspect-square w-full max-w-[500px] overflow-hidden rounded-lg p-3"
+      className="relative flex aspect-square w-full max-w-[500px] flex-col rounded-lg p-3"
       style={{ backgroundColor: theme.surface }}
     >
       {/* 背景画像 */}
@@ -99,7 +100,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
 
       {/* ヘッダー：店名（左）と年月（右） */}
       <div
-        className="relative mb-2 flex items-center justify-between"
+        className="relative mb-2 flex shrink-0 items-center justify-between"
         style={{ color: theme.text }}
       >
         {/* 店名（ロゴと文字） */}
@@ -116,7 +117,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
 
       {/* 曜日ヘッダー */}
       <div
-        className={`relative grid grid-cols-7 ${isLinedStyle ? 'mb-0' : 'mb-1 gap-1'}`}
+        className={`relative grid shrink-0 grid-cols-7 ${isLinedStyle ? 'mb-0' : 'mb-1 gap-1'}`}
         style={
           isLinedStyle
             ? {
@@ -145,17 +146,18 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
         ))}
       </div>
 
-      {/* 日付グリッド（6行7列、正方形セル） */}
+      {/* 日付グリッド（5行または6行 x 7列） */}
       <div
-        className={`relative grid flex-1 grid-cols-7 grid-rows-6 ${isLinedStyle ? 'gap-0' : 'gap-1'}`}
-        style={
-          isLinedStyle
+        className={`relative grid min-h-0 flex-1 grid-cols-7 ${isLinedStyle ? 'gap-0' : 'gap-1'}`}
+        style={{
+          gridTemplateRows: `repeat(${rowCount}, 1fr)`,
+          ...(isLinedStyle
             ? {
                 border: `1px solid ${lineColor}`,
                 borderTop: 'none',
               }
-            : undefined
-        }
+            : {}),
+        }}
       >
         {days.map((day, index) => {
           const dayOfWeek = day.date.getDay()
@@ -182,7 +184,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
           const linedCellStyle = isLinedStyle
             ? {
                 borderRight: col < 6 ? `1px solid ${lineColor}` : 'none',
-                borderBottom: row < 5 ? `1px solid ${lineColor}` : 'none',
+                borderBottom: row < rowCount - 1 ? `1px solid ${lineColor}` : 'none',
                 backgroundColor: day.isCurrentMonth ? 'transparent' : `${theme.bg}40`,
               }
             : {
@@ -192,7 +194,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
           return (
             <div
               key={day.dateString}
-              className={`relative aspect-square p-0.5 ${isLinedStyle ? '' : 'rounded'} ${day.isCurrentMonth ? 'cursor-pointer' : ''} ${isLinedStyle && day.isCurrentMonth ? 'transition-colors hover:bg-black/5' : ''}`}
+              className={`relative p-0.5 ${isLinedStyle ? '' : 'rounded'} ${day.isCurrentMonth ? 'cursor-pointer' : ''} ${isLinedStyle && day.isCurrentMonth ? 'transition-colors hover:bg-black/5' : ''}`}
               style={linedCellStyle}
               title={holidayName || undefined}
               onClick={() => day.isCurrentMonth && setSelectedDate(day.dateString)}
@@ -270,9 +272,9 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
         })}
       </div>
 
-      {/* コメント表示（左下）- 常に表示してクリック可能に */}
+      {/* コメント表示（右下）- 常に表示してクリック可能に */}
       <div
-        className="relative mt-0.5 flex cursor-pointer justify-start overflow-hidden"
+        className="relative mt-1 flex shrink-0 cursor-pointer justify-end overflow-hidden"
         onClick={() => document.getElementById('calendar-comment-input')?.focus()}
       >
         <div
@@ -280,7 +282,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
           className="whitespace-nowrap text-xs"
           style={{
             color: comment ? theme.text : theme.textMuted,
-            transformOrigin: 'left center',
+            transformOrigin: 'right center',
             transform: `scaleX(${commentScale})`,
           }}
         >
