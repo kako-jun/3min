@@ -101,6 +101,8 @@
 | 祝日判定       | date-holidays           | 世界の祝日対応           |
 | 国際化         | i18next + react-i18next | 多言語対応               |
 | 画像キャプチャ | html2canvas             | DOM→Canvas変換           |
+| QRコード生成   | react-qrcode-logo       | カスタマイズ可能なQR生成 |
+| アニメーション | framer-motion           | UIアニメーション         |
 | PWA            | vite-plugin-pwa         | オフライン対応           |
 | データ保存     | IndexedDB               | ブラウザローカルDB       |
 
@@ -113,6 +115,8 @@ src/
 ├── main.tsx                  # エントリーポイント
 ├── App.tsx                   # ルートコンポーネント（テーマ適用）
 ├── index.css                 # Tailwind読み込み
+├── hooks/
+│   └── useLogoImage.ts       # ロゴ画像選択・アスペクト比管理
 ├── lib/
 │   ├── types.ts              # 型定義（Theme, Settings, Template等）
 │   ├── store.ts              # Zustandストア（状態管理の中心）
@@ -121,31 +125,45 @@ src/
 │   ├── capture.ts            # 画像キャプチャ（html2canvas）
 │   ├── holidays.ts           # 祝日判定（20カ国対応）
 │   ├── theme.ts              # テーマユーティリティ
+│   ├── qr.ts                 # QRコード関連定数・ユーティリティ
+│   ├── time.ts               # 時刻関連ユーティリティ
+│   ├── entry.ts              # DayEntryシリアライズ/デシリアライズ
 │   └── i18n/
 │       ├── index.ts          # i18n初期化
 │       ├── ja.json           # 日本語翻訳
 │       └── en.json           # 英語翻訳
 └── components/
+    ├── ui/                   # 再利用可能なUIコンポーネント
+    │   ├── SegmentedControl.tsx  # セグメント選択ボタン
+    │   ├── ColorInput.tsx        # カラーピッカー+テキスト入力
+    │   ├── ToggleSwitch.tsx      # ON/OFFトグル
+    │   └── ImageSelector.tsx     # 画像選択+プレビュー
     ├── Calendar.tsx          # メインレイアウト
     ├── AppHeader.tsx         # アプリ名とキャッチコピー
     ├── MonthSelector.tsx     # 年月ナビゲーション
     ├── CalendarGrid.tsx      # カレンダーグリッド（画像キャプチャ対象）
-    ├── DayEditor.tsx         # 日ごとの編集領域
+    ├── DayEditor.tsx         # 日ごとの編集領域（3日表示/全日表示）
+    ├── DayRow.tsx            # 1日分の編集行
     ├── QuickInputButtons.tsx # 定型入力ボタン
+    ├── EmojiPicker.tsx       # 絵文字ピッカー
     ├── ActionButtons.tsx     # シェア/ダウンロードボタン
-    └── SettingsPanel.tsx     # 設定モーダル
+    ├── SettingsPanel.tsx     # 設定モーダル
+    └── QRPage.tsx            # QRコード生成ページ
 ```
 
 ---
 
 ## データモデル
 
-### DayEntry（日ごとのテキスト）
+### DayEntry（日ごとの入力データ）
 
 ```typescript
 interface DayEntry {
   date: string // YYYY-MM-DD（主キー）
-  text: string // 「休」「◯」「10:00-18:00」等
+  stamp: string | null // 定型スタンプ（'closed', 'available', 'few', 'full', 'unavailable'）
+  timeFrom: string // 開始時刻（'09:00'形式）
+  timeTo: string // 終了時刻（'18:00'形式）
+  text: string // 自由テキスト
 }
 ```
 
@@ -204,9 +222,21 @@ interface Template {
 - 言語切り替え（日本語/英語）
 - 国/地域選択（祝日判定用、20カ国）
 - テーマ選択（6種類のプリセット）
-- 店名入力
+- 店名入力・店名ロゴ設定
+- 背景画像・透明度設定
 - 祝日表示ON/OFF
 - 週の開始日（日曜/月曜）
+
+### QRコード生成（QRPage.tsx）
+
+- URLを入力してQRコードを生成
+- スタイル選択（四角/ドット/流体）
+- 目の形状選択（四角/角丸/円形）- 自動計算で最適な角丸半径
+- 色のカスタマイズ（背景色・前景色）
+- 中央ロゴ画像の挿入（アスペクト比を維持）
+- サイズ選択（128/256/512px）
+- エラー訂正レベルは常にH（最大）で固定
+- 画像ダウンロード機能
 
 ---
 
@@ -302,6 +332,17 @@ CalendarGridは`aspect-square`で固定。キャプチャ時もこの比率を�
 テーマカラーはTailwindクラスではなくインラインstyleで適用。
 これにより動的なテーマ切り替えが可能。
 
+### 再利用可能なUIコンポーネント（components/ui/）
+
+共通UIパターンは`components/ui/`ディレクトリに切り出し:
+
+- **SegmentedControl**: 複数選択肢からひとつを選ぶボタングループ
+- **ColorInput**: カラーピッカーとテキスト入力の組み合わせ
+- **ToggleSwitch**: ON/OFFの切り替え（オプションでラベル付き）
+- **ImageSelector**: 画像選択、プレビュー表示、削除機能
+
+これらはテーマオブジェクト（`AppThemeColors`型）を受け取り、動的にスタイル適用。
+
 ---
 
 ## 今後の拡張候補
@@ -313,4 +354,4 @@ CalendarGridは`aspect-square`で固定。キャプチャ時もこの比率を�
 
 ---
 
-**Last Updated**: 2025-11-30
+**Last Updated**: 2025-12-08
