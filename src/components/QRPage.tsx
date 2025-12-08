@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { QRCode } from 'react-qrcode-logo'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -14,44 +14,22 @@ import {
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES } from '../lib/types'
+import {
+  QR_SIZES,
+  QR_STYLES,
+  EYE_STYLES,
+  QRSize,
+  QRStyle,
+  EyeStyle,
+  getEyeRadius,
+  getLogoSize,
+  qrAnimation,
+} from '../lib/qr'
+import { useLogoImage } from '../hooks/useLogoImage'
 import { AppHeader } from './AppHeader'
 import { SettingsPanel } from './SettingsPanel'
-
-const QR_SIZES = [128, 256, 512] as const
-const QR_STYLES = ['squares', 'dots', 'fluid'] as const
-const EYE_STYLES = ['square', 'rounded', 'circle'] as const
-
-type QRStyle = (typeof QR_STYLES)[number]
-type EyeStyle = (typeof EYE_STYLES)[number]
-
-// サイズに応じてeyeRadiusを自動計算
-const getEyeRadius = (size: number, style: EyeStyle): number => {
-  const moduleSize = size / 21 // Version 1想定
-  const eyeSize = moduleSize * 7
-  switch (style) {
-    case 'square':
-      return 0
-    case 'rounded':
-      return eyeSize * 0.2 // 軽く丸める
-    case 'circle':
-      return eyeSize / 2 // 完全な円
-  }
-}
-
-// 任天堂風ホワンホワンアニメーション
-const qrAnimation = {
-  initial: { scale: 0.8, opacity: 0 },
-  animate: {
-    scale: 1,
-    opacity: 1,
-    transition: {
-      type: 'spring' as const,
-      stiffness: 300,
-      damping: 15,
-    },
-  },
-  exit: { scale: 0.8, opacity: 0 },
-}
+import { SegmentedControl } from './ui/SegmentedControl'
+import { ColorInput } from './ui/ColorInput'
 
 export function QRPage() {
   const { t } = useTranslation()
@@ -59,7 +37,7 @@ export function QRPage() {
   const appTheme = APP_THEMES[settings.appTheme]
 
   const [url, setUrl] = useState('')
-  const [size, setSize] = useState<(typeof QR_SIZES)[number]>(256)
+  const [size, setSize] = useState<QRSize>(256)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // カスタマイズオプション
@@ -68,73 +46,26 @@ export function QRPage() {
   const [isTransparent, setIsTransparent] = useState(false)
   const [qrStyle, setQrStyle] = useState<QRStyle>('squares')
   const [eyeStyle, setEyeStyle] = useState<EyeStyle>('square')
-  const [logoImage, setLogoImage] = useState<string | null>(null)
-  const [logoAspectRatio, setLogoAspectRatio] = useState(1) // 幅/高さ
+
+  const {
+    logoImage,
+    logoAspectRatio,
+    inputRef: logoInputRef,
+    handleSelect: handleLogoSelect,
+    handleRemove: handleRemoveLogo,
+  } = useLogoImage()
 
   const qrRef = useRef<HTMLDivElement>(null)
-  const logoInputRef = useRef<HTMLInputElement>(null)
-
   const isValidUrl = url.trim().length > 0
-
-  const handleLogoSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // 次回同じファイルも選択可能にするためリセット
-    if (logoInputRef.current) {
-      logoInputRef.current.value = ''
-    }
-
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string
-      if (!dataUrl) return
-
-      // 画像のアスペクト比を取得
-      const img = new Image()
-      const currentFile = file.name + file.lastModified // 競合状態防止用
-
-      img.onload = () => {
-        // 別の画像が選択されていたら無視
-        if (logoInputRef.current?.dataset.pending !== currentFile) return
-        setLogoAspectRatio(img.width / img.height)
-        setLogoImage(dataUrl)
-        delete logoInputRef.current?.dataset.pending
-      }
-
-      img.onerror = () => {
-        console.error('Failed to load logo image')
-        delete logoInputRef.current?.dataset.pending
-      }
-
-      if (logoInputRef.current) {
-        logoInputRef.current.dataset.pending = currentFile
-      }
-      img.src = dataUrl
-    }
-
-    reader.onerror = () => {
-      console.error('Failed to read file')
-    }
-
-    reader.readAsDataURL(file)
-  }, [])
-
-  const handleRemoveLogo = useCallback(() => {
-    setLogoImage(null)
-    if (logoInputRef.current) {
-      logoInputRef.current.value = ''
-    }
-  }, [])
+  const logoSize = getLogoSize(size, logoAspectRatio)
 
   const handleDownload = () => {
     const canvas = qrRef.current?.querySelector('canvas')
     if (!canvas) return
 
-    const dataUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
     link.download = 'qrcode.png'
-    link.href = dataUrl
+    link.href = canvas.toDataURL('image/png')
     link.click()
   }
 
@@ -149,15 +80,11 @@ export function QRPage() {
       if (navigator.share && navigator.canShare) {
         const file = new File([blob], 'qrcode.png', { type: 'image/png' })
         if (navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: '3 min. QR',
-          })
+          await navigator.share({ files: [file], title: '3 min. QR' })
           return
         }
       }
 
-      // フォールバック: クリップボードにコピー
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
       alert(t('messages.copied'))
     } catch (error) {
@@ -165,11 +92,9 @@ export function QRPage() {
     }
   }
 
-  // 色反転ボタン
   const handleInvertColors = () => {
-    const tempFg = fgColor
     setFgColor(bgColor)
-    setBgColor(tempFg)
+    setBgColor(fgColor)
   }
 
   return (
@@ -212,53 +137,17 @@ export function QRPage() {
           <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
             {t('qr.sizeLabel')}
           </label>
-          <div className="flex gap-1">
-            {QR_SIZES.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSize(s)}
-                className={`flex-1 rounded px-2 py-1 text-xs transition-colors ${
-                  size === s ? 'ring-2' : 'opacity-70 hover:opacity-100'
-                }`}
-                style={{
-                  backgroundColor: appTheme.surface,
-                  color: appTheme.text,
-                  // @ts-expect-error CSS custom property for Tailwind ring color
-                  '--tw-ring-color': appTheme.accent,
-                }}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl options={QR_SIZES} value={size} onChange={setSize} theme={appTheme} />
         </div>
 
         {/* 色設定 */}
         <div className="flex items-end gap-2">
-          <div className="flex-1">
-            <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
-              {t('qr.fgColor')}
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={fgColor}
-                onChange={(e) => setFgColor(e.target.value)}
-                className="h-8 w-12 cursor-pointer rounded border-0"
-              />
-              <input
-                type="text"
-                value={fgColor}
-                onChange={(e) => setFgColor(e.target.value)}
-                className="w-full rounded border px-2 py-1 text-xs"
-                style={{
-                  backgroundColor: appTheme.surface,
-                  borderColor: appTheme.textMuted,
-                  color: appTheme.text,
-                }}
-              />
-            </div>
-          </div>
+          <ColorInput
+            label={t('qr.fgColor')}
+            value={fgColor}
+            onChange={setFgColor}
+            theme={appTheme}
+          />
           <button
             onClick={handleInvertColors}
             className="mb-1 rounded px-2 py-1 text-xs transition-opacity hover:opacity-70"
@@ -267,32 +156,14 @@ export function QRPage() {
           >
             ⇄
           </button>
-          <div className="flex-1">
-            <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
-              {t('qr.bgColor')}
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                disabled={isTransparent}
-                className="h-8 w-12 cursor-pointer rounded border-0 disabled:opacity-50"
-              />
-              <input
-                type="text"
-                value={isTransparent ? 'transparent' : bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                disabled={isTransparent}
-                className="w-full rounded border px-2 py-1 text-xs disabled:opacity-50"
-                style={{
-                  backgroundColor: appTheme.surface,
-                  borderColor: appTheme.textMuted,
-                  color: appTheme.text,
-                }}
-              />
-            </div>
-          </div>
+          <ColorInput
+            label={t('qr.bgColor')}
+            value={bgColor}
+            onChange={setBgColor}
+            disabled={isTransparent}
+            displayValue={isTransparent ? 'transparent' : undefined}
+            theme={appTheme}
+          />
         </div>
 
         {/* 透過チェックボックス */}
@@ -308,55 +179,31 @@ export function QRPage() {
           </span>
         </label>
 
-        {/* スタイル & 角丸 */}
+        {/* スタイル & 目の形 */}
         <div className="flex gap-4">
           <div className="flex-1">
             <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
               {t('qr.style')}
             </label>
-            <div className="flex gap-1">
-              {QR_STYLES.map((style) => (
-                <button
-                  key={style}
-                  onClick={() => setQrStyle(style)}
-                  className={`flex-1 rounded px-2 py-1 text-xs transition-colors ${
-                    qrStyle === style ? 'ring-2' : 'opacity-70 hover:opacity-100'
-                  }`}
-                  style={{
-                    backgroundColor: appTheme.surface,
-                    color: appTheme.text,
-                    // @ts-expect-error CSS custom property for Tailwind ring color
-                    '--tw-ring-color': appTheme.accent,
-                  }}
-                >
-                  {t(`qr.styles.${style}`)}
-                </button>
-              ))}
-            </div>
+            <SegmentedControl
+              options={QR_STYLES}
+              value={qrStyle}
+              onChange={setQrStyle}
+              getLabel={(style) => t(`qr.styles.${style}`)}
+              theme={appTheme}
+            />
           </div>
           <div className="flex-1">
             <label className="mb-1 block text-sm" style={{ color: appTheme.textMuted }}>
               {t('qr.eyeStyle')}
             </label>
-            <div className="flex gap-1">
-              {EYE_STYLES.map((style) => (
-                <button
-                  key={style}
-                  onClick={() => setEyeStyle(style)}
-                  className={`flex-1 rounded px-2 py-1 text-xs transition-colors ${
-                    eyeStyle === style ? 'ring-2' : 'opacity-70 hover:opacity-100'
-                  }`}
-                  style={{
-                    backgroundColor: appTheme.surface,
-                    color: appTheme.text,
-                    // @ts-expect-error CSS custom property for Tailwind ring color
-                    '--tw-ring-color': appTheme.accent,
-                  }}
-                >
-                  {t(`qr.eyeStyles.${style}`)}
-                </button>
-              ))}
-            </div>
+            <SegmentedControl
+              options={EYE_STYLES}
+              value={eyeStyle}
+              onChange={setEyeStyle}
+              getLabel={(style) => t(`qr.eyeStyles.${style}`)}
+              theme={appTheme}
+            />
           </div>
         </div>
 
@@ -426,8 +273,8 @@ export function QRPage() {
                   qrStyle={qrStyle}
                   eyeRadius={getEyeRadius(size, eyeStyle)}
                   logoImage={logoImage || undefined}
-                  logoWidth={logoAspectRatio >= 1 ? size * 0.25 : size * 0.25 * logoAspectRatio}
-                  logoHeight={logoAspectRatio >= 1 ? (size * 0.25) / logoAspectRatio : size * 0.25}
+                  logoWidth={logoSize.width}
+                  logoHeight={logoSize.height}
                   removeQrCodeBehindLogo
                   logoPaddingStyle="square"
                 />
@@ -440,11 +287,7 @@ export function QRPage() {
                 animate="animate"
                 exit="exit"
                 className="flex items-center justify-center"
-                style={{
-                  width: size,
-                  height: size,
-                  color: appTheme.textMuted,
-                }}
+                style={{ width: size, height: size, color: appTheme.textMuted }}
               >
                 <span className="text-sm">{t('qr.urlPlaceholder')}</span>
               </motion.div>
@@ -459,10 +302,7 @@ export function QRPage() {
           onClick={handleShare}
           disabled={!isValidUrl}
           className="flex flex-1 items-center justify-center gap-2 rounded py-3 text-sm font-bold transition-opacity hover:opacity-80 disabled:opacity-40"
-          style={{
-            backgroundColor: appTheme.accent,
-            color: '#ffffff',
-          }}
+          style={{ backgroundColor: appTheme.accent, color: '#ffffff' }}
         >
           <FontAwesomeIcon icon={faShareNodes} />
           {t('actions.share')}
@@ -471,10 +311,7 @@ export function QRPage() {
           onClick={handleDownload}
           disabled={!isValidUrl}
           className="flex flex-1 items-center justify-center gap-2 rounded py-3 text-sm font-bold transition-opacity hover:opacity-80 disabled:opacity-40"
-          style={{
-            backgroundColor: appTheme.surface,
-            color: appTheme.text,
-          }}
+          style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
         >
           <FontAwesomeIcon icon={faDownload} />
           {t('actions.download')}
@@ -507,7 +344,6 @@ export function QRPage() {
         {t('qr.trademark')}
       </footer>
 
-      {/* 設定パネル */}
       <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   )
