@@ -7,10 +7,10 @@
 ```typescript
 interface DayEntry {
   date: string // YYYY-MM-DD（主キー）
-  stamp: string | null // 定型スタンプ（'closed', 'available', 'few', 'full', 'unavailable'）
+  stamp: string | null // 定型スタンプ（'closed', 'available', 'few', 'full', 'reserved'）
   timeFrom: string // 開始時刻（'09:00'形式）
   timeTo: string // 終了時刻（'18:00'形式）
-  text: string // 自由テキスト
+  text: string // 予定コメント（自由テキスト）
 }
 ```
 
@@ -19,46 +19,62 @@ interface DayEntry {
 ```typescript
 interface Settings {
   weekStartsOn: 0 | 1 // 0: 日曜始まり, 1: 月曜始まり
-  theme: ThemeId // 14種類のプリセット（ライト系7色 + ダーク系7色）
+  appTheme: 'light' | 'dark' // アプリUI全体のテーマ
+  calendarTheme: CalendarThemeId // カレンダー画像のデフォルトテーマ
+  gridStyle: 'rounded' | 'lined' // グリッド表示スタイル
   language: 'ja' | 'en'
   country: CountryCode // 'JP' | 'US' | 'GB' | ... （20カ国）
   shopName: string // カレンダーに表示する店名
+  shopLogo: string | null // 店名ロゴ画像（Base64）
   showHolidays: boolean // 祝日を色分け表示するか
   showRokuyo: boolean // 六曜を表示するか
   useWareki: boolean // 和暦を使用するか
+  backgroundImage: string | null // 背景画像（Base64）
+  backgroundOpacity: number // 背景画像の透明度（0-1）
 }
 ```
 
-### Template（定休日パターン）
+### CalendarComments（月ごとのコメント）
 
 ```typescript
-interface Template {
-  id: string
-  name: string // 「毎週水曜定休」等
-  weekdayDefaults: Record<number, string> // 曜日ごとのデフォルト値
-}
+// キー: "YYYY-MM"（例: "2025-12"）
+type CalendarComments = Record<string, string>
+```
+
+### CalendarThemes（月ごとのテーマ）
+
+```typescript
+// キー: "YYYY-MM"、値未設定時はsettings.calendarThemeを使用
+type CalendarThemes = Record<string, CalendarThemeId>
 ```
 
 ## テーマシステム
 
-14種類のプリセットテーマ（ライト系7色 + ダーク系7色の虹配色）。カスタムカラーは意図的に非対応。
+### アプリテーマ（AppTheme）
+
+アプリUI全体の外観。`'light'` または `'dark'` の2種類。
+
+### カレンダーテーマ（CalendarThemeId）
+
+カレンダー画像のテーマ。14種類のプリセット（ライト系7色 + ダーク系7色の虹配色）。
+月ごとに異なるテーマを設定可能。未設定の月はデフォルト（light）を使用。
 
 ```typescript
-type ThemeId =
+type CalendarThemeId =
+  | 'light'
   | 'light-red'
   | 'light-orange'
   | 'light-yellow'
   | 'light-green'
   | 'light-blue'
-  | 'light-indigo'
-  | 'light-violet'
+  | 'light-purple'
+  | 'dark'
   | 'dark-red'
   | 'dark-orange'
   | 'dark-yellow'
   | 'dark-green'
   | 'dark-blue'
-  | 'dark-indigo'
-  | 'dark-violet'
+  | 'dark-purple'
 
 interface ThemeColors {
   bg: string // 背景色
@@ -74,12 +90,31 @@ interface ThemeColors {
 
 ## IndexedDB構造
 
-- **DB名**: `3min-calendar-db`
-- **バージョン**: 2
-- **ストア**:
-  - `entries`: 日ごとのテキスト（keyPath: `date`）
-  - `settings`: 設定（keyPath: `key`）
-  - `templates`: テンプレート（keyPath: `id`）
+- **DB名**: `3min-db`
+- **バージョン**: 1
+- **オブジェクトストア**:
+  - `calendar:entries`: 日ごとのエントリ（keyPath: `date`）
+  - `data`: 汎用key-valueストア（keyPath: `key`）
+    - `calendar:settings`: アプリ設定
+    - `calendar:comments`: 月ごとのコメント
+    - `calendar:themes`: 月ごとのテーマ
+
+## データ管理
+
+### エクスポート/インポート
+
+設定パネルからJSON形式でデータをエクスポート/インポート可能。
+
+```typescript
+interface ExportData {
+  version: number
+  exportedAt: string
+  entries: DayEntry[]
+  calendarComments: CalendarComments
+  calendarThemes: CalendarThemes
+  settings: Settings
+}
+```
 
 ## 国際化（i18n）
 
