@@ -71,7 +71,7 @@
     "selectImage": "이미지 선택",
     "removeImage": "삭제",
     "backgroundOpacity": "배경 투명도",
-    "qrCodeComingSoon": "QR 코드 기능 (예정)"
+    "qrCodeDescription": "모바일로 사용하려면 스캔"
   },
   "about": {
     "author": "제작자"

@@ -85,7 +85,7 @@
     "selectImage": "Sélectionner une image",
     "removeImage": "Supprimer",
     "backgroundOpacity": "Opacité du fond",
-    "qrCodeComingSoon": "Code QR (Bientôt)"
+    "qrCodeDescription": "Scannez pour utiliser sur mobile"
   },
   "about": {
     "author": "Auteur"

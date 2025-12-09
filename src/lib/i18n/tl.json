@@ -85,7 +85,7 @@
     "selectImage": "Pumili ng larawan",
     "removeImage": "Alisin",
     "backgroundOpacity": "Opacity ng background",
-    "qrCodeComingSoon": "QR Code (Malapit Na)"
+    "qrCodeDescription": "I-scan para gamitin sa mobile"
   },
   "about": {
     "author": "May-akda"

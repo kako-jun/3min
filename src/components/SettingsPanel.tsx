@@ -15,7 +15,6 @@ import {
   faImage,
   faFileExport,
   faFileImport,
-  faQrcode,
   faHeart,
 } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
@@ -149,20 +148,23 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         </div>
 
         <div className="space-y-6">
-          {/* QRコード予定地 */}
+          {/* QRコード */}
           <div className="flex flex-col items-center gap-2">
-            <div
-              className="flex h-24 w-24 items-center justify-center rounded-lg border-2 border-dashed"
-              style={{ borderColor: appTheme.textMuted }}
+            <a
+              href="https://3min.day"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
             >
-              <FontAwesomeIcon
-                icon={faQrcode}
-                className="text-3xl"
-                style={{ color: appTheme.textMuted }}
+              <img
+                src="/qrcode.webp"
+                alt="3 min. Calendar QR Code"
+                className="h-24 w-24 rounded-lg"
+                style={{ filter: settings.appTheme === 'dark' ? 'invert(1)' : 'none' }}
               />
-            </div>
+            </a>
             <p className="text-center text-xs" style={{ color: appTheme.textMuted }}>
-              {t('settings.qrCodeComingSoon')}
+              {t('settings.qrCodeDescription')}
             </p>
           </div>
 

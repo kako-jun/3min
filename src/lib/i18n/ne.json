@@ -85,7 +85,7 @@
     "selectImage": "छवि छान्नुहोस्",
     "removeImage": "हटाउनुहोस्",
     "backgroundOpacity": "पृष्ठभूमि अपारदर्शिता",
-    "qrCodeComingSoon": "QR कोड (आउँदैछ)"
+    "qrCodeDescription": "मोबाइलमा प्रयोग गर्न स्क्यान गर्नुहोस्"
   },
   "about": {
     "author": "लेखक"

@@ -85,7 +85,7 @@
     "selectImage": "Chọn ảnh",
     "removeImage": "Xóa",
     "backgroundOpacity": "Độ mờ nền",
-    "qrCodeComingSoon": "Mã QR (Sắp ra mắt)"
+    "qrCodeDescription": "Quét để sử dụng trên điện thoại"
   },
   "about": {
     "author": "Tác giả"

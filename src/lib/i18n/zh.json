@@ -71,7 +71,7 @@
     "selectImage": "选择图片",
     "removeImage": "删除",
     "backgroundOpacity": "背景透明度",
-    "qrCodeComingSoon": "二维码功能（计划中）"
+    "qrCodeDescription": "手机使用请扫码"
   },
   "about": {
     "author": "作者"
