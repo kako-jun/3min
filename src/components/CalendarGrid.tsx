@@ -251,7 +251,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
                       </div>
                       {/* 日付（右上固定） */}
                       <div
-                        className={`shrink-0 text-xs leading-none ${day.isToday ? 'font-bold' : ''}`}
+                        className="shrink-0 text-xs font-bold leading-none"
                         style={{ color: getDayColor() }}
                       >
                         {day.day}
