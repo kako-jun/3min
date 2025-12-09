@@ -13,7 +13,23 @@ export interface DayEntry {
 export type AppTheme = 'light' | 'dark'
 
 /** カレンダーテーマ定義 */
-export type CalendarThemeId = 'dark' | 'light' | 'cafe' | 'nature' | 'ocean' | 'sunset'
+export type CalendarThemeId =
+  // 明るい系（上段）
+  | 'light'
+  | 'light-red'
+  | 'light-orange'
+  | 'light-yellow'
+  | 'light-green'
+  | 'light-blue'
+  | 'light-purple'
+  // 暗い系（下段）
+  | 'dark'
+  | 'dark-red'
+  | 'dark-orange'
+  | 'dark-yellow'
+  | 'dark-green'
+  | 'dark-blue'
+  | 'dark-purple'
 
 /** グリッド表示スタイル */
 export type GridStyle = 'rounded' | 'lined'
@@ -33,16 +49,7 @@ export interface ThemeColors {
 }
 
 export const THEMES: Record<ThemeId, ThemeColors> = {
-  dark: {
-    bg: '#1f2937',
-    surface: '#374151',
-    text: '#ffffff',
-    textMuted: '#9ca3af',
-    accent: '#3b82f6',
-    sunday: '#f87171',
-    saturday: '#60a5fa',
-    holiday: '#f87171',
-  },
+  // 明るい系（上段）
   light: {
     bg: '#ffffff',
     surface: '#f3f4f6',
@@ -53,45 +60,136 @@ export const THEMES: Record<ThemeId, ThemeColors> = {
     saturday: '#2563eb',
     holiday: '#dc2626',
   },
-  cafe: {
-    bg: '#3d2c29',
-    surface: '#5c4742',
-    text: '#f5f0eb',
-    textMuted: '#c4b5a8',
-    accent: '#d4a574',
-    sunday: '#e57373',
-    saturday: '#7db8c9',
-    holiday: '#e57373',
+  'light-red': {
+    bg: '#fef2f2',
+    surface: '#fee2e2',
+    text: '#7f1d1d',
+    textMuted: '#b91c1c',
+    accent: '#dc2626',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
   },
-  nature: {
-    bg: '#2d3b2d',
-    surface: '#3d4d3d',
-    text: '#e8f0e8',
-    textMuted: '#a8c0a8',
-    accent: '#7cb97c',
-    sunday: '#e57373',
-    saturday: '#7db8c9',
-    holiday: '#e57373',
+  'light-orange': {
+    bg: '#fff7ed',
+    surface: '#ffedd5',
+    text: '#7c2d12',
+    textMuted: '#c2410c',
+    accent: '#ea580c',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
   },
-  ocean: {
-    bg: '#1a3a4a',
-    surface: '#2a4a5a',
-    text: '#e0f0f8',
-    textMuted: '#90c0d8',
-    accent: '#4da6c9',
-    sunday: '#e57373',
-    saturday: '#7db8c9',
-    holiday: '#e57373',
+  'light-yellow': {
+    bg: '#fefce8',
+    surface: '#fef9c3',
+    text: '#713f12',
+    textMuted: '#a16207',
+    accent: '#ca8a04',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
   },
-  sunset: {
-    bg: '#4a2a2a',
-    surface: '#5a3a3a',
-    text: '#f8e8e0',
-    textMuted: '#d8b0a0',
-    accent: '#e8a070',
-    sunday: '#e57373',
-    saturday: '#7db8c9',
-    holiday: '#e57373',
+  'light-green': {
+    bg: '#f0fdf4',
+    surface: '#dcfce7',
+    text: '#14532d',
+    textMuted: '#15803d',
+    accent: '#16a34a',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
+  },
+  'light-blue': {
+    bg: '#eff6ff',
+    surface: '#dbeafe',
+    text: '#1e3a8a',
+    textMuted: '#1d4ed8',
+    accent: '#2563eb',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
+  },
+  'light-purple': {
+    bg: '#faf5ff',
+    surface: '#f3e8ff',
+    text: '#581c87',
+    textMuted: '#7c3aed',
+    accent: '#9333ea',
+    sunday: '#dc2626',
+    saturday: '#2563eb',
+    holiday: '#dc2626',
+  },
+  // 暗い系（下段）
+  dark: {
+    bg: '#1f2937',
+    surface: '#374151',
+    text: '#ffffff',
+    textMuted: '#9ca3af',
+    accent: '#3b82f6',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-red': {
+    bg: '#450a0a',
+    surface: '#7f1d1d',
+    text: '#fef2f2',
+    textMuted: '#fca5a5',
+    accent: '#f87171',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-orange': {
+    bg: '#431407',
+    surface: '#7c2d12',
+    text: '#fff7ed',
+    textMuted: '#fdba74',
+    accent: '#fb923c',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-yellow': {
+    bg: '#422006',
+    surface: '#713f12',
+    text: '#fefce8',
+    textMuted: '#fde047',
+    accent: '#facc15',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-green': {
+    bg: '#052e16',
+    surface: '#14532d',
+    text: '#f0fdf4',
+    textMuted: '#86efac',
+    accent: '#4ade80',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-blue': {
+    bg: '#172554',
+    surface: '#1e3a8a',
+    text: '#eff6ff',
+    textMuted: '#93c5fd',
+    accent: '#60a5fa',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
+  },
+  'dark-purple': {
+    bg: '#3b0764',
+    surface: '#581c87',
+    text: '#faf5ff',
+    textMuted: '#d8b4fe',
+    accent: '#c084fc',
+    sunday: '#f87171',
+    saturday: '#60a5fa',
+    holiday: '#f87171',
   },
 }
 

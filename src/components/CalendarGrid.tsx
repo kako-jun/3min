@@ -5,6 +5,7 @@ import { useCalendarStore } from '../lib/store'
 import { getCalendarDays, getWeekdayHeaders, getYearMonthParams } from '../lib/calendar'
 import { isHoliday, getHolidayName } from '../lib/holidays'
 import { THEMES, QUICK_INPUT_STYLES } from '../lib/types'
+import { STAMP_ICONS } from './ui/StampIcons'
 
 /** テキスト長に応じたフォントサイズを返す（セル内で収まるように自動縮小） */
 function getTextFontSize(text: string): string {
@@ -221,7 +222,7 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
                       <div className="flex flex-wrap gap-0.5">
                         {stampStyle && (
                           <span
-                            className="inline-block shrink-0 px-1 py-0.5 font-bold"
+                            className="inline-flex shrink-0 items-center justify-center px-1 py-0.5 font-bold"
                             style={{
                               backgroundColor: stampStyle.bgColor,
                               color: stampStyle.textColor,
@@ -230,7 +231,14 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
                               borderRadius: '2px',
                             }}
                           >
-                            {t(`quickInput.${stampStyle.key}`)}
+                            {(() => {
+                              const IconComponent = STAMP_ICONS[stampStyle.key]
+                              return IconComponent ? (
+                                <IconComponent size={10} />
+                              ) : (
+                                t(`quickInput.${stampStyle.key}`)
+                              )
+                            })()}
                           </span>
                         )}
                       </div>

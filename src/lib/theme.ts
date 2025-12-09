@@ -27,10 +27,20 @@ export function applyThemeToDocument(themeId: ThemeId): void {
  * テーマ名の翻訳キー
  */
 export const THEME_NAMES: Record<ThemeId, string> = {
-  dark: 'themes.dark',
-  light: 'themes.light',
-  cafe: 'themes.cafe',
-  nature: 'themes.nature',
-  ocean: 'themes.ocean',
-  sunset: 'themes.sunset',
+  // 明るい系
+  light: 'calendarThemes.light',
+  'light-red': 'calendarThemes.light-red',
+  'light-orange': 'calendarThemes.light-orange',
+  'light-yellow': 'calendarThemes.light-yellow',
+  'light-green': 'calendarThemes.light-green',
+  'light-blue': 'calendarThemes.light-blue',
+  'light-purple': 'calendarThemes.light-purple',
+  // 暗い系
+  dark: 'calendarThemes.dark',
+  'dark-red': 'calendarThemes.dark-red',
+  'dark-orange': 'calendarThemes.dark-orange',
+  'dark-yellow': 'calendarThemes.dark-yellow',
+  'dark-green': 'calendarThemes.dark-green',
+  'dark-blue': 'calendarThemes.dark-blue',
+  'dark-purple': 'calendarThemes.dark-purple',
 }

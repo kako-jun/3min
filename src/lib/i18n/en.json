@@ -104,12 +104,20 @@
     "light": "Light"
   },
   "calendarThemes": {
-    "dark": "Dark",
     "light": "Light",
-    "cafe": "Cafe",
-    "nature": "Nature",
-    "ocean": "Ocean",
-    "sunset": "Sunset"
+    "light-red": "Light Red",
+    "light-orange": "Light Orange",
+    "light-yellow": "Light Yellow",
+    "light-green": "Light Green",
+    "light-blue": "Light Blue",
+    "light-purple": "Light Purple",
+    "dark": "Dark",
+    "dark-red": "Dark Red",
+    "dark-orange": "Dark Orange",
+    "dark-yellow": "Dark Yellow",
+    "dark-green": "Dark Green",
+    "dark-blue": "Dark Blue",
+    "dark-purple": "Dark Purple"
   },
   "gridStyles": {
     "rounded": "Rounded",

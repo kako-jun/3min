@@ -104,12 +104,20 @@
     "light": "ライト"
   },
   "calendarThemes": {
-    "dark": "ダーク",
     "light": "ライト",
-    "cafe": "カフェ",
-    "nature": "ネイチャー",
-    "ocean": "オーシャン",
-    "sunset": "サンセット"
+    "light-red": "ライト赤",
+    "light-orange": "ライト橙",
+    "light-yellow": "ライト黄",
+    "light-green": "ライト緑",
+    "light-blue": "ライト青",
+    "light-purple": "ライト紫",
+    "dark": "ダーク",
+    "dark-red": "ダーク赤",
+    "dark-orange": "ダーク橙",
+    "dark-yellow": "ダーク黄",
+    "dark-green": "ダーク緑",
+    "dark-blue": "ダーク青",
+    "dark-purple": "ダーク紫"
   },
   "gridStyles": {
     "rounded": "角丸",

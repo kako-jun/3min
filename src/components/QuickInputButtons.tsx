@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { QUICK_INPUT_STYLES } from '../lib/types'
+import { STAMP_ICONS } from './ui/StampIcons'
 
 interface QuickInputButtonsProps {
   selectedStamp: string | null
@@ -16,7 +17,8 @@ export function QuickInputButtons({ selectedStamp, onSelect }: QuickInputButtons
   return (
     <div className="flex flex-wrap justify-center gap-1">
       {QUICK_INPUT_STYLES.map((style) => {
-        const displayValue = t(`quickInput.${style.key}`)
+        const IconComponent = STAMP_ICONS[style.key]
+        const displayValue = IconComponent ? null : t(`quickInput.${style.key}`)
         const isSelected = selectedStamp === style.key
         return (
           <button
@@ -35,7 +37,7 @@ export function QuickInputButtons({ selectedStamp, onSelect }: QuickInputButtons
               '--tw-ring-offset-color': 'white',
             }}
           >
-            {displayValue}
+            {IconComponent ? <IconComponent /> : displayValue}
           </button>
         )
       })}
