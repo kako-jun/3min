@@ -212,6 +212,8 @@ export interface Settings {
   shopName: string
   shopLogo: string | null // 店名ロゴ画像（Base64）
   showHolidays: boolean
+  showRokuyo: boolean // 六曜を表示
+  useWareki: boolean // 和暦を使用
   backgroundImage: string | null // Base64エンコードされた背景画像
   backgroundOpacity: number // 背景画像の透明度 (0-1)
   calendarComments: Record<string, string> // 月ごとのコメント（キー: "YYYY-MM"）
@@ -363,6 +365,8 @@ export const defaultSettings: Settings = {
   shopName: '',
   shopLogo: null,
   showHolidays: true,
+  showRokuyo: false,
+  useWareki: false,
   backgroundImage: null,
   backgroundOpacity: 0.15,
   calendarComments: {},

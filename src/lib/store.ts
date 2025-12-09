@@ -126,6 +126,9 @@ export const useCalendarStore = create<
 
   goToPrevMonth: () => {
     const { year, month } = get().view
+    // 令和元年5月（2019年5月）より前には戻れない
+    if (year === 2019 && month <= 4) return
+    if (year < 2019) return
     if (month === 0) {
       set({ view: { year: year - 1, month: 11 } })
     } else {

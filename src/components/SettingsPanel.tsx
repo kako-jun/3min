@@ -203,6 +203,38 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 ))}
               </select>
             </div>
+
+            {/* 六曜表示 */}
+            <div className="flex items-center justify-between">
+              <span
+                className="flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faCalendarDay} className="w-4" />
+                {t('settings.showRokuyo')}
+              </span>
+              <ToggleSwitch
+                checked={settings.showRokuyo}
+                onChange={(checked) => updateSettings({ showRokuyo: checked })}
+                theme={appTheme}
+              />
+            </div>
+
+            {/* 和暦表示 */}
+            <div className="flex items-center justify-between">
+              <span
+                className="flex items-center gap-2 text-sm"
+                style={{ color: appTheme.textMuted }}
+              >
+                <FontAwesomeIcon icon={faCalendarDay} className="w-4" />
+                {t('settings.useWareki')}
+              </span>
+              <ToggleSwitch
+                checked={settings.useWareki}
+                onChange={(checked) => updateSettings({ useWareki: checked })}
+                theme={appTheme}
+              />
+            </div>
           </div>
 
           <hr style={{ borderColor: appTheme.textMuted, opacity: 0.3 }} />

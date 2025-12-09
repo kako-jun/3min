@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { useCalendarStore } from '../lib/store'
 import { getCalendarDays, getWeekdayHeaders, getYearMonthParams } from '../lib/calendar'
 import { isHoliday, getHolidayName } from '../lib/holidays'
+import { getRokuyoName } from '../lib/rokuyo'
+import { getWarekiYear } from '../lib/wareki'
 import { THEMES, QUICK_INPUT_STYLES } from '../lib/types'
 import { STAMP_ICONS } from './ui/StampIcons'
 
@@ -104,7 +106,9 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
         {/* 年月 */}
         <div className="font-bold">
           <span className="text-base opacity-60">
-            {yearMonthParams.year}
+            {settings.useWareki
+              ? getWarekiYear(new Date(view.year, view.month, 1))
+              : yearMonthParams.year}
             {t('calendar.yearSuffix')}
           </span>
           <span className="ml-1 text-2xl">{yearMonthParams.month}</span>
@@ -250,11 +254,21 @@ export const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(functi
                         )}
                       </div>
                       {/* 日付（右上固定） */}
-                      <div
-                        className="shrink-0 text-xs font-bold leading-none"
-                        style={{ color: getDayColor() }}
-                      >
-                        {day.day}
+                      <div className="shrink-0 text-right">
+                        <div
+                          className="text-xs font-bold leading-none"
+                          style={{ color: getDayColor() }}
+                        >
+                          {day.day}
+                        </div>
+                        {settings.showRokuyo && day.isCurrentMonth && (
+                          <div
+                            className="text-[6px] leading-none"
+                            style={{ color: theme.textMuted }}
+                          >
+                            {getRokuyoName(day.date)}
+                          </div>
+                        )}
                       </div>
                     </div>
                     {/* 2行目: 時刻 */}

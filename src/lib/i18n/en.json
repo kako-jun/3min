@@ -63,6 +63,8 @@
     "shopName": "Shop name",
     "shopLogo": "Shop logo",
     "showHolidays": "Show holidays",
+    "showRokuyo": "Show Rokuyo",
+    "useWareki": "Use Japanese era",
     "backgroundImage": "Background image",
     "selectImage": "Select image",
     "removeImage": "Remove",
