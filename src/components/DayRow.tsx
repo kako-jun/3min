@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faClipboard } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns'
@@ -96,14 +97,25 @@ export function DayRow({
 
   return (
     <div
-      className={`cursor-pointer rounded p-2 ${isSelected ? 'ring-2' : ''}`}
-      style={{
-        backgroundColor: appTheme.surface,
-        // @ts-expect-error ringColor is a valid Tailwind CSS-in-JS property
-        '--tw-ring-color': isSelected ? appTheme.accent : undefined,
-      }}
+      className="relative cursor-pointer rounded p-2"
+      style={{ backgroundColor: appTheme.surface }}
       onClick={handleFocus}
     >
+      {/* 選択枠（アニメーション付き） */}
+      {isSelected && (
+        <motion.div
+          layoutId="editor-selection"
+          className="pointer-events-none absolute inset-0 rounded"
+          style={{
+            boxShadow: `inset 0 0 0 2px ${appTheme.accent}`,
+          }}
+          transition={{
+            type: 'tween',
+            duration: 0.15,
+            ease: 'easeOut',
+          }}
+        />
+      )}
       <div className="flex items-center gap-2">
         {/* 日付表示 */}
         <div

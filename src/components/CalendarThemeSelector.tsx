@@ -45,7 +45,7 @@ export function CalendarThemeSelector() {
       {/* テーマ選択トグルボタン */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-opacity hover:opacity-80"
+        className="flex h-[26px] items-center gap-1.5 rounded-full px-3 text-xs transition-opacity hover:opacity-80"
         style={{ backgroundColor: appTheme.surface, color: appTheme.text }}
         title={t('settings.calendarTheme')}
       >
