@@ -9,14 +9,18 @@ import html2canvas from 'html2canvas'
 /** キャプチャ時の拡大倍率 */
 const CAPTURE_SCALE = 2
 
-/** モバイルデバイスかどうかを判定 */
-function isMobile(): boolean {
+// --- 以下はScreen Capture API用（現在未使用、将来のために保持） ---
+
+// @ts-ignore: 現在未使用
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _isMobile(): boolean {
   return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
-/** Screen Capture APIがサポートされているか判定 */
-function isScreenCaptureSupported(): boolean {
-  return !!(navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) && !isMobile()
+// @ts-ignore: 現在未使用
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _isScreenCaptureSupported(): boolean {
+  return !!(navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) && !_isMobile()
 }
 
 /**
@@ -53,10 +57,12 @@ async function captureWithHtml2Canvas(element: HTMLElement): Promise<Blob | null
 }
 
 /**
- * Screen Capture APIを使用して要素をキャプチャ（デスクトップ向け）
+ * Screen Capture APIを使用して要素をキャプチャ（デスクトップ向け、現在未使用）
  * CSS zoomで拡大して高解像度化、要素以外は黒背景で隠す
  */
-async function captureWithScreenCapture(element: HTMLElement): Promise<Blob | null> {
+// @ts-ignore: 現在未使用
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function _captureWithScreenCapture(element: HTMLElement): Promise<Blob | null> {
   let stream: MediaStream | null = null
   let overlay: HTMLDivElement | null = null
   const originalBodyOverflow = document.body.style.overflow
@@ -236,14 +242,13 @@ async function captureWithScreenCapture(element: HTMLElement): Promise<Blob | nu
 
 /**
  * 要素を画像としてキャプチャ
- * デスクトップではScreen Capture API、モバイルではhtml2canvasを使用
+ * html2canvasを使用（全プラットフォーム共通）
+ *
+ * 注: Screen Capture APIはcaptureWithScreenCaptureとして残してあるが、
+ * モバイル判定の問題があるため現在は使用していない
  */
 export async function captureElementAsBlob(element: HTMLElement): Promise<Blob | null> {
-  if (isScreenCaptureSupported()) {
-    return captureWithScreenCapture(element)
-  } else {
-    return captureWithHtml2Canvas(element)
-  }
+  return captureWithHtml2Canvas(element)
 }
 
 /**
