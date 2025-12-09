@@ -7,12 +7,15 @@
 ```typescript
 interface DayEntry {
   date: string // YYYY-MM-DD（主キー）
-  stamp: string | null // 定型スタンプ（'closed', 'available', 'few', 'full', 'reserved'）
+  symbol: string | null // 背景記号（'available'=◯, 'few'=△, 'reserved'=✕）- セル全体に薄く表示
+  stamp: string | null // コーナースタンプ（'full'=満, 'closed'=休）- 左上に小さく表示
   timeFrom: string // 開始時刻（'09:00'形式）
   timeTo: string // 終了時刻（'18:00'形式）
   text: string // 予定コメント（自由テキスト）
 }
 ```
+
+**注意**: `symbol`と`stamp`は排他ではなく、同時に設定可能。
 
 ### Settings（アプリ設定）
 
