@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareFromSquare, faDownload } from '@fortawesome/free-solid-svg-icons'
-import { shareCanvasImage, downloadCanvasImage, copyCanvasImageToClipboard } from '../lib/capture'
+import { dataURLToBlob, downloadBlob, shareBlob } from '../lib/capture'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES } from '../lib/types'
 import type { CalendarGridCanvasHandle } from './CalendarGridCanvas'
@@ -31,25 +31,13 @@ export function ActionButtons({ calendarRef, filename }: ActionButtonsProps) {
     try {
       const dataURL = calendarRef.current.toDataURL(2)
       if (!dataURL) throw new Error('Failed to get image')
-      await shareCanvasImage(dataURL, filename)
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        if (error.message === 'Web Share API is not supported') {
-          showMessage(t('messages.copied'))
-        } else if (error.name !== 'AbortError') {
-          try {
-            const dataURL = calendarRef.current?.toDataURL(2)
-            if (dataURL) {
-              await copyCanvasImageToClipboard(dataURL)
-              showMessage(t('messages.copied'))
-            } else {
-              showMessage(t('messages.shareFailed'))
-            }
-          } catch {
-            showMessage(t('messages.shareFailed'))
-          }
-        }
+      const blob = dataURLToBlob(dataURL)
+      const result = await shareBlob(blob, filename, '3 min. Calendar')
+      if (result === 'copied') {
+        showMessage(t('messages.copied'))
       }
+    } catch {
+      showMessage(t('messages.shareFailed'))
     } finally {
       setIsProcessing(false)
     }
@@ -62,7 +50,7 @@ export function ActionButtons({ calendarRef, filename }: ActionButtonsProps) {
     try {
       const dataURL = calendarRef.current.toDataURL(2)
       if (!dataURL) throw new Error('Failed to get image')
-      downloadCanvasImage(dataURL, filename)
+      downloadBlob(dataURLToBlob(dataURL), filename)
       showMessage(t('messages.downloaded'))
     } catch {
       showMessage(t('messages.downloadFailed'))

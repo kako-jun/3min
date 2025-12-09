@@ -1,12 +1,12 @@
 /**
- * カレンダーを画像としてキャプチャするユーティリティ
- * Canvas版: Konva Stage.toDataURL()を使用（表示と出力が完全一致）
+ * 画像キャプチャ・シェア・ダウンロードのユーティリティ
+ * カレンダー（Konva Canvas）とQRコード両方で使用
  */
 
 /**
  * dataURLをBlobに変換
  */
-function dataURLToBlob(dataURL: string): Blob {
+export function dataURLToBlob(dataURL: string): Blob {
   const parts = dataURL.split(',')
   const mime = parts[0]?.match(/:(.*?);/)?.[1] ?? 'image/png'
   const bstr = atob(parts[1] ?? '')
@@ -19,14 +19,28 @@ function dataURLToBlob(dataURL: string): Blob {
 }
 
 /**
- * Canvas画像をダウンロード
+ * Canvas要素からBlobを取得
  */
-export function downloadCanvasImage(dataURL: string, filename: string): void {
-  const blob = dataURLToBlob(dataURL)
+export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob)
+      } else {
+        reject(new Error('Failed to convert canvas to blob'))
+      }
+    }, 'image/png')
+  })
+}
+
+/**
+ * Blobをダウンロード
+ */
+export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${filename}.png`
+  a.download = filename.endsWith('.png') ? filename : `${filename}.png`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
@@ -34,10 +48,9 @@ export function downloadCanvasImage(dataURL: string, filename: string): void {
 }
 
 /**
- * Canvas画像をクリップボードにコピー
+ * Blobをクリップボードにコピー
  */
-export async function copyCanvasImageToClipboard(dataURL: string): Promise<void> {
-  const blob = dataURLToBlob(dataURL)
+async function copyBlobToClipboard(blob: Blob): Promise<void> {
   await navigator.clipboard.write([
     new ClipboardItem({
       'image/png': blob,
@@ -45,25 +58,33 @@ export async function copyCanvasImageToClipboard(dataURL: string): Promise<void>
   ])
 }
 
+/** シェア結果 */
+export type ShareResult = 'shared' | 'copied' | 'cancelled'
+
 /**
- * Canvas画像をWeb Share APIで共有（モバイル用）
+ * BlobをWeb Share APIで共有（フォールバック付き）
+ * @returns 'shared' | 'copied' | 'cancelled'
  */
-export async function shareCanvasImage(dataURL: string, filename: string): Promise<void> {
-  const blob = dataURLToBlob(dataURL)
-  const file = new File([blob], `${filename}.png`, { type: 'image/png' })
-  const shareData = { files: [file], title: filename }
+export async function shareBlob(
+  blob: Blob,
+  filename: string,
+  title?: string
+): Promise<ShareResult> {
+  const file = new File([blob], filename.endsWith('.png') ? filename : `${filename}.png`, {
+    type: 'image/png',
+  })
+  const shareData = { files: [file], title: title ?? filename }
 
   // Web Share APIでファイル共有を試行
   if (navigator.share) {
-    // canShareがある場合はチェック、ない場合は直接試行
     if (!navigator.canShare || navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData)
-        return
+        return 'shared'
       } catch (e) {
-        // AbortError（ユーザーキャンセル）は再スロー
+        // AbortError（ユーザーキャンセル）
         if (e instanceof Error && e.name === 'AbortError') {
-          throw e
+          return 'cancelled'
         }
         // その他のエラーはフォールバック
       }
@@ -71,6 +92,6 @@ export async function shareCanvasImage(dataURL: string, filename: string): Promi
   }
 
   // フォールバック: クリップボードにコピー
-  await copyCanvasImageToClipboard(dataURL)
-  throw new Error('Web Share API is not supported')
+  await copyBlobToClipboard(blob)
+  return 'copied'
 }

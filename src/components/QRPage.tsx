@@ -25,6 +25,7 @@ import {
   getLogoSize,
   qrAnimation,
 } from '../lib/qr'
+import { canvasToBlob, downloadBlob, shareBlob } from '../lib/capture'
 import { useLogoImage } from '../hooks/useLogoImage'
 import { AppHeader } from './AppHeader'
 import { SettingsPanel } from './SettingsPanel'
@@ -59,14 +60,16 @@ export function QRPage() {
   const isValidUrl = url.trim().length > 0
   const logoSize = getLogoSize(size, logoAspectRatio)
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const canvas = qrRef.current?.querySelector('canvas')
     if (!canvas) return
 
-    const link = document.createElement('a')
-    link.download = 'qrcode.png'
-    link.href = canvas.toDataURL('image/png')
-    link.click()
+    try {
+      const blob = await canvasToBlob(canvas)
+      downloadBlob(blob, 'qrcode.png')
+    } catch (error) {
+      console.error('Download failed:', error)
+    }
   }
 
   const handleShare = async () => {
@@ -74,32 +77,11 @@ export function QRPage() {
     if (!canvas) return
 
     try {
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
-      if (!blob) return
-
-      const file = new File([blob], 'qrcode.png', { type: 'image/png' })
-      const shareData = { files: [file], title: '3 min. QR' }
-
-      // Web Share APIでファイル共有を試行
-      if (navigator.share) {
-        // canShareがある場合はチェック、ない場合は直接試行
-        if (!navigator.canShare || navigator.canShare(shareData)) {
-          try {
-            await navigator.share(shareData)
-            return
-          } catch (e) {
-            // AbortError（ユーザーキャンセル）は無視
-            if (e instanceof Error && e.name === 'AbortError') {
-              return
-            }
-            // その他のエラーはフォールバック
-          }
-        }
+      const blob = await canvasToBlob(canvas)
+      const result = await shareBlob(blob, 'qrcode.png', '3 min. QR')
+      if (result === 'copied') {
+        alert(t('messages.copied'))
       }
-
-      // フォールバック: クリップボードにコピー
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-      alert(t('messages.copied'))
     } catch (error) {
       console.error('Share failed:', error)
     }

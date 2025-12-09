@@ -486,71 +486,72 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                     strokeWidth={isLinedStyle ? 0.5 : 0}
                   />
 
-                  {/* 記号系背景（◯ △ ✕）- セル全体に薄く大きく表示 */}
-                  {symbolStyle && (
-                    <Group>
-                      {symbolStyle.key === 'available' && (
-                        <Circle
-                          x={cellWidth / 2}
-                          y={cellHeight / 2}
-                          radius={Math.min(cellWidth, cellHeight) * 0.35}
-                          stroke={symbolStyle.bgColor}
-                          strokeWidth={4}
-                          opacity={0.3}
-                        />
-                      )}
-                      {symbolStyle.key === 'few' &&
-                        (() => {
-                          // 正三角形を計算（セルの中心に配置）
-                          const size = Math.min(cellWidth, cellHeight) * 0.65
-                          const cx = cellWidth / 2
-                          const cy = cellHeight / 2
-                          const h = (size * Math.sqrt(3)) / 2 // 正三角形の高さ
-                          return (
-                            <Line
-                              points={[
-                                cx,
-                                cy - h / 2, // 頂点（上）
-                                cx + size / 2,
-                                cy + h / 2, // 右下
-                                cx - size / 2,
-                                cy + h / 2, // 左下
-                              ]}
+                  {/* 記号系背景（◯ △ ✕）- セル全体に薄く大きく表示（やや下寄せ） */}
+                  {symbolStyle &&
+                    (() => {
+                      const cx = cellWidth / 2
+                      const cy = cellHeight / 2 + cellHeight * 0.08 // やや下にオフセット
+                      return (
+                        <Group>
+                          {symbolStyle.key === 'available' && (
+                            <Circle
+                              x={cx}
+                              y={cy}
+                              radius={Math.min(cellWidth, cellHeight) * 0.35}
                               stroke={symbolStyle.bgColor}
                               strokeWidth={4}
-                              closed
-                              lineJoin="round"
                               opacity={0.3}
                             />
-                          )
-                        })()}
-                      {symbolStyle.key === 'reserved' &&
-                        (() => {
-                          // 対称な×を計算
-                          const size = Math.min(cellWidth, cellHeight) * 0.3
-                          const cx = cellWidth / 2
-                          const cy = cellHeight / 2
-                          return (
-                            <>
-                              <Line
-                                points={[cx - size, cy - size, cx + size, cy + size]}
-                                stroke={symbolStyle.bgColor}
-                                strokeWidth={4}
-                                lineCap="round"
-                                opacity={0.3}
-                              />
-                              <Line
-                                points={[cx + size, cy - size, cx - size, cy + size]}
-                                stroke={symbolStyle.bgColor}
-                                strokeWidth={4}
-                                lineCap="round"
-                                opacity={0.3}
-                              />
-                            </>
-                          )
-                        })()}
-                    </Group>
-                  )}
+                          )}
+                          {symbolStyle.key === 'few' &&
+                            (() => {
+                              // 正三角形を計算
+                              const size = Math.min(cellWidth, cellHeight) * 0.65
+                              const h = (size * Math.sqrt(3)) / 2 // 正三角形の高さ
+                              return (
+                                <Line
+                                  points={[
+                                    cx,
+                                    cy - h / 2, // 頂点（上）
+                                    cx + size / 2,
+                                    cy + h / 2, // 右下
+                                    cx - size / 2,
+                                    cy + h / 2, // 左下
+                                  ]}
+                                  stroke={symbolStyle.bgColor}
+                                  strokeWidth={4}
+                                  closed
+                                  lineJoin="round"
+                                  opacity={0.3}
+                                />
+                              )
+                            })()}
+                          {symbolStyle.key === 'reserved' &&
+                            (() => {
+                              // 対称な×を計算
+                              const size = Math.min(cellWidth, cellHeight) * 0.3
+                              return (
+                                <>
+                                  <Line
+                                    points={[cx - size, cy - size, cx + size, cy + size]}
+                                    stroke={symbolStyle.bgColor}
+                                    strokeWidth={4}
+                                    lineCap="round"
+                                    opacity={0.3}
+                                  />
+                                  <Line
+                                    points={[cx + size, cy - size, cx - size, cy + size]}
+                                    stroke={symbolStyle.bgColor}
+                                    strokeWidth={4}
+                                    lineCap="round"
+                                    opacity={0.3}
+                                  />
+                                </>
+                              )
+                            })()}
+                        </Group>
+                      )
+                    })()}
 
                   {/* 六曜と日付（右上） - 日付は右揃え、六曜は日付の左 */}
                   {(() => {
