@@ -125,7 +125,11 @@ export function QRPage() {
                 : appTheme.surface,
             }}
           >
-            <div ref={qrRef} style={{ width: size, height: size }}>
+            <div
+              ref={qrRef}
+              className="flex items-center justify-center"
+              style={{ width: size, height: size }}
+            >
               <AnimatePresence mode="wait">
                 {isValidUrl ? (
                   <motion.div
@@ -134,6 +138,7 @@ export function QRPage() {
                     initial="initial"
                     animate="animate"
                     exit="exit"
+                    className="flex items-center justify-center"
                   >
                     <QRCode
                       value={url}
