@@ -1,13 +1,28 @@
 /**
  * カレンダーを画像としてキャプチャするユーティリティ
  * Screen Capture APIを使用してブラウザの実際の表示をそのままキャプチャ
+ * CSS zoomで拡大してから高解像度でキャプチャ
  */
+
+/** キャプチャ時の拡大倍率 */
+const CAPTURE_SCALE = 2
 
 /**
  * Screen Capture APIを使用して要素をキャプチャ
+ * CSS zoomで拡大して高解像度化、要素以外は黒背景で隠す
  */
 export async function captureElementAsBlob(element: HTMLElement): Promise<Blob | null> {
   let stream: MediaStream | null = null
+  let overlay: HTMLDivElement | null = null
+  const originalBodyOverflow = document.body.style.overflow
+  const originalElementStyle = {
+    position: element.style.position,
+    top: element.style.top,
+    left: element.style.left,
+    zIndex: element.style.zIndex,
+    zoom: element.style.zoom,
+    margin: element.style.margin,
+  }
 
   try {
     // キャプチャ前に選択枠を非表示にする
@@ -16,8 +31,41 @@ export async function captureElementAsBlob(element: HTMLElement): Promise<Blob |
       selectionElement.style.display = 'none'
     }
 
-    // 要素の位置とサイズを取得
+    // 要素の現在のサイズを取得
     const rect = element.getBoundingClientRect()
+
+    // 画面サイズに収まる最大のzoom倍率を計算（最大CAPTURE_SCALE倍）
+    const maxZoomX = window.innerWidth / rect.width
+    const maxZoomY = window.innerHeight / rect.height
+    const actualScale = Math.min(CAPTURE_SCALE, maxZoomX, maxZoomY)
+
+    // 黒背景オーバーレイを作成（要素以外を隠す）
+    overlay = document.createElement('div')
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 999998;
+    `
+    document.body.appendChild(overlay)
+
+    // 要素を左上に固定配置してzoomで拡大
+    element.style.position = 'fixed'
+    element.style.top = '0'
+    element.style.left = '0'
+    element.style.zIndex = '999999'
+    element.style.zoom = `${actualScale}`
+    element.style.margin = '0'
+
+    // スクロールを防止
+    document.body.style.overflow = 'hidden'
+
+    // レイアウトが確定するのを待つ
+    await new Promise((resolve) => requestAnimationFrame(resolve))
+    await new Promise((resolve) => setTimeout(resolve, 50))
 
     // Screen Capture APIで画面をキャプチャ
     stream = await navigator.mediaDevices.getDisplayMedia({
@@ -53,6 +101,19 @@ export async function captureElementAsBlob(element: HTMLElement): Promise<Blob |
     video.srcObject = null
     stream = null
 
+    // オーバーレイを削除、スタイルを復元
+    if (overlay) {
+      document.body.removeChild(overlay)
+      overlay = null
+    }
+    element.style.position = originalElementStyle.position
+    element.style.top = originalElementStyle.top
+    element.style.left = originalElementStyle.left
+    element.style.zIndex = originalElementStyle.zIndex
+    element.style.zoom = originalElementStyle.zoom
+    element.style.margin = originalElementStyle.margin
+    document.body.style.overflow = originalBodyOverflow
+
     // 選択枠を復元
     if (selectionElement) {
       selectionElement.style.display = ''
@@ -63,32 +124,23 @@ export async function captureElementAsBlob(element: HTMLElement): Promise<Blob |
     const ctx = canvas.getContext('2d')
     if (!ctx) throw new Error('Canvas context not available')
 
-    // 出力サイズ（元のサイズの2倍）
-    canvas.width = rect.width * 2
-    canvas.height = rect.height * 2
-
     // キャプチャ画像のスケールを計算（ビデオサイズとウィンドウサイズの比率）
-    const scaleX = tempCanvas.width / window.innerWidth
-    const scaleY = tempCanvas.height / window.innerHeight
+    const videoScale = tempCanvas.width / window.innerWidth
 
-    // 要素の位置（viewportからの相対位置）
-    const sourceX = rect.left * scaleX
-    const sourceY = rect.top * scaleY
-    const sourceWidth = rect.width * scaleX
-    const sourceHeight = rect.height * scaleY
+    // zoomで拡大された要素のサイズ（左上から）
+    const zoomedWidth = rect.width * actualScale
+    const zoomedHeight = rect.height * actualScale
 
-    // 切り出して描画（2倍に拡大）
-    ctx.drawImage(
-      tempCanvas,
-      sourceX,
-      sourceY,
-      sourceWidth,
-      sourceHeight,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    )
+    // ソース領域（左上(0,0)からzoomされたサイズ分）
+    const sourceWidth = zoomedWidth * videoScale
+    const sourceHeight = zoomedHeight * videoScale
+
+    // 出力サイズ
+    canvas.width = sourceWidth
+    canvas.height = sourceHeight
+
+    // 切り出して描画
+    ctx.drawImage(tempCanvas, 0, 0, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height)
 
     // Blobに変換
     return new Promise((resolve) => {
@@ -99,6 +151,20 @@ export async function captureElementAsBlob(element: HTMLElement): Promise<Blob |
     if (stream) {
       stream.getTracks().forEach((track) => track.stop())
     }
+
+    // オーバーレイを削除
+    if (overlay && overlay.parentNode) {
+      document.body.removeChild(overlay)
+    }
+
+    // スタイルを復元
+    element.style.position = originalElementStyle.position
+    element.style.top = originalElementStyle.top
+    element.style.left = originalElementStyle.left
+    element.style.zIndex = originalElementStyle.zIndex
+    element.style.zoom = originalElementStyle.zoom
+    element.style.margin = originalElementStyle.margin
+    document.body.style.overflow = originalBodyOverflow
 
     // 選択枠を復元
     const selectionElement = element.querySelector('[data-selection-frame]') as HTMLElement | null
