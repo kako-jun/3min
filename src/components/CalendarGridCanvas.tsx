@@ -168,6 +168,7 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
     const monthKey = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
     const calendarThemeId = calendarThemes[monthKey] ?? settings.calendarTheme
     const theme = THEMES[calendarThemeId]
+    const isDarkTheme = calendarThemeId.startsWith('dark')
 
     // 罫線色
     const lineColor = `${theme.textMuted}60`
@@ -491,8 +492,11 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                     (() => {
                       const cx = cellWidth / 2
                       const cy = cellHeight / 2 + cellHeight * 0.08 // やや下にオフセット
+                      // ダークテーマ: screen合成で明るく、ライトテーマ: 通常合成で暗く
+                      const blendMode = isDarkTheme ? 'screen' : 'source-over'
+                      const symbolOpacity = isDarkTheme ? 0.5 : 0.3
                       return (
-                        <Group>
+                        <Group globalCompositeOperation={blendMode}>
                           {symbolStyle.key === 'available' && (
                             <Circle
                               x={cx}
@@ -500,7 +504,7 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                               radius={Math.min(cellWidth, cellHeight) * 0.35}
                               stroke={symbolStyle.bgColor}
                               strokeWidth={4}
-                              opacity={0.3}
+                              opacity={symbolOpacity}
                             />
                           )}
                           {symbolStyle.key === 'few' &&
@@ -522,7 +526,7 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                                   strokeWidth={4}
                                   closed
                                   lineJoin="round"
-                                  opacity={0.3}
+                                  opacity={symbolOpacity}
                                 />
                               )
                             })()}
@@ -537,14 +541,14 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                                     stroke={symbolStyle.bgColor}
                                     strokeWidth={4}
                                     lineCap="round"
-                                    opacity={0.3}
+                                    opacity={symbolOpacity}
                                   />
                                   <Line
                                     points={[cx + size, cy - size, cx - size, cy + size]}
                                     stroke={symbolStyle.bgColor}
                                     strokeWidth={4}
                                     lineCap="round"
-                                    opacity={0.3}
+                                    opacity={symbolOpacity}
                                   />
                                 </>
                               )

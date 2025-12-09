@@ -264,14 +264,15 @@ export function DayRow({
       </div>
 
       {/* スタンプボタンと時刻入力 */}
-      <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-1">
         <QuickInputButtons
           selectedSymbol={localSymbol}
           selectedStamp={localStamp}
           onSymbolSelect={handleSymbolChange}
           onStampSelect={handleStampChange}
         />
-
+        {/* スペーサー（シンボル-スタンプ間と同じ幅） */}
+        <div className="w-3" />
         {/* 時刻入力 */}
         <div className="flex items-center gap-1">
           <select
