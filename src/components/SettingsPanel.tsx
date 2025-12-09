@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -39,6 +39,23 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const settings = useCalendarStore((state) => state.settings)
   const updateSettings = useCalendarStore((state) => state.updateSettings)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 店名入力用のローカルstate（IME対策）
+  const [shopNameLocal, setShopNameLocal] = useState(settings.shopName)
+  const isComposingRef = useRef(false)
+
+  // 設定が外部から変更された場合に同期
+  useEffect(() => {
+    setShopNameLocal(settings.shopName)
+  }, [settings.shopName])
+
+  // 店名変更ハンドラ（IME入力中は保存しない）
+  const handleShopNameChange = (value: string) => {
+    setShopNameLocal(value)
+    if (!isComposingRef.current) {
+      updateSettings({ shopName: value })
+    }
+  }
 
   // エクスポート処理
   const handleExport = async () => {
@@ -328,8 +345,13 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               </span>
               <input
                 type="text"
-                value={settings.shopName}
-                onChange={(e) => updateSettings({ shopName: e.target.value })}
+                value={shopNameLocal}
+                onChange={(e) => handleShopNameChange(e.target.value)}
+                onCompositionStart={() => (isComposingRef.current = true)}
+                onCompositionEnd={(e) => {
+                  isComposingRef.current = false
+                  updateSettings({ shopName: e.currentTarget.value })
+                }}
                 className="min-w-0 flex-1 rounded border px-3 py-1 text-sm"
                 style={{
                   backgroundColor: appTheme.bg,
