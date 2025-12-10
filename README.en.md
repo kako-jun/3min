@@ -46,10 +46,15 @@ I hope this gives busy small business owners a little more time back.
 
 Tap a date on the calendar, and an editor appears below.
 
-- **"Closed"** → Closed day
-- **"◯"** → Available
+**Symbols (3 types)** - Displayed large in the day's background for quick visual recognition
+
+- **"○"** → Available
 - **"△"** → Limited availability
 - **"✕"** → Reserved
+
+**Stamps (2 types)** - Displays status as text
+
+- **"Closed"** → Closed day
 - **"Full"** → Fully booked
 
 Just tap the buttons!

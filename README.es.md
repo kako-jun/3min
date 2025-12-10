@@ -46,10 +46,15 @@ Espero poder devolver algo de tiempo a los propietarios ocupados cada día.
 
 Toca una fecha en el calendario, aparecerá la pantalla de edición abajo.
 
-- **"Cerrado"** → Día de descanso
-- **"◯"** → Disponible
+**Símbolos (3 tipos)** - Se muestran grandes en el fondo del día, fácil de ver de un vistazo
+
+- **"○"** → Disponible
 - **"△"** → Quedan pocos
 - **"✕"** → Reservado
+
+**Sellos (2 tipos)** - Muestra el estado en texto
+
+- **"Cerrado"** → Día de descanso
 - **"Lleno"** → Completo
 
 ¡Solo toca los botones!

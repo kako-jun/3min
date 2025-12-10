@@ -46,10 +46,15 @@ Espero poder devolver um pouco de tempo para os proprietários ocupados todos os
 
 Toque em uma data no calendário, a tela de edição aparecerá abaixo.
 
-- **"Fechado"** → Dia de folga
-- **"◯"** → Disponível
+**Símbolos (3 tipos)** - Exibidos grandes no fundo do dia, fácil de ver de relance
+
+- **"○"** → Disponível
 - **"△"** → Restam poucos
 - **"✕"** → Reservado
+
+**Carimbos (2 tipos)** - Mostra o status em texto
+
+- **"Fechado"** → Dia de folga
 - **"Lotado"** → Completo
 
 Só toque nos botões!

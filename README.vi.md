@@ -46,10 +46,15 @@ Hy vọng có thể trả lại một chút thời gian cho những chủ doanh 
 
 Nhấn vào ngày trên lịch, màn hình chỉnh sửa sẽ xuất hiện bên dưới.
 
-- **"Đóng"** → Ngày nghỉ
-- **"◯"** → Còn chỗ
+**Biểu tượng (3 loại)** - Hiển thị lớn trên nền ngày, dễ nhận biết ngay
+
+- **"○"** → Còn chỗ
 - **"△"** → Còn ít
 - **"✕"** → Đã đặt
+
+**Con dấu (2 loại)** - Hiển thị trạng thái bằng chữ
+
+- **"Đóng"** → Ngày nghỉ
 - **"Hết"** → Hết chỗ
 
 Chỉ cần nhấn nút!

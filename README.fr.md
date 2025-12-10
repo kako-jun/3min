@@ -46,10 +46,15 @@ J'espère pouvoir rendre un peu de temps aux propriétaires occupés chaque jour
 
 Touchez une date sur le calendrier, l'écran d'édition apparaîtra en dessous.
 
-- **"Fermé"** → Jour de repos
-- **"◯"** → Disponible
+**Symboles (3 types)** - Affichés en grand sur le fond du jour, visibles d'un coup d'œil
+
+- **"○"** → Disponible
 - **"△"** → Il en reste peu
 - **"✕"** → Réservé
+
+**Tampons (2 types)** - Affiche le statut en texte
+
+- **"Fermé"** → Jour de repos
 - **"Complet"** → Complet
 
 Touchez simplement les boutons !

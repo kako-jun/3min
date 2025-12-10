@@ -46,10 +46,15 @@ Sana makatulong akong maibalik kahit kaunting oras sa mga may-ari ng negosyo na 
 
 I-tap ang petsa sa calendar, lalabas ang editing screen sa ibaba.
 
-- **"Sarado"** → Rest day
-- **"◯"** → Available
+**Mga Simbolo (3 uri)** - Malaki ang display sa background ng araw, madaling makita agad
+
+- **"○"** → Available
 - **"△"** → Kaunti na lang
 - **"✕"** → Reserved
+
+**Mga Stamp (2 uri)** - Nagpapakita ng status sa text
+
+- **"Sarado"** → Rest day
 - **"Puno"** → Fully booked
 
 I-tap lang ang mga button!
