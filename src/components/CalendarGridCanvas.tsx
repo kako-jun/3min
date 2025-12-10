@@ -279,16 +279,48 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
             />
 
             {/* 背景画像 */}
-            {backgroundImage && (
-              <KonvaImage
-                image={backgroundImage}
-                x={0}
-                y={0}
-                width={BASE_SIZE}
-                height={BASE_SIZE}
-                opacity={settings.backgroundOpacity}
-              />
-            )}
+            {backgroundImage &&
+              (() => {
+                // アスペクト比を維持して、短い方の辺に合わせてクロップ
+                const imgWidth = backgroundImage.width
+                const imgHeight = backgroundImage.height
+                const imgAspect = imgWidth / imgHeight
+                const canvasAspect = BASE_SIZE / BASE_SIZE // 1
+
+                let drawWidth: number
+                let drawHeight: number
+                let offsetX = 0
+                let offsetY = 0
+
+                if (imgAspect > canvasAspect) {
+                  // 画像が横長 → 高さに合わせて、左右をクロップ
+                  drawHeight = BASE_SIZE
+                  drawWidth = drawHeight * imgAspect
+                  offsetX = -(drawWidth - BASE_SIZE) / 2
+                } else {
+                  // 画像が縦長 → 幅に合わせて、上下をクロップ
+                  drawWidth = BASE_SIZE
+                  drawHeight = drawWidth / imgAspect
+                  offsetY = -(drawHeight - BASE_SIZE) / 2
+                }
+
+                return (
+                  <Group
+                    clipFunc={(ctx) => {
+                      ctx.rect(0, 0, BASE_SIZE, BASE_SIZE)
+                    }}
+                  >
+                    <KonvaImage
+                      image={backgroundImage}
+                      x={offsetX}
+                      y={offsetY}
+                      width={drawWidth}
+                      height={drawHeight}
+                      opacity={settings.backgroundOpacity}
+                    />
+                  </Group>
+                )
+              })()}
 
             {/* ヘッダー: 店名（左）と年月（右） */}
             <Group x={PADDING + 4} y={PADDING + 4}>
