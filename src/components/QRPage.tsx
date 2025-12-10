@@ -128,7 +128,7 @@ export function QRPage() {
               <AnimatePresence mode="wait">
                 {isValidUrl ? (
                   <motion.div
-                    key={`${url}-${fgColor}-${bgColor}-${isTransparent}-${qrStyle}-${eyeStyle}-${logoImage}`}
+                    key={`${url}-${fgColor}-${isTransparent ? 'transparent' : bgColor}-${qrStyle}-${eyeStyle}-${logoImage}`}
                     variants={qrAnimation}
                     initial="initial"
                     animate="animate"
