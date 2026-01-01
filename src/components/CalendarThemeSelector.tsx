@@ -31,16 +31,17 @@ export function CalendarThemeSelector() {
   const { t } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const view = useCalendarStore((state) => state.view)
-  const calendarThemes = useCalendarStore((state) => state.calendarThemes)
-  const updateSettings = useCalendarStore((state) => state.updateSettings)
+  const getCalendarTheme = useCalendarStore((state) => state.getCalendarTheme)
+  const getCalendarGridStyle = useCalendarStore((state) => state.getCalendarGridStyle)
   const updateCalendarTheme = useCalendarStore((state) => state.updateCalendarTheme)
+  const updateCalendarGridStyle = useCalendarStore((state) => state.updateCalendarGridStyle)
   const appTheme = APP_THEMES[settings.appTheme]
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // 現在表示中の月のテーマを取得
-  const monthKey = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
-  const currentThemeId = calendarThemes[monthKey] ?? settings.calendarTheme
+  // 現在表示中の月のテーマとグリッドスタイルを取得
+  const currentThemeId = getCalendarTheme(view.year, view.month)
+  const currentGridStyle = getCalendarGridStyle(view.year, view.month)
 
   const handleThemeChange = (theme: CalendarThemeId) => {
     updateCalendarTheme(view.year, view.month, theme)
@@ -48,7 +49,7 @@ export function CalendarThemeSelector() {
   }
 
   const handleGridStyleChange = (style: GridStyle) => {
-    updateSettings({ gridStyle: style })
+    updateCalendarGridStyle(view.year, view.month, style)
   }
 
   // 外側クリックで閉じる
@@ -158,7 +159,7 @@ export function CalendarThemeSelector() {
             <button
               onClick={() => handleGridStyleChange('rounded')}
               className={`flex h-7 w-7 items-center justify-center rounded transition-all ${
-                settings.gridStyle === 'rounded'
+                currentGridStyle === 'rounded'
                   ? 'ring-2 ring-offset-1'
                   : 'opacity-50 hover:opacity-100'
               }`}
@@ -166,7 +167,7 @@ export function CalendarThemeSelector() {
                 backgroundColor: appTheme.bg,
                 color: appTheme.text,
                 // @ts-expect-error CSS custom property for Tailwind ring color
-                '--tw-ring-color': settings.gridStyle === 'rounded' ? appTheme.accent : undefined,
+                '--tw-ring-color': currentGridStyle === 'rounded' ? appTheme.accent : undefined,
               }}
               title={t('gridStyles.rounded')}
             >
@@ -175,7 +176,7 @@ export function CalendarThemeSelector() {
             <button
               onClick={() => handleGridStyleChange('lined')}
               className={`flex h-7 w-7 items-center justify-center rounded transition-all ${
-                settings.gridStyle === 'lined'
+                currentGridStyle === 'lined'
                   ? 'ring-2 ring-offset-1'
                   : 'opacity-50 hover:opacity-100'
               }`}
@@ -183,7 +184,7 @@ export function CalendarThemeSelector() {
                 backgroundColor: appTheme.bg,
                 color: appTheme.text,
                 // @ts-expect-error CSS custom property for Tailwind ring color
-                '--tw-ring-color': settings.gridStyle === 'lined' ? appTheme.accent : undefined,
+                '--tw-ring-color': currentGridStyle === 'lined' ? appTheme.accent : undefined,
               }}
               title={t('gridStyles.lined')}
             >

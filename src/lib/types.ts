@@ -199,7 +199,6 @@ export interface Settings {
   weekStartsOn: 0 | 1 // 0: 日曜, 1: 月曜
   appTheme: AppTheme // アプリ全体のテーマ（ライト/ダーク）
   calendarTheme: CalendarThemeId // カレンダー画像のテーマ
-  gridStyle: GridStyle // グリッド表示スタイル（角丸/罫線）
   language: 'ja' | 'en' | 'zh' | 'ko' | 'ne' | 'th' | 'vi' | 'tl' | 'es' | 'pt' | 'fr'
   country: CountryCode
   shopName: string
@@ -216,6 +215,9 @@ export type CalendarComments = Record<string, string>
 
 /** 月ごとのカレンダーテーマ（キー: "YYYY-MM"） */
 export type CalendarThemes = Record<string, CalendarThemeId>
+
+/** 月ごとのグリッドスタイル（キー: "YYYY-MM"） */
+export type CalendarGridStyles = Record<string, GridStyle>
 
 /** @deprecated 後方互換用 */
 export interface LegacySettings extends Omit<Settings, 'appTheme' | 'calendarTheme'> {
@@ -236,6 +238,7 @@ export interface CalendarState {
   entries: DayEntry[]
   calendarComments: CalendarComments
   calendarThemes: CalendarThemes
+  calendarGridStyles: CalendarGridStyles
   settings: Settings
   // 初期化状態
   initialized: boolean
@@ -366,7 +369,6 @@ export const defaultSettings: Settings = {
   weekStartsOn: 0,
   appTheme: 'dark',
   calendarTheme: 'light',
-  gridStyle: 'rounded',
   language: 'ja',
   country: 'JP',
   shopName: '',

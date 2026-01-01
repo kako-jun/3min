@@ -1,0 +1,638 @@
+{
+  "version": 1,
+  "exportedAt": "2026-01-01T00:00:00.000Z",
+  "calendar": {
+    "entries": [
+      {
+        "date": "2026-01-01",
+        "text": "元旦",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-01-03",
+        "text": "🍱 新春ランチ",
+        "timeFrom": "11:00",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-01-06",
+        "text": "🐟 本日のおすすめ"
+      },
+      {
+        "date": "2026-01-08",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-01-10",
+        "text": "🍶 日本酒フェア",
+        "timeFrom": "17:00"
+      },
+      {
+        "date": "2026-01-12",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-01-15",
+        "text": "🔥 残席わずか",
+        "symbol": "few",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-01-17",
+        "text": "🎊 宴会予約",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-01-19",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-01-22",
+        "text": "🍲 冬の鍋料理"
+      },
+      {
+        "date": "2026-01-26",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-01-29",
+        "text": "🎁 月末特典",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-02-02",
+        "text": "☕ New menu",
+        "timeFrom": "10:00",
+        "timeTo": "18:00"
+      },
+      {
+        "date": "2026-02-05",
+        "text": "🍰 Weekend special"
+      },
+      {
+        "date": "2026-02-08",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-02-10",
+        "text": "🎵 Live music",
+        "timeFrom": "19:00"
+      },
+      {
+        "date": "2026-02-14",
+        "text": "💝 Valentine's Day",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-02-15",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-02-17",
+        "text": "🔥 Limited seats",
+        "symbol": "few",
+        "timeTo": "17:00"
+      },
+      {
+        "date": "2026-02-21",
+        "text": "🍷 Wine tasting"
+      },
+      {
+        "date": "2026-02-22",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-02-25",
+        "text": "🎊 Event night",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-03-02",
+        "text": "🍺 Happy Hour 2x1"
+      },
+      {
+        "date": "2026-03-05",
+        "text": "🎸 Música en vivo",
+        "timeFrom": "21:00"
+      },
+      {
+        "date": "2026-03-08",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-03-10",
+        "text": "🍹 Cócteles nuevos",
+        "timeFrom": "18:00",
+        "timeTo": "02:00"
+      },
+      {
+        "date": "2026-03-14",
+        "text": "🎉 Noche especial",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-03-15",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-03-17",
+        "text": "🎵 DJ Night"
+      },
+      {
+        "date": "2026-03-21",
+        "text": "🔥 Casi lleno",
+        "symbol": "few",
+        "timeTo": "03:00"
+      },
+      {
+        "date": "2026-03-22",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-03-25",
+        "text": "📅 Evento privado",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-03-29",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-04-01",
+        "text": "💇 春季造型",
+        "timeFrom": "09:00",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-04-04",
+        "text": "✨ 护发特惠",
+        "timeFrom": "10:00"
+      },
+      {
+        "date": "2026-04-05",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-04-08",
+        "text": "🎨 染发新色"
+      },
+      {
+        "date": "2026-04-12",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-04-15",
+        "text": "💆 头皮护理",
+        "timeTo": "19:00"
+      },
+      {
+        "date": "2026-04-18",
+        "text": "🔥 预约紧张",
+        "symbol": "few"
+      },
+      {
+        "date": "2026-04-19",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-04-22",
+        "text": "📅 已约满",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-04-26",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-04-29",
+        "text": "🎁 月末折扣",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-05-02",
+        "text": "🍲 불고기 정식",
+        "timeFrom": "11:00",
+        "timeTo": "21:00"
+      },
+      {
+        "date": "2026-05-05",
+        "text": "🎏 어린이날",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-05-06",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-05-09",
+        "text": "🥘 삼계탕 특선",
+        "timeFrom": "12:00"
+      },
+      {
+        "date": "2026-05-13",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-05-15",
+        "text": "🎵 전통 공연"
+      },
+      {
+        "date": "2026-05-17",
+        "text": "🔥 예약 마감임박",
+        "symbol": "few",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-05-20",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-05-23",
+        "text": "🎊 주말 행사",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-05-27",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-06-02",
+        "text": "🏡 कोठा खाली छ"
+      },
+      {
+        "date": "2026-06-05",
+        "text": "🛏️ डबल रूम",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-06-07",
+        "text": "🔥 केही मात्र बाँकी",
+        "symbol": "few"
+      },
+      {
+        "date": "2026-06-10",
+        "text": "☕ निःशुल्क नाश्ता"
+      },
+      {
+        "date": "2026-06-14",
+        "text": "📅 बुक भयो",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-06-17",
+        "text": "🏔️ ट्रेकिंग समूह",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-06-20",
+        "text": "🎉 विशेष छुट"
+      },
+      {
+        "date": "2026-06-21",
+        "text": "🛏️ कोठा उपलब्ध",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-06-24",
+        "text": "📅 पूर्ण बुक",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-06-28",
+        "text": "🔥 अन्तिम कोठा",
+        "symbol": "few"
+      },
+      {
+        "date": "2026-07-02",
+        "text": "💆 นวดไทย",
+        "timeFrom": "10:00",
+        "timeTo": "22:00"
+      },
+      {
+        "date": "2026-07-05",
+        "text": "🌺 สปาแพ็คเกจ"
+      },
+      {
+        "date": "2026-07-06",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-07-09",
+        "text": "✨ อโรมาเธอราปี",
+        "timeFrom": "14:00"
+      },
+      {
+        "date": "2026-07-13",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-07-16",
+        "text": "🔥 เหลือน้อย",
+        "symbol": "few",
+        "timeTo": "21:00"
+      },
+      {
+        "date": "2026-07-19",
+        "text": "🧖 ฮอตสโตน"
+      },
+      {
+        "date": "2026-07-20",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-07-23",
+        "text": "📅 เต็มแล้ว",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-07-27",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-07-30",
+        "text": "🎁 ส่วนลด 30%",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-08-02",
+        "text": "💅 Móng gel mới",
+        "timeFrom": "09:00",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-08-05",
+        "text": "✨ Spa móng tay"
+      },
+      {
+        "date": "2026-08-09",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-08-12",
+        "text": "🎨 Nail art đặc biệt",
+        "timeFrom": "10:00"
+      },
+      {
+        "date": "2026-08-16",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-08-19",
+        "text": "🔥 Ít chỗ",
+        "symbol": "few",
+        "timeTo": "19:00"
+      },
+      {
+        "date": "2026-08-22",
+        "text": "💖 Chăm sóc da"
+      },
+      {
+        "date": "2026-08-23",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-08-26",
+        "text": "📅 Đã đầy",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-08-30",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-09-02",
+        "text": "🐕 Dagdag slots",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-09-05",
+        "text": "🐈 Cat boarding"
+      },
+      {
+        "date": "2026-09-06",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-09-09",
+        "text": "🛁 Pet grooming",
+        "timeFrom": "09:00"
+      },
+      {
+        "date": "2026-09-13",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-09-16",
+        "text": "🔥 Konti na lang",
+        "symbol": "few",
+        "timeTo": "18:00"
+      },
+      {
+        "date": "2026-09-19",
+        "text": "🐾 Playdate day"
+      },
+      {
+        "date": "2026-09-20",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-09-23",
+        "text": "📅 Puno na",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-09-27",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-09-30",
+        "text": "🎁 Discount 20%",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-10-02",
+        "text": "💪 Aula de yoga",
+        "timeFrom": "06:00",
+        "timeTo": "22:00"
+      },
+      {
+        "date": "2026-10-05",
+        "text": "🏋️ Musculação"
+      },
+      {
+        "date": "2026-10-11",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-10-14",
+        "text": "🧘 Pilates noite",
+        "timeFrom": "18:00"
+      },
+      {
+        "date": "2026-10-18",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-10-21",
+        "text": "🔥 Poucas vagas",
+        "symbol": "few",
+        "timeTo": "20:00"
+      },
+      {
+        "date": "2026-10-24",
+        "text": "🤸 Aula especial"
+      },
+      {
+        "date": "2026-10-25",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-10-28",
+        "text": "📅 Turma cheia",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-10-31",
+        "text": "🎁 Promo Halloween",
+        "symbol": "available"
+      },
+      {
+        "date": "2026-11-02",
+        "text": "🍷 Vin nouveau",
+        "timeFrom": "17:00",
+        "timeTo": "02:00"
+      },
+      {
+        "date": "2026-11-05",
+        "text": "🥂 Champagne soirée"
+      },
+      {
+        "date": "2026-11-08",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-11-11",
+        "text": "🧀 Fromage & vin",
+        "timeFrom": "18:00"
+      },
+      {
+        "date": "2026-11-15",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-11-18",
+        "text": "🔥 Peu de places",
+        "symbol": "few",
+        "timeTo": "01:00"
+      },
+      {
+        "date": "2026-11-21",
+        "text": "🎵 Jazz live"
+      },
+      {
+        "date": "2026-11-22",
+        "text": "",
+        "stamp": "closed"
+      },
+      {
+        "date": "2026-11-25",
+        "text": "📅 Privé",
+        "stamp": "full"
+      },
+      {
+        "date": "2026-11-29",
+        "text": "",
+        "stamp": "closed"
+      }
+    ],
+    "comments": {
+      "2026-01": "予約: ryokan-sakura.jp",
+      "2026-02": "Follow us @sunnycafe",
+      "2026-03": "Instagram: @bar_sevilla",
+      "2026-04": "微信: BeautySalon2026",
+      "2026-05": "예약: korean-bbq.kr",
+      "2026-06": "बुकिंग: guesthouse-ktm.np",
+      "2026-07": "จองที่: thaispa-bkk.th",
+      "2026-08": "Đặt lịch: nailsalon-hcm.vn",
+      "2026-09": "Book: pethotel-manila.ph",
+      "2026-10": "Reserva: academia-sp.br",
+      "2026-11": "Réserver: winebar-paris.fr"
+    },
+    "themes": {
+      "2026-01": "light",
+      "2026-02": "light-blue",
+      "2026-03": "light-orange",
+      "2026-04": "light-red",
+      "2026-05": "light-purple",
+      "2026-06": "light-green",
+      "2026-07": "light-yellow",
+      "2026-08": "light-red",
+      "2026-09": "light-blue",
+      "2026-10": "light-green",
+      "2026-11": "light-purple"
+    },
+    "gridStyles": {
+      "2026-01": "rounded",
+      "2026-02": "lined",
+      "2026-03": "rounded",
+      "2026-04": "lined",
+      "2026-05": "rounded",
+      "2026-06": "lined",
+      "2026-07": "rounded",
+      "2026-08": "lined",
+      "2026-09": "rounded",
+      "2026-10": "lined",
+      "2026-11": "rounded"
+    },
+    "settings": {
+      "weekStartsOn": 1,
+      "appTheme": "light",
+      "calendarTheme": "light",
+      "language": "ja",
+      "country": "JP",
+      "shopName": "Sample Calendar",
+      "shopLogo": null,
+      "showHolidays": true,
+      "showRokuyo": false,
+      "useWareki": false,
+      "backgroundImage": null,
+      "backgroundOpacity": 0.15
+    }
+  }
+}

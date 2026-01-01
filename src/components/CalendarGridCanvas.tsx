@@ -156,17 +156,18 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
     const calendarComments = useCalendarStore((state) => state.calendarComments)
     const selectedDate = useCalendarStore((state) => state.selectedDate)
     const setSelectedDate = useCalendarStore((state) => state.setSelectedDate)
-    const calendarThemes = useCalendarStore((state) => state.calendarThemes)
+    const getCalendarTheme = useCalendarStore((state) => state.getCalendarTheme)
+    const getCalendarGridStyle = useCalendarStore((state) => state.getCalendarGridStyle)
 
     const days = getCalendarDays(view.year, view.month, settings.weekStartsOn)
     const weekdays = getWeekdayHeaders(settings.weekStartsOn)
     const yearMonthParams = getYearMonthParams(view.year, view.month)
-    const isLinedStyle = settings.gridStyle === 'lined'
+    const gridStyle = getCalendarGridStyle(view.year, view.month)
+    const isLinedStyle = gridStyle === 'lined'
     const rowCount = Math.ceil(days.length / 7)
 
     // 月ごとのカレンダーテーマ
-    const monthKey = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
-    const calendarThemeId = calendarThemes[monthKey] ?? settings.calendarTheme
+    const calendarThemeId = getCalendarTheme(view.year, view.month)
     const theme = THEMES[calendarThemeId]
     const isDarkTheme = calendarThemeId.startsWith('dark')
 

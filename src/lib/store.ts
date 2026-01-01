@@ -1,16 +1,18 @@
 import { create } from 'zustand'
 import i18n from './i18n'
-import type { DayEntry, CalendarState, Settings, CalendarThemeId } from './types'
+import type { DayEntry, CalendarState, Settings, CalendarThemeId, GridStyle } from './types'
 import { defaultSettings } from './types'
 import {
   loadEntries,
   loadSettings,
   loadCalendarComments,
   loadCalendarThemes,
+  loadCalendarGridStyles,
   saveEntry,
   saveSettings,
   saveCalendarComments,
   saveCalendarThemes,
+  saveCalendarGridStyles,
   StorageError,
 } from './storage'
 import { initHolidays } from './holidays'
@@ -47,6 +49,10 @@ interface CalendarActions {
   // カレンダーテーマ
   getCalendarTheme: (year: number, month: number) => CalendarThemeId
   updateCalendarTheme: (year: number, month: number, theme: CalendarThemeId) => Promise<void>
+
+  // カレンダーグリッドスタイル
+  getCalendarGridStyle: (year: number, month: number) => GridStyle
+  updateCalendarGridStyle: (year: number, month: number, gridStyle: GridStyle) => Promise<void>
 }
 
 const now = new Date()
@@ -62,6 +68,7 @@ export const useCalendarStore = create<
   entries: [],
   calendarComments: {},
   calendarThemes: {},
+  calendarGridStyles: {},
   settings: defaultSettings,
   initialized: false,
   selectedDate: null,
@@ -72,12 +79,14 @@ export const useCalendarStore = create<
     if (get().initialized) return
 
     try {
-      const [entries, calendarComments, calendarThemes, settings] = await Promise.all([
-        loadEntries(),
-        loadCalendarComments(),
-        loadCalendarThemes(),
-        loadSettings(),
-      ])
+      const [entries, calendarComments, calendarThemes, calendarGridStyles, settings] =
+        await Promise.all([
+          loadEntries(),
+          loadCalendarComments(),
+          loadCalendarThemes(),
+          loadCalendarGridStyles(),
+          loadSettings(),
+        ])
 
       // データの整合性チェック - 有効なデータのみ使用
       const validEntries = Array.isArray(entries) ? entries : []
@@ -85,6 +94,8 @@ export const useCalendarStore = create<
         calendarComments && typeof calendarComments === 'object' ? calendarComments : {}
       const validCalendarThemes =
         calendarThemes && typeof calendarThemes === 'object' ? calendarThemes : {}
+      const validCalendarGridStyles =
+        calendarGridStyles && typeof calendarGridStyles === 'object' ? calendarGridStyles : {}
       const validSettings = settings && typeof settings === 'object' ? settings : defaultSettings
 
       // 言語を設定
@@ -97,6 +108,7 @@ export const useCalendarStore = create<
         entries: validEntries,
         calendarComments: validCalendarComments,
         calendarThemes: validCalendarThemes,
+        calendarGridStyles: validCalendarGridStyles,
         settings: validSettings,
         initialized: true,
         initError: null,
@@ -239,6 +251,19 @@ export const useCalendarStore = create<
     calendarThemes[key] = theme
     await saveCalendarThemes(calendarThemes)
     set({ calendarThemes })
+  },
+
+  getCalendarGridStyle: (year, month) => {
+    const key = `${year}-${String(month + 1).padStart(2, '0')}`
+    return get().calendarGridStyles[key] ?? 'rounded'
+  },
+
+  updateCalendarGridStyle: async (year, month, gridStyle) => {
+    const key = `${year}-${String(month + 1).padStart(2, '0')}`
+    const calendarGridStyles = { ...get().calendarGridStyles }
+    calendarGridStyles[key] = gridStyle
+    await saveCalendarGridStyles(calendarGridStyles)
+    set({ calendarGridStyles })
   },
 
   // 先月からコピー（曜日パターンを推測して適用）

@@ -1,4 +1,10 @@
-import type { DayEntry, Settings, CalendarComments, CalendarThemes } from './types'
+import type {
+  DayEntry,
+  Settings,
+  CalendarComments,
+  CalendarThemes,
+  CalendarGridStyles,
+} from './types'
 import { defaultSettings } from './types'
 
 const DB_NAME = '3min-db'
@@ -215,6 +221,35 @@ export async function saveCalendarThemes(themes: CalendarThemes): Promise<void> 
   })
 }
 
+/** 月ごとのグリッドスタイルを読み込み */
+export async function loadCalendarGridStyles(): Promise<CalendarGridStyles> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readonly')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.get('calendar:gridStyles')
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => {
+      const result = request.result as { key: string; value: CalendarGridStyles } | undefined
+      resolve(result?.value || {})
+    }
+  })
+}
+
+/** 月ごとのグリッドスタイルを保存 */
+export async function saveCalendarGridStyles(gridStyles: CalendarGridStyles): Promise<void> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readwrite')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.put({ key: 'calendar:gridStyles', value: gridStyles })
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => resolve()
+  })
+}
+
 /** エクスポート用データ構造 */
 export interface ExportData {
   version: number
@@ -223,16 +258,18 @@ export interface ExportData {
     entries: DayEntry[]
     comments: CalendarComments
     themes: CalendarThemes
+    gridStyles: CalendarGridStyles
     settings: Settings
   }
 }
 
 /** 全データをエクスポート */
 export async function exportData(): Promise<ExportData> {
-  const [entries, comments, themes, settings] = await Promise.all([
+  const [entries, comments, themes, gridStyles, settings] = await Promise.all([
     loadEntries(),
     loadCalendarComments(),
     loadCalendarThemes(),
+    loadCalendarGridStyles(),
     loadSettings(),
   ])
   return {
@@ -242,6 +279,7 @@ export async function exportData(): Promise<ExportData> {
       entries,
       comments,
       themes,
+      gridStyles,
       settings,
     },
   }
@@ -274,6 +312,9 @@ export async function importData(data: ExportData): Promise<void> {
 
   // カレンダーテーマを上書き
   await saveCalendarThemes(calendar.themes || {})
+
+  // カレンダーグリッドスタイルを上書き
+  await saveCalendarGridStyles(calendar.gridStyles || {})
 
   // 設定を上書き
   await saveSettings(calendar.settings)

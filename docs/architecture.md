@@ -24,7 +24,6 @@ interface Settings {
   weekStartsOn: 0 | 1 // 0: 日曜始まり, 1: 月曜始まり
   appTheme: 'light' | 'dark' // アプリUI全体のテーマ
   calendarTheme: CalendarThemeId // カレンダー画像のデフォルトテーマ
-  gridStyle: 'rounded' | 'lined' // グリッド表示スタイル
   language: 'ja' | 'en'
   country: CountryCode // 'JP' | 'US' | 'GB' | ... （20カ国）
   shopName: string // カレンダーに表示する店名
@@ -49,6 +48,14 @@ type CalendarComments = Record<string, string>
 ```typescript
 // キー: "YYYY-MM"、値未設定時はsettings.calendarThemeを使用
 type CalendarThemes = Record<string, CalendarThemeId>
+```
+
+### CalendarGridStyles（月ごとのグリッドスタイル）
+
+```typescript
+// キー: "YYYY-MM"、値未設定時は'rounded'を使用
+type CalendarGridStyles = Record<string, GridStyle>
+type GridStyle = 'rounded' | 'lined'
 ```
 
 ## テーマシステム
