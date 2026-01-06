@@ -18,8 +18,8 @@ export default defineConfig({
         name: '3 min. Calendar',
         short_name: '3 min. Cal',
         description: 'Quick & easy business calendar for Instagram',
-        theme_color: '#1a1a1a',
-        background_color: '#1a1a1a',
+        theme_color: '#fffbea',
+        background_color: '#fffbea',
         display: 'standalone',
         start_url: '/',
         icons: [
