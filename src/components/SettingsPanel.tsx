@@ -25,6 +25,7 @@ import { SUPPORTED_LANGUAGES } from '../lib/i18n'
 import { exportData, importData, type ExportData } from '../lib/storage'
 import { ToggleSwitch } from './ui/ToggleSwitch'
 import { ImageSelector } from './ui/ImageSelector'
+import { VisitorCounter } from './VisitorCounter'
 
 const APP_THEME_IDS: AppTheme[] = ['light', 'dark']
 
@@ -507,9 +508,13 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           </div>
         </div>
 
-        {/* バージョン表示 */}
-        <div className="mt-4 text-right text-xs opacity-60" style={{ color: appTheme.textMuted }}>
-          v{__BUILD_DATE__}
+        {/* バージョン表示とカウンター */}
+        <div
+          className="mt-4 flex items-center justify-between text-xs opacity-60"
+          style={{ color: appTheme.textMuted }}
+        >
+          <VisitorCounter />
+          <div>v{__BUILD_DATE__}</div>
         </div>
       </div>
     </div>

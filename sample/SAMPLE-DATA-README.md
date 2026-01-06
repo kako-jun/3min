@@ -16,23 +16,24 @@ Multilingual sample calendar data for promotional/demo purposes.
 
 This file includes **11 months** showcasing **11 different languages** and **11 different business types**:
 
-| Month | Language | Business Type | Example |
-|-------|----------|---------------|---------|
-| Jan 2026 | 日本語 (Japanese) | 旅館 (Ryokan/Inn) | "🍱 新春ランチ" |
-| Feb 2026 | English | Café | "☕ New menu" |
-| Mar 2026 | Español (Spanish) | Bar | "🍺 Happy Hour 2x1" |
-| Apr 2026 | 中文 (Chinese) | 美容院 (Beauty Salon) | "💇 春季造型" |
-| May 2026 | 한국어 (Korean) | 한식당 (Korean Restaurant) | "🍲 불고기 정식" |
-| Jun 2026 | नेपाली (Nepali) | गेस्टहाउस (Guest House) | "🏡 कोठा खाली छ" |
-| Jul 2026 | ไทย (Thai) | สปา (Spa) | "💆 นวดไทย" |
-| Aug 2026 | Tiếng Việt (Vietnamese) | Nail Salon | "💅 Móng gel mới" |
-| Sep 2026 | Filipino | Pet Hotel | "🐕 Dagdag slots" |
-| Oct 2026 | Português (Portuguese) | Academia (Gym) | "💪 Aula de yoga" |
-| Nov 2026 | Français (French) | Wine Bar | "🍷 Vin nouveau" |
+| Month    | Language                | Business Type              | Example             |
+| -------- | ----------------------- | -------------------------- | ------------------- |
+| Jan 2026 | 日本語 (Japanese)       | 旅館 (Ryokan/Inn)          | "🍱 新春ランチ"     |
+| Feb 2026 | English                 | Café                       | "☕ New menu"       |
+| Mar 2026 | Español (Spanish)       | Bar                        | "🍺 Happy Hour 2x1" |
+| Apr 2026 | 中文 (Chinese)          | 美容院 (Beauty Salon)      | "💇 春季造型"       |
+| May 2026 | 한국어 (Korean)         | 한식당 (Korean Restaurant) | "🍲 불고기 정식"    |
+| Jun 2026 | नेपाली (Nepali)         | गेस्टहाउस (Guest House)    | "🏡 कोठा खाली छ"    |
+| Jul 2026 | ไทย (Thai)              | สปา (Spa)                  | "💆 นวดไทย"         |
+| Aug 2026 | Tiếng Việt (Vietnamese) | Nail Salon                 | "💅 Móng gel mới"   |
+| Sep 2026 | Filipino                | Pet Hotel                  | "🐕 Dagdag slots"   |
+| Oct 2026 | Português (Portuguese)  | Academia (Gym)             | "💪 Aula de yoga"   |
+| Nov 2026 | Français (French)       | Wine Bar                   | "🍷 Vin nouveau"    |
 
 ## Features Demonstrated
 
 ### Core Features
+
 - ✅ 11 supported languages
 - ✅ 11 different business types
 - ✅ Month-specific themes and colors
@@ -40,6 +41,7 @@ This file includes **11 months** showcasing **11 different languages** and **11 
 - ✅ Month-specific comments/URLs
 
 ### Entry Types
+
 - ✅ Emojis in all entries
 - ✅ **Time variations:**
   - Both from & to times (`10:00-18:00`)
@@ -55,6 +57,7 @@ This file includes **11 months** showcasing **11 different languages** and **11 
   - ✕ (Reserved)
 
 ### Business-Specific Examples
+
 - **Ryokan/Inn** (Jan): Seasonal dishes, events
 - **Café** (Feb): New menu items, live music
 - **Bar** (Mar): Happy hours, DJ nights, late hours (～02:00)
