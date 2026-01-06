@@ -18,6 +18,13 @@ function App() {
     initialize()
   }, [initialize])
 
+  // 訪問者カウントをインクリメント（非表示、1日1回制限あり）
+  useEffect(() => {
+    fetch('https://api.nostalgic.llll-ll.com/visit?action=increment&id=3min-ffe7299f').catch(
+      () => {}
+    )
+  }, [])
+
   const appTheme = APP_THEMES[settings.appTheme]
 
   if (!initialized) {
