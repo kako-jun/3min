@@ -275,52 +275,101 @@ export const useCalendarStore = create<
     const prevYear = view.month === 0 ? view.year - 1 : view.year
     const prevMonth = view.month === 0 ? 11 : view.month - 1
 
-    // 先月のエントリをフィルタリング
+    // 先月のエントリをフィルタリング（何かしらのデータがあるもの）
     const prevMonthPrefix = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-`
-    const prevMonthEntries = entries.filter(
-      (e) => e.date.startsWith(prevMonthPrefix) && e.text.trim() !== ''
-    )
+    const prevMonthEntries = entries.filter((e) => {
+      if (!e.date.startsWith(prevMonthPrefix)) return false
+      // いずれかのフィールドに値があればコピー対象
+      return (
+        e.text.trim() !== '' ||
+        e.symbol !== null ||
+        e.stamp !== null ||
+        e.timeFrom !== '' ||
+        e.timeTo !== ''
+      )
+    })
 
     if (prevMonthEntries.length === 0) {
       return // 先月のデータがなければ何もしない
     }
 
-    // 曜日ごとにテキストを集計（0=日曜〜6=土曜）
-    const weekdayCounts: Record<number, Record<string, number>> = {
-      0: {},
-      1: {},
-      2: {},
-      3: {},
-      4: {},
-      5: {},
-      6: {},
-    }
+    // 曜日ごとに各フィールドを集計（0=日曜〜6=土曜）
+    type FieldCounts = Record<string, number>
+    type WeekdayCounts = Record<number, FieldCounts>
+    const textCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
+    const symbolCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
+    const stampCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
+    const timeFromCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
+    const timeToCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
 
     for (const entry of prevMonthEntries) {
       const date = new Date(entry.date)
       const dayOfWeek = date.getDay()
-      const text = entry.text
-      const counts = weekdayCounts[dayOfWeek]
-      if (counts) {
-        counts[text] = (counts[text] || 0) + 1
+
+      if (entry.text.trim()) {
+        const counts = textCounts[dayOfWeek]
+        if (counts) counts[entry.text] = (counts[entry.text] || 0) + 1
+      }
+      if (entry.symbol) {
+        const counts = symbolCounts[dayOfWeek]
+        if (counts) counts[entry.symbol] = (counts[entry.symbol] || 0) + 1
+      }
+      if (entry.stamp) {
+        const counts = stampCounts[dayOfWeek]
+        if (counts) counts[entry.stamp] = (counts[entry.stamp] || 0) + 1
+      }
+      if (entry.timeFrom) {
+        const counts = timeFromCounts[dayOfWeek]
+        if (counts) counts[entry.timeFrom] = (counts[entry.timeFrom] || 0) + 1
+      }
+      if (entry.timeTo) {
+        const counts = timeToCounts[dayOfWeek]
+        if (counts) counts[entry.timeTo] = (counts[entry.timeTo] || 0) + 1
       }
     }
 
-    // 各曜日で最も多く使われたテキストを取得
-    const weekdayDefaults: Record<number, string> = {}
-    for (let dow = 0; dow < 7; dow++) {
-      const counts = weekdayCounts[dow]
-      if (!counts) continue
+    // 各曜日で最も多く使われた値を取得するヘルパー
+    const getMostCommon = (counts: FieldCounts): string | null => {
       let maxCount = 0
-      let mostCommon = ''
-      for (const [text, count] of Object.entries(counts)) {
+      let mostCommon: string | null = null
+      for (const [value, count] of Object.entries(counts)) {
         if (count > maxCount) {
           maxCount = count
-          mostCommon = text
+          mostCommon = value
         }
       }
-      if (mostCommon) {
-        weekdayDefaults[dow] = mostCommon
+      return mostCommon
+    }
+
+    // 各曜日のデフォルト値を計算
+    type WeekdayDefaults = Record<
+      number,
+      {
+        text?: string
+        symbol?: string | null
+        stamp?: string | null
+        timeFrom?: string
+        timeTo?: string
+      }
+    >
+    const weekdayDefaults: WeekdayDefaults = {}
+
+    for (let dow = 0; dow < 7; dow++) {
+      const text = getMostCommon(textCounts[dow] ?? {})
+      const symbol = getMostCommon(symbolCounts[dow] ?? {})
+      const stamp = getMostCommon(stampCounts[dow] ?? {})
+      const timeFrom = getMostCommon(timeFromCounts[dow] ?? {})
+      const timeTo = getMostCommon(timeToCounts[dow] ?? {})
+
+      // いずれかの値があれば設定
+      if (text || symbol || stamp || timeFrom || timeTo) {
+        const defaults: WeekdayDefaults[number] = {}
+        if (text) defaults.text = text
+        if (symbol) defaults.symbol = symbol
+        if (stamp) defaults.stamp = stamp
+        if (timeFrom) defaults.timeFrom = timeFrom
+        if (timeTo) defaults.timeTo = timeTo
+        weekdayDefaults[dow] = defaults
       }
     }
 
@@ -330,10 +379,10 @@ export const useCalendarStore = create<
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(view.year, view.month, day)
       const dayOfWeek = date.getDay()
-      const defaultText = weekdayDefaults[dayOfWeek]
-      if (defaultText) {
+      const defaults = weekdayDefaults[dayOfWeek]
+      if (defaults) {
         const dateString = format(date, 'yyyy-MM-dd')
-        await get().updateEntry(dateString, { text: defaultText })
+        await get().updateEntry(dateString, defaults)
       }
     }
   },
