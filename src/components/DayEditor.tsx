@@ -8,6 +8,12 @@ import type { DayEntry } from '../lib/types'
 import { serializeEntry, deserializeEntry } from '../lib/entry'
 import { DayRow } from './DayRow'
 
+/** "YYYY-MM-DD"文字列をローカル時間のDateに変換（UTCずれ防止） */
+const parseLocalDate = (dateStr: string): Date => {
+  const parts = dateStr.split('-').map(Number)
+  return new Date(parts[0] ?? 0, (parts[1] ?? 1) - 1, parts[2] ?? 1)
+}
+
 interface DayEditorProps {
   showAllDays?: boolean
 }
@@ -30,8 +36,8 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
 
   let direction = 0
   if (selectedDate && prevSelectedDateRef.current && selectedDate !== prevSelectedDateRef.current) {
-    const prev = new Date(prevSelectedDateRef.current).getTime()
-    const curr = new Date(selectedDate).getTime()
+    const prev = parseLocalDate(prevSelectedDateRef.current).getTime()
+    const curr = parseLocalDate(selectedDate).getTime()
     direction = curr > prev ? 1 : -1
   }
 
@@ -82,7 +88,9 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
     : []
 
   // 通常モード: 選択日の前後1日を含む3日分
-  const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date(view.year, view.month, 1)
+  const selectedDateObj = selectedDate
+    ? parseLocalDate(selectedDate)
+    : new Date(view.year, view.month, 1)
   const daysToShow = showAllDays
     ? allDaysOfMonth
     : [-1, 0, 1].map((offset) => {
