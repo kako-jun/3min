@@ -487,15 +487,6 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               <span>{t('about.author')}:</span>
               <strong>kako-jun</strong>
               <a
-                href="https://llll-ll.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-70"
-                style={{ color: appTheme.text }}
-              >
-                <FontAwesomeIcon icon={faHouse} />
-              </a>
-              <a
                 href="https://github.com/kako-jun/3min"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -503,6 +494,15 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 style={{ color: appTheme.text }}
               >
                 <FontAwesomeIcon icon={faGithub} />
+              </a>
+              <a
+                href="https://llll-ll.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-70"
+                style={{ color: appTheme.text }}
+              >
+                <FontAwesomeIcon icon={faHouse} />
               </a>
             </p>
             <a
