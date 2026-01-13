@@ -303,7 +303,9 @@ export const useCalendarStore = create<
     const timeToCounts: WeekdayCounts = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} }
 
     for (const entry of prevMonthEntries) {
-      const date = new Date(entry.date)
+      // "YYYY-MM-DD"をローカル時間としてパース（new Date()はUTCとして解釈するため曜日がずれる）
+      const parts = entry.date.split('-').map(Number)
+      const date = new Date(parts[0] ?? 0, (parts[1] ?? 1) - 1, parts[2] ?? 1)
       const dayOfWeek = date.getDay()
 
       if (entry.text.trim()) {
