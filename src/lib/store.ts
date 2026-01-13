@@ -363,15 +363,15 @@ export const useCalendarStore = create<
       const timeFrom = getMostCommon(timeFromCounts[dow] ?? {})
       const timeTo = getMostCommon(timeToCounts[dow] ?? {})
 
-      // いずれかの値があれば設定
+      // いずれかの値があれば設定（全フィールドを含めて上書き動作にする）
       if (text || symbol || stamp || timeFrom || timeTo) {
-        const defaults: WeekdayDefaults[number] = {}
-        if (text) defaults.text = text
-        if (symbol) defaults.symbol = symbol
-        if (stamp) defaults.stamp = stamp
-        if (timeFrom) defaults.timeFrom = timeFrom
-        if (timeTo) defaults.timeTo = timeTo
-        weekdayDefaults[dow] = defaults
+        weekdayDefaults[dow] = {
+          text: text ?? '',
+          symbol: symbol,
+          stamp: stamp,
+          timeFrom: timeFrom ?? '',
+          timeTo: timeTo ?? '',
+        }
       }
     }
 
