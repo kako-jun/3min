@@ -16,6 +16,7 @@ import {
   faFileExport,
   faFileImport,
   faHeart,
+  faHouse,
 } from '@fortawesome/free-solid-svg-icons'
 import { faGithub, faReadme } from '@fortawesome/free-brands-svg-icons'
 import { useCalendarStore } from '../lib/store'
@@ -479,13 +480,26 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
           {/* About & Sponsor */}
           <div className="flex flex-col items-center gap-4 py-4">
-            <p className="text-center text-sm" style={{ color: appTheme.textMuted }}>
-              {t('about.author')}: <strong>kako-jun</strong>
+            <p
+              className="flex items-center justify-center gap-2 text-sm"
+              style={{ color: appTheme.textMuted }}
+            >
+              <span>{t('about.author')}:</span>
+              <strong>kako-jun</strong>
+              <a
+                href="https://llll-ll.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-70"
+                style={{ color: appTheme.text }}
+              >
+                <FontAwesomeIcon icon={faHouse} />
+              </a>
               <a
                 href="https://github.com/kako-jun/3min"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-2 inline-flex items-center hover:opacity-70"
+                className="hover:opacity-70"
                 style={{ color: appTheme.text }}
               >
                 <FontAwesomeIcon icon={faGithub} />
