@@ -156,8 +156,13 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
     const calendarComments = useCalendarStore((state) => state.calendarComments)
     const selectedDate = useCalendarStore((state) => state.selectedDate)
     const setSelectedDate = useCalendarStore((state) => state.setSelectedDate)
+    // 状態変更を検知するために直接購読
+    const calendarThemes = useCalendarStore((state) => state.calendarThemes)
+    const calendarGridStyles = useCalendarStore((state) => state.calendarGridStyles)
     const getCalendarTheme = useCalendarStore((state) => state.getCalendarTheme)
     const getCalendarGridStyle = useCalendarStore((state) => state.getCalendarGridStyle)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ;(void calendarThemes, calendarGridStyles) // 購読のみ、直接使用はgetterで行う
 
     const days = getCalendarDays(view.year, view.month, settings.weekStartsOn)
     const weekdays = getWeekdayHeaders(settings.weekStartsOn)
