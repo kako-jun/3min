@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy, faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { faCopy, faClipboard, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES, THEMES } from '../lib/types'
@@ -143,6 +143,23 @@ export function DayRow({
       setLocalFreeText(newFreeText)
       handleFreeTextChange(newFreeText)
     }
+  }
+
+  // この日のデータを全てクリア
+  const handleClear = () => {
+    handleFocus()
+    setLocalSymbol(null)
+    setLocalStamp(null)
+    setLocalTimeFrom('')
+    setLocalTimeTo('')
+    setLocalFreeText('')
+    onUpdate(dateString, {
+      symbol: null,
+      stamp: null,
+      timeFrom: '',
+      timeTo: '',
+      text: '',
+    })
   }
 
   return (
@@ -316,6 +333,19 @@ export function DayRow({
 
         {/* 絵文字ピッカー */}
         <EmojiPicker appTheme={settings.appTheme} onSelect={handleEmojiSelect} />
+
+        {/* スペーサー */}
+        <div className="w-3" />
+
+        {/* クリアボタン */}
+        <button
+          onClick={handleClear}
+          className="rounded px-2 py-0.5 text-sm transition-opacity hover:opacity-80"
+          style={{ backgroundColor: appTheme.bg, color: appTheme.textMuted }}
+          title={t('actions.clear')}
+        >
+          <FontAwesomeIcon icon={faTrashCan} />
+        </button>
       </div>
     </div>
   )
