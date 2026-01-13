@@ -363,15 +363,13 @@ export const useCalendarStore = create<
       const timeFrom = getMostCommon(timeFromCounts[dow] ?? {})
       const timeTo = getMostCommon(timeToCounts[dow] ?? {})
 
-      // いずれかの値があれば設定（全フィールドを含めて上書き動作にする）
-      if (text || symbol || stamp || timeFrom || timeTo) {
-        weekdayDefaults[dow] = {
-          text: text ?? '',
-          symbol: symbol,
-          stamp: stamp,
-          timeFrom: timeFrom ?? '',
-          timeTo: timeTo ?? '',
-        }
+      // 全曜日のパターンを設定（先月に予定がない曜日は空でクリア）
+      weekdayDefaults[dow] = {
+        text: text ?? '',
+        symbol: symbol,
+        stamp: stamp,
+        timeFrom: timeFrom ?? '',
+        timeTo: timeTo ?? '',
       }
     }
 
