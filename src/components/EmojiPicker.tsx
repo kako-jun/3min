@@ -89,7 +89,7 @@ export function EmojiPicker({ onSelect, appTheme }: EmojiPickerProps) {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded px-2 py-0.5 text-sm transition-opacity hover:opacity-80"
+        className="rounded pl-2 py-0.5 text-sm transition-opacity hover:opacity-80"
         style={{ backgroundColor: theme.bg, color: theme.text }}
         title={t('emoji.title')}
       >

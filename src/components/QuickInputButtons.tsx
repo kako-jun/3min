@@ -21,15 +21,16 @@ export function QuickInputButtons({
 }: QuickInputButtonsProps) {
   const { t } = useTranslation()
 
-  const renderSymbolButton = (style: (typeof SYMBOL_STYLES)[0]) => {
+  const renderSymbolButton = (style: (typeof SYMBOL_STYLES)[0], index: number) => {
     const IconComponent = STAMP_ICONS[style.key]
     const displayValue = IconComponent ? null : t(`quickInput.${style.key}`)
     const isSelected = selectedSymbol === style.key
+    const isFirst = index === 0
     return (
       <button
         key={style.key}
         onClick={() => onSymbolSelect(isSelected ? null : style.key)}
-        className={`flex h-7 items-center justify-center rounded px-2 text-sm transition-all ${
+        className={`flex h-7 items-center justify-center rounded text-sm transition-all ${isFirst ? 'pr-2' : 'px-2'} ${
           isSelected ? 'shadow-inner ring-2 ring-offset-1' : 'hover:opacity-80'
         }`}
         style={{
