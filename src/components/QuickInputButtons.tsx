@@ -29,7 +29,7 @@ export function QuickInputButtons({
       <button
         key={style.key}
         onClick={() => onSymbolSelect(isSelected ? null : style.key)}
-        className={`rounded px-2 py-1 text-sm transition-all ${
+        className={`flex h-7 items-center justify-center rounded px-2 text-sm transition-all ${
           isSelected ? 'shadow-inner ring-2 ring-offset-1' : 'hover:opacity-80'
         }`}
         style={{
@@ -55,7 +55,7 @@ export function QuickInputButtons({
       <button
         key={style.key}
         onClick={() => onStampSelect(isSelected ? null : style.key)}
-        className={`rounded px-2 py-1 text-sm transition-all ${
+        className={`flex h-7 items-center justify-center rounded px-2 text-sm transition-all ${
           isSelected ? 'shadow-inner ring-2 ring-offset-1' : 'hover:opacity-80'
         }`}
         style={{

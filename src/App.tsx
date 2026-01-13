@@ -27,6 +27,11 @@ function App() {
 
   const appTheme = APP_THEMES[settings.appTheme]
 
+  // bodyの背景色をテーマに合わせる
+  useEffect(() => {
+    document.body.style.backgroundColor = appTheme.bg
+  }, [appTheme.bg])
+
   if (!initialized) {
     return (
       <div

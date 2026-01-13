@@ -274,7 +274,7 @@ export function DayRow({
         {/* スペーサー（シンボル-スタンプ間と同じ幅） */}
         <div className="w-3" />
         {/* 時刻入力 */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <select
             value={localTimeFrom}
             onChange={(e) => handleTimeChange('from', e.target.value)}
