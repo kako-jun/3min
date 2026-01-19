@@ -42,8 +42,13 @@ export function VisitorCounter() {
   }, [])
 
   return (
-    <div ref={containerRef} style={{ fontSize: '0.75rem' }}>
-      <nostalgic-counter id="3min-ffe7299f" type="total"></nostalgic-counter> visits
+    <div ref={containerRef} style={{ fontSize: '0.75rem', fontFamily: 'inherit' }}>
+      <nostalgic-counter
+        id="3min-ffe7299f"
+        type="total"
+        style={{ fontFamily: 'inherit' }}
+      ></nostalgic-counter>{' '}
+      visits
     </div>
   )
 }
