@@ -152,19 +152,12 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         <div className="space-y-6">
           {/* QRコード */}
           <div className="flex flex-col items-center gap-2">
-            <a
-              href="https://3min.day"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-opacity hover:opacity-80"
-            >
-              <img
-                src="/qrcode.webp"
-                alt="3 min. Calendar QR Code"
-                className="h-24 w-24 rounded-lg"
-                style={{ filter: settings.appTheme === 'dark' ? 'invert(1)' : 'none' }}
-              />
-            </a>
+            <img
+              src="/qrcode.webp"
+              alt="3 min. Calendar QR Code"
+              className="h-24 w-24 rounded-lg"
+              style={{ filter: settings.appTheme === 'dark' ? 'invert(1)' : 'none' }}
+            />
             <p className="text-center text-xs" style={{ color: appTheme.textMuted }}>
               {t('settings.qrCodeDescription')}
             </p>
