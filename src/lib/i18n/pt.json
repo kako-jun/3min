@@ -107,10 +107,10 @@
     "none": "-"
   },
   "quickInput": {
-    "closed": "Fechado",
+    "closed": "Fech.",
     "available": "◯",
     "few": "△",
-    "full": "Lotado",
+    "full": "Cheio",
     "reserved": "✕"
   },
   "messages": {

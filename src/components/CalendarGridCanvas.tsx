@@ -640,7 +640,7 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                       // テキスト幅を推定: 日本語1文字=11px, 英語1文字=7px + 左右padding 4px
                       const isJapanese = /[\u3000-\u9fff]/.test(stampText)
                       const textWidth = isJapanese ? stampText.length * 11 : stampText.length * 7
-                      const stampWidth = textWidth + 8
+                      const stampWidth = Math.min(textWidth + 8, cellWidth / 2)
                       return (
                         <Group x={4} y={4}>
                           <Rect
