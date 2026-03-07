@@ -637,24 +637,24 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                   {stampStyle &&
                     (() => {
                       const stampText = t(`quickInput.${stampStyle.key}`)
-                      // テキスト幅を推定: 日本語1文字=8px, 英語1文字=5px + 左右padding 4px
+                      // テキスト幅を推定: 日本語1文字=11px, 英語1文字=7px + 左右padding 4px
                       const isJapanese = /[\u3000-\u9fff]/.test(stampText)
-                      const textWidth = isJapanese ? stampText.length * 8 : stampText.length * 5
-                      const stampWidth = textWidth + 6
+                      const textWidth = isJapanese ? stampText.length * 11 : stampText.length * 7
+                      const stampWidth = textWidth + 8
                       return (
                         <Group x={4} y={4}>
                           <Rect
                             width={stampWidth}
-                            height={12}
+                            height={16}
                             fill={stampStyle.bgColor}
                             cornerRadius={2}
                           />
                           <Text
                             x={0}
-                            y={1}
+                            y={2}
                             width={stampWidth}
                             text={stampText}
-                            fontSize={8}
+                            fontSize={11}
                             fontStyle="bold"
                             fontFamily={FONT_FAMILY}
                             fill={stampStyle.textColor}
@@ -664,11 +664,11 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                       )
                     })()}
 
-                  {/* 時刻 - marginTop: 4px from first row (~18px) */}
+                  {/* 時刻 - marginTop: 4px from first row (~22px) */}
                   {time && (
                     <Text
                       x={4}
-                      y={22}
+                      y={26}
                       text={time}
                       fontSize={9}
                       fontStyle="bold"
@@ -678,20 +678,28 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
                   )}
 
                   {/* 予定コメント - marginTop: 4px from time or first row */}
-                  {freeText && (
-                    <Text
-                      x={4}
-                      y={time ? 36 : 22}
-                      width={cellWidth - 8}
-                      height={cellHeight - (time ? 40 : 26)}
-                      text={freeText}
-                      fontSize={10}
-                      fontStyle="bold"
-                      fontFamily={FONT_FAMILY}
-                      fill={theme.text}
-                      wrap="char"
-                    />
-                  )}
+                  {freeText &&
+                    (() => {
+                      const lineH = 10 // fontSize と同じ（Konva lineHeight=1）
+                      const availableH = cellHeight - (time ? 44 : 30)
+                      const maxLines = Math.floor(availableH / lineH)
+                      if (maxLines <= 0) return null
+                      const textH = maxLines * lineH
+                      return (
+                        <Text
+                          x={4}
+                          y={time ? 40 : 26}
+                          width={cellWidth - 8}
+                          height={textH}
+                          text={freeText}
+                          fontSize={10}
+                          fontStyle="bold"
+                          fontFamily={FONT_FAMILY}
+                          fill={theme.text}
+                          wrap="char"
+                        />
+                      )
+                    })()}
                 </Group>
               )
             })}
