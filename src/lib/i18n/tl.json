@@ -169,6 +169,28 @@
     "selectDay": "I-click ang petsa sa kalendaryo na gusto mong i-edit",
     "freeTextPlaceholder": "Maglagay ng komento sa iskedyul"
   },
+  "countries": {
+    "JP": "Hapon",
+    "US": "Estados Unidos",
+    "GB": "United Kingdom",
+    "DE": "Alemanya",
+    "FR": "Pransya",
+    "IT": "Italya",
+    "ES": "Espanya",
+    "CN": "Tsina",
+    "KR": "Timog Korea",
+    "TW": "Taiwan",
+    "TH": "Thailand",
+    "VN": "Vietnam",
+    "AU": "Australia",
+    "CA": "Canada",
+    "BR": "Brazil",
+    "MX": "Mexico",
+    "IN": "India",
+    "SG": "Singapore",
+    "HK": "Hong Kong",
+    "NZ": "New Zealand"
+  },
   "emoji": {
     "title": "Magdagdag ng emoji",
     "categories": {

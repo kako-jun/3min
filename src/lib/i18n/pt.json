@@ -169,6 +169,28 @@
     "selectDay": "Clique em uma data no calendário que você quer editar",
     "freeTextPlaceholder": "Digite um comentário de agenda"
   },
+  "countries": {
+    "JP": "Japão",
+    "US": "Estados Unidos",
+    "GB": "Reino Unido",
+    "DE": "Alemanha",
+    "FR": "França",
+    "IT": "Itália",
+    "ES": "Espanha",
+    "CN": "China",
+    "KR": "Coreia do Sul",
+    "TW": "Taiwan",
+    "TH": "Tailândia",
+    "VN": "Vietnã",
+    "AU": "Austrália",
+    "CA": "Canadá",
+    "BR": "Brasil",
+    "MX": "México",
+    "IN": "Índia",
+    "SG": "Singapura",
+    "HK": "Hong Kong",
+    "NZ": "Nova Zelândia"
+  },
   "emoji": {
     "title": "Adicionar emoji",
     "categories": {

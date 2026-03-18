@@ -4,6 +4,7 @@ import { useCalendarStore } from './lib/store'
 import { APP_THEMES } from './lib/types'
 import { Calendar } from './components/Calendar'
 import { QRPage } from './components/QRPage'
+import { NotFound } from './components/NotFound'
 import { useLanguageFont } from './hooks/useLanguageFont'
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
         <Route path="/" element={<Navigate to="/calendar" replace />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/qr" element={<QRPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )

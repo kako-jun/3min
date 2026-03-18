@@ -1,4 +1,12 @@
-import { useRef, useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react'
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import { Stage, Layer, Rect, Text, Group, Circle, Line, Image as KonvaImage } from 'react-konva'
 import { useTranslation } from 'react-i18next'
 import Konva from 'konva'
@@ -189,7 +197,15 @@ export const CalendarGridCanvas = forwardRef<CalendarGridCanvasHandle, CalendarG
     // 店名ロゴ
     const shopLogoImage = useLoadImage(settings.shopLogo)
 
-    const getEntry = useCallback((date: string) => entries.find((e) => e.date === date), [entries])
+    const entryMap = useMemo(() => {
+      const map = new Map<string, (typeof entries)[number]>()
+      for (const e of entries) {
+        map.set(e.date, e)
+      }
+      return map
+    }, [entries])
+
+    const getEntry = useCallback((date: string) => entryMap.get(date), [entryMap])
 
     // コンテナのサイズに合わせてスケール
     const [containerSize, setContainerSize] = useState(BASE_SIZE)

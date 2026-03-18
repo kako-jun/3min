@@ -169,6 +169,28 @@
     "selectDay": "Click a date on the calendar you want to edit",
     "freeTextPlaceholder": "Enter schedule comment"
   },
+  "countries": {
+    "JP": "Japan",
+    "US": "United States",
+    "GB": "United Kingdom",
+    "DE": "Germany",
+    "FR": "France",
+    "IT": "Italy",
+    "ES": "Spain",
+    "CN": "China",
+    "KR": "South Korea",
+    "TW": "Taiwan",
+    "TH": "Thailand",
+    "VN": "Vietnam",
+    "AU": "Australia",
+    "CA": "Canada",
+    "BR": "Brazil",
+    "MX": "Mexico",
+    "IN": "India",
+    "SG": "Singapore",
+    "HK": "Hong Kong",
+    "NZ": "New Zealand"
+  },
   "emoji": {
     "title": "Add emoji",
     "categories": {

@@ -36,7 +36,7 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const updateSettings = useCalendarStore((state) => state.updateSettings)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -300,7 +300,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               >
                 {SUPPORTED_COUNTRIES.map((country) => (
                   <option key={country.code} value={country.code}>
-                    {i18n.language === 'ja' ? country.name : country.nameEn}
+                    {t(`countries.${country.code}`)}
                   </option>
                 ))}
               </select>

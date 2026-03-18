@@ -169,6 +169,28 @@
     "selectDay": "Nhấp vào ngày trên lịch bạn muốn chỉnh sửa",
     "freeTextPlaceholder": "Nhập ghi chú lịch trình"
   },
+  "countries": {
+    "JP": "Nhật Bản",
+    "US": "Hoa Kỳ",
+    "GB": "Vương quốc Anh",
+    "DE": "Đức",
+    "FR": "Pháp",
+    "IT": "Ý",
+    "ES": "Tây Ban Nha",
+    "CN": "Trung Quốc",
+    "KR": "Hàn Quốc",
+    "TW": "Đài Loan",
+    "TH": "Thái Lan",
+    "VN": "Việt Nam",
+    "AU": "Úc",
+    "CA": "Canada",
+    "BR": "Brazil",
+    "MX": "Mexico",
+    "IN": "Ấn Độ",
+    "SG": "Singapore",
+    "HK": "Hồng Kông",
+    "NZ": "New Zealand"
+  },
   "emoji": {
     "title": "Thêm emoji",
     "categories": {

@@ -169,6 +169,28 @@
     "selectDay": "Haz clic en una fecha del calendario que quieras editar",
     "freeTextPlaceholder": "Ingresa un comentario de horario"
   },
+  "countries": {
+    "JP": "Japón",
+    "US": "Estados Unidos",
+    "GB": "Reino Unido",
+    "DE": "Alemania",
+    "FR": "Francia",
+    "IT": "Italia",
+    "ES": "España",
+    "CN": "China",
+    "KR": "Corea del Sur",
+    "TW": "Taiwán",
+    "TH": "Tailandia",
+    "VN": "Vietnam",
+    "AU": "Australia",
+    "CA": "Canadá",
+    "BR": "Brasil",
+    "MX": "México",
+    "IN": "India",
+    "SG": "Singapur",
+    "HK": "Hong Kong",
+    "NZ": "Nueva Zelanda"
+  },
   "emoji": {
     "title": "Agregar emoji",
     "categories": {
