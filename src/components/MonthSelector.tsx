@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES } from '../lib/types'
 
@@ -10,6 +11,7 @@ const MIN_YEAR = 2019
 const MIN_MONTH = 4 // 0-indexed
 
 export function MonthSelector({ title }: MonthSelectorProps) {
+  const { t } = useTranslation()
   const view = useCalendarStore((state) => state.view)
   const goToPrevMonth = useCalendarStore((state) => state.goToPrevMonth)
   const goToNextMonth = useCalendarStore((state) => state.goToNextMonth)
@@ -26,7 +28,7 @@ export function MonthSelector({ title }: MonthSelectorProps) {
         disabled={isAtMinMonth}
         className="px-1 text-lg transition-opacity hover:opacity-70 disabled:opacity-30"
         style={{ color: appTheme.text }}
-        aria-label="前月"
+        aria-label={t('aria.previousMonth')}
       >
         ◀
       </button>
@@ -39,7 +41,7 @@ export function MonthSelector({ title }: MonthSelectorProps) {
         onClick={goToNextMonth}
         className="px-1 text-lg transition-opacity hover:opacity-70"
         style={{ color: appTheme.text }}
-        aria-label="翌月"
+        aria-label={t('aria.nextMonth')}
       >
         ▶
       </button>

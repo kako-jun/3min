@@ -203,5 +203,9 @@
       "faces": "Mga Mukha",
       "hands": "Mga Kamay"
     }
+  },
+  "aria": {
+    "previousMonth": "Nakaraang buwan",
+    "nextMonth": "Susunod na buwan"
   }
 }
