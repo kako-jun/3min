@@ -5,15 +5,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { APP_THEMES } from '../lib/types'
+import { loadOnboardingDismissed, saveOnboardingDismissed } from '../lib/storage'
 
 const PAGES = [
   { path: '/calendar', titleKey: 'app.title' },
   { path: '/qr', titleKey: 'app.titleQR' },
 ] as const
 
-const TIP_DISMISSED_KEYS: Record<string, string> = {
-  '/calendar': '3min-qr-tip-dismissed',
-  '/qr': '3min-calendar-tip-dismissed',
+const TIP_KEYS: Record<string, string> = {
+  '/calendar': 'qrTip',
+  '/qr': 'calendarTip',
 }
 
 const TIP_TRANSLATION_KEYS: Record<string, string> = {
@@ -48,31 +49,57 @@ export function AppHeader() {
     }
   }, [isOpen])
 
+  // オンボーディング dismissed 状態のキャッシュ
+  const dismissedRef = useRef<Record<string, boolean>>({})
+
   // 初回のみツールチップを表示（各ページで兄弟機能を案内）
   useEffect(() => {
-    const dismissedKey = TIP_DISMISSED_KEYS[location.pathname]
-    if (!dismissedKey) {
+    const tipKey = TIP_KEYS[location.pathname]
+    if (!tipKey) {
       setShowQrTip(false)
       return
     }
-    const dismissed = localStorage.getItem(dismissedKey)
-    if (dismissed) return
 
-    setShowQrTip(true)
+    let cancelled = false
+
+    const checkAndShow = async () => {
+      try {
+        const dismissed = await loadOnboardingDismissed()
+        dismissedRef.current = dismissed
+        if (cancelled || dismissed[tipKey]) return
+
+        setShowQrTip(true)
+      } catch {
+        // DB読み込み失敗時はツールチップを出さない
+      }
+    }
+    checkAndShow()
+
     const timer = setTimeout(() => {
-      setShowQrTip(false)
-      localStorage.setItem(dismissedKey, '1')
+      if (!cancelled) {
+        setShowQrTip(false)
+        dismissedRef.current[tipKey] = true
+        saveOnboardingDismissed(dismissedRef.current)
+      }
     }, 5000)
+
     return () => {
+      cancelled = true
       clearTimeout(timer)
-      localStorage.setItem(dismissedKey, '1')
+      if (dismissedRef.current[tipKey] !== true) {
+        dismissedRef.current[tipKey] = true
+        saveOnboardingDismissed(dismissedRef.current)
+      }
     }
   }, [location.pathname])
 
   const dismissTip = () => {
     setShowQrTip(false)
-    const dismissedKey = TIP_DISMISSED_KEYS[location.pathname]
-    if (dismissedKey) localStorage.setItem(dismissedKey, '1')
+    const tipKey = TIP_KEYS[location.pathname]
+    if (tipKey) {
+      dismissedRef.current[tipKey] = true
+      saveOnboardingDismissed(dismissedRef.current)
+    }
   }
 
   const handleSelect = (path: string) => {
