@@ -203,5 +203,9 @@
       "faces": "Visages",
       "hands": "Mains"
     }
+  },
+  "aria": {
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant"
   }
 }

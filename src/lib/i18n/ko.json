@@ -189,5 +189,9 @@
       "faces": "표정",
       "hands": "손"
     }
+  },
+  "aria": {
+    "previousMonth": "이전 달",
+    "nextMonth": "다음 달"
   }
 }

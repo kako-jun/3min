@@ -203,5 +203,9 @@
       "faces": "Khuôn mặt",
       "hands": "Tay"
     }
+  },
+  "aria": {
+    "previousMonth": "Tháng trước",
+    "nextMonth": "Tháng sau"
   }
 }

@@ -203,5 +203,9 @@
       "faces": "अनुहार",
       "hands": "हात"
     }
+  },
+  "aria": {
+    "previousMonth": "अघिल्लो महिना",
+    "nextMonth": "अर्को महिना"
   }
 }
