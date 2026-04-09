@@ -107,6 +107,10 @@ export function QRPage() {
         </button>
       </div>
 
+      <p className="mt-2 text-center text-xs" style={{ color: appTheme.textMuted }}>
+        {t('qr.description')}
+      </p>
+
       {/* レスポンシブ: モバイルは縦並び、デスクトップは横並び */}
       <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-start">
         {/* 左側: QRコード表示 + アクションボタン */}

@@ -36,7 +36,8 @@
     "safety": "Your URL is never sent to any server. Generated locally in your browser with no tracking or redirect URLs.",
     "madeInJapan": "Made in Japan",
     "openSource": "Source code available on GitHub",
-    "trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED"
+    "trademark": "QR Code is a registered trademark of DENSO WAVE INCORPORATED",
+    "description": "Handy to display alongside your business calendar"
   },
   "calendar": {
     "today": "Today",
@@ -190,6 +191,9 @@
     "SG": "Singapore",
     "HK": "Hong Kong",
     "NZ": "New Zealand"
+  },
+  "onboarding": {
+    "qrTip": "You can also create QR codes ↓"
   },
   "emoji": {
     "title": "Add emoji",

@@ -36,7 +36,8 @@
     "safety": "तपाईंको URL सर्भरमा पठाइँदैन। ब्राउजरमा बनाइन्छ, कुनै ट्र्याकिङ वा रिडाइरेक्ट छैन।",
     "madeInJapan": "Made in Japan",
     "openSource": "स्रोत कोड GitHub मा उपलब्ध",
-    "trademark": "QR कोड DENSO WAVE INCORPORATED को दर्ता ट्रेडमार्क हो"
+    "trademark": "QR कोड DENSO WAVE INCORPORATED को दर्ता ट्रेडमार्क हो",
+    "description": "व्यापार क्यालेन्डरसँगै पसलमा राख्न सजिलो"
   },
   "calendar": {
     "today": "आज",
@@ -190,6 +191,9 @@
     "SG": "सिंगापुर",
     "HK": "हङकङ",
     "NZ": "न्युजिल्याण्ड"
+  },
+  "onboarding": {
+    "qrTip": "QR कोड पनि बनाउन सक्नुहुन्छ ↓"
   },
   "emoji": {
     "title": "इमोजी थप्नुहोस्",

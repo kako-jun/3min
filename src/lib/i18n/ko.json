@@ -36,7 +36,8 @@
     "safety": "입력한 URL은 서버로 전송되지 않습니다. 브라우저에서 생성되며 리디렉션 URL이 추가되지 않습니다.",
     "madeInJapan": "Made in Japan",
     "openSource": "소스 코드는 GitHub에서 공개 중",
-    "trademark": "QR 코드는 주식회사 덴소웨이브의 등록상표입니다"
+    "trademark": "QR 코드는 주식회사 덴소웨이브의 등록상표입니다",
+    "description": "영업 달력과 함께 매장에 게시하면 편리합니다"
   },
   "calendar": {
     "today": "오늘",
@@ -176,6 +177,9 @@
     "SG": "싱가포르",
     "HK": "홍콩",
     "NZ": "뉴질랜드"
+  },
+  "onboarding": {
+    "qrTip": "QR코드도 만들 수 있어요 ↓"
   },
   "emoji": {
     "title": "이모지 추가",

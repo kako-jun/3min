@@ -36,7 +36,8 @@
     "safety": "Ang iyong URL ay hindi ipinapadala sa anumang server. Nalikha nang lokal sa iyong browser nang walang pagsubaybay o mga redirect URL.",
     "madeInJapan": "Made in Japan",
     "openSource": "Available ang source code sa GitHub",
-    "trademark": "Ang QR Code ay registered trademark ng DENSO WAVE INCORPORATED"
+    "trademark": "Ang QR Code ay registered trademark ng DENSO WAVE INCORPORATED",
+    "description": "Maginhawang ipaskil kasama ng business calendar"
   },
   "calendar": {
     "today": "Ngayon",
@@ -190,6 +191,9 @@
     "SG": "Singapore",
     "HK": "Hong Kong",
     "NZ": "New Zealand"
+  },
+  "onboarding": {
+    "qrTip": "Makakalikha rin ng QR code ↓"
   },
   "emoji": {
     "title": "Magdagdag ng emoji",
