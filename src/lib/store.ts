@@ -100,6 +100,7 @@ export const useCalendarStore = create<
 
       // 言語を設定
       i18n.changeLanguage(validSettings.language)
+      document.documentElement.lang = validSettings.language
 
       // 祝日ライブラリを初期化
       initHolidays(validSettings.country)
@@ -211,6 +212,7 @@ export const useCalendarStore = create<
     // 言語が変更された場合
     if (newSettings.language) {
       i18n.changeLanguage(newSettings.language)
+      document.documentElement.lang = newSettings.language
     }
 
     // 国が変更された場合
