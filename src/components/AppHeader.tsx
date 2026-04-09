@@ -92,7 +92,7 @@ export function AppHeader() {
               {t(currentPage.titleKey)}
               <FontAwesomeIcon
                 icon={faChevronDown}
-                className={`text-xs ${showQrTip ? 'animate-gentle-bounce' : ''}`}
+                className="animate-gentle-bounce text-xs"
                 style={{ color: appTheme.accent }}
               />
             </button>
