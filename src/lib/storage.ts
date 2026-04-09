@@ -250,6 +250,35 @@ export async function saveCalendarGridStyles(gridStyles: CalendarGridStyles): Pr
   })
 }
 
+/** オンボーディングの dismissed 状態を読み込み */
+export async function loadOnboardingDismissed(): Promise<Record<string, boolean>> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readonly')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.get('onboarding:dismissed')
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => {
+      const result = request.result as { key: string; value: Record<string, boolean> } | undefined
+      resolve(result?.value || {})
+    }
+  })
+}
+
+/** オンボーディングの dismissed 状態を保存 */
+export async function saveOnboardingDismissed(dismissed: Record<string, boolean>): Promise<void> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readwrite')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.put({ key: 'onboarding:dismissed', value: dismissed })
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => resolve()
+  })
+}
+
 /** エクスポート用データ構造 */
 export interface ExportData {
   version: number

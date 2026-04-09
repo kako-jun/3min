@@ -108,6 +108,8 @@ interface ThemeColors {
     - `calendar:settings`: アプリ設定
     - `calendar:comments`: 月ごとのコメント
     - `calendar:themes`: 月ごとのテーマ
+    - `calendar:gridStyles`: 月ごとのグリッドスタイル
+    - `onboarding:dismissed`: オンボーディングツールチップの表示済みフラグ
 
 ## データ管理
 
