@@ -54,7 +54,11 @@ export function AppHeader() {
       setShowQrTip(false)
       localStorage.setItem(QR_TIP_DISMISSED_KEY, '1')
     }, 5000)
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+      // ページ離脱時にも dismissed を記録（再表示を防ぐ）
+      localStorage.setItem(QR_TIP_DISMISSED_KEY, '1')
+    }
   }, [location.pathname])
 
   const dismissQrTip = () => {
@@ -88,7 +92,7 @@ export function AppHeader() {
               {t(currentPage.titleKey)}
               <FontAwesomeIcon
                 icon={faChevronDown}
-                className="animate-gentle-bounce text-xs"
+                className={`text-xs ${showQrTip ? 'animate-gentle-bounce' : ''}`}
                 style={{ color: appTheme.accent }}
               />
             </button>
@@ -115,7 +119,7 @@ export function AppHeader() {
             )}
 
             {/* 初回のみQRコード機能の存在を案内するツールチップ */}
-            {showQrTip && (
+            {showQrTip && !isOpen && (
               <button
                 onClick={dismissQrTip}
                 className="absolute left-0 top-full z-40 mt-2 whitespace-nowrap rounded px-3 py-1.5 text-xs font-bold shadow-lg transition-opacity"
