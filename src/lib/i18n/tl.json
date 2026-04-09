@@ -193,7 +193,8 @@
     "NZ": "New Zealand"
   },
   "onboarding": {
-    "qrTip": "Makakalikha rin ng QR code ↓"
+    "qrTip": "Makakalikha rin ng QR code",
+    "calendarTip": "Makakalikha rin ng kalendaryo"
   },
   "emoji": {
     "title": "Magdagdag ng emoji",

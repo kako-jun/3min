@@ -179,7 +179,8 @@
     "NZ": "뉴질랜드"
   },
   "onboarding": {
-    "qrTip": "QR코드도 만들 수 있어요 ↓"
+    "qrTip": "QR코드도 만들 수 있어요",
+    "calendarTip": "캘린더도 만들 수 있어요"
   },
   "emoji": {
     "title": "이모지 추가",

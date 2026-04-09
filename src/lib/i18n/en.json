@@ -193,7 +193,8 @@
     "NZ": "New Zealand"
   },
   "onboarding": {
-    "qrTip": "You can also create QR codes ↓"
+    "qrTip": "You can also create QR codes",
+    "calendarTip": "You can also create calendars"
   },
   "emoji": {
     "title": "Add emoji",

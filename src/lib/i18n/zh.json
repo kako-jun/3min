@@ -179,7 +179,8 @@
     "NZ": "新西兰"
   },
   "onboarding": {
-    "qrTip": "还可以创建二维码 ↓"
+    "qrTip": "还可以创建二维码",
+    "calendarTip": "还可以创建日历"
   },
   "emoji": {
     "title": "添加表情",

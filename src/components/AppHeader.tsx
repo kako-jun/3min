@@ -11,7 +11,15 @@ const PAGES = [
   { path: '/qr', titleKey: 'app.titleQR' },
 ] as const
 
-const QR_TIP_DISMISSED_KEY = '3min-qr-tip-dismissed'
+const TIP_DISMISSED_KEYS: Record<string, string> = {
+  '/calendar': '3min-qr-tip-dismissed',
+  '/qr': '3min-calendar-tip-dismissed',
+}
+
+const TIP_TRANSLATION_KEYS: Record<string, string> = {
+  '/calendar': 'onboarding.qrTip',
+  '/qr': 'onboarding.calendarTip',
+}
 
 export function AppHeader() {
   const { t } = useTranslation()
@@ -40,30 +48,31 @@ export function AppHeader() {
     }
   }, [isOpen])
 
-  // 初回のみQRツールチップを表示（カレンダーページのみ）
+  // 初回のみツールチップを表示（各ページで兄弟機能を案内）
   useEffect(() => {
-    if (location.pathname !== '/calendar') {
+    const dismissedKey = TIP_DISMISSED_KEYS[location.pathname]
+    if (!dismissedKey) {
       setShowQrTip(false)
       return
     }
-    const dismissed = localStorage.getItem(QR_TIP_DISMISSED_KEY)
+    const dismissed = localStorage.getItem(dismissedKey)
     if (dismissed) return
 
     setShowQrTip(true)
     const timer = setTimeout(() => {
       setShowQrTip(false)
-      localStorage.setItem(QR_TIP_DISMISSED_KEY, '1')
+      localStorage.setItem(dismissedKey, '1')
     }, 5000)
     return () => {
       clearTimeout(timer)
-      // ページ離脱時にも dismissed を記録（再表示を防ぐ）
-      localStorage.setItem(QR_TIP_DISMISSED_KEY, '1')
+      localStorage.setItem(dismissedKey, '1')
     }
   }, [location.pathname])
 
-  const dismissQrTip = () => {
+  const dismissTip = () => {
     setShowQrTip(false)
-    localStorage.setItem(QR_TIP_DISMISSED_KEY, '1')
+    const dismissedKey = TIP_DISMISSED_KEYS[location.pathname]
+    if (dismissedKey) localStorage.setItem(dismissedKey, '1')
   }
 
   const handleSelect = (path: string) => {
@@ -121,7 +130,7 @@ export function AppHeader() {
             {/* 初回のみQRコード機能の存在を案内するツールチップ */}
             {showQrTip && !isOpen && (
               <button
-                onClick={dismissQrTip}
+                onClick={dismissTip}
                 className="absolute left-0 top-full z-40 mt-2 whitespace-nowrap rounded px-3 py-1.5 text-xs font-bold shadow-lg transition-opacity"
                 style={{ backgroundColor: appTheme.accent, color: '#ffffff' }}
               >
@@ -129,7 +138,7 @@ export function AppHeader() {
                   className="absolute -top-1.5 left-3 h-3 w-3 rotate-45"
                   style={{ backgroundColor: appTheme.accent }}
                 />
-                {t('onboarding.qrTip')}
+                {t(TIP_TRANSLATION_KEYS[location.pathname] ?? 'onboarding.qrTip')}
               </button>
             )}
           </div>

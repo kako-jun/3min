@@ -193,7 +193,8 @@
     "NZ": "นิวซีแลนด์"
   },
   "onboarding": {
-    "qrTip": "สร้าง QR Code ได้ด้วย ↓"
+    "qrTip": "สร้าง QR Code ได้ด้วย",
+    "calendarTip": "สร้างปฏิทินได้ด้วย"
   },
   "emoji": {
     "title": "เพิ่มอีโมจิ",

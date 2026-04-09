@@ -193,7 +193,8 @@
     "NZ": "Nova Zelândia"
   },
   "onboarding": {
-    "qrTip": "Você também pode criar QR codes ↓"
+    "qrTip": "Você também pode criar QR codes",
+    "calendarTip": "Você também pode criar calendários"
   },
   "emoji": {
     "title": "Adicionar emoji",
