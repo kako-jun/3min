@@ -36,7 +36,8 @@
     "safety": "URL ของคุณจะไม่ถูกส่งไปยังเซิร์ฟเวอร์ใดๆ สร้างในเบราว์เซอร์โดยไม่มีการติดตามหรือ URL เปลี่ยนเส้นทาง",
     "madeInJapan": "Made in Japan",
     "openSource": "ซอร์สโค้ดมีให้บน GitHub",
-    "trademark": "QR Code เป็นเครื่องหมายการค้าจดทะเบียนของ DENSO WAVE INCORPORATED"
+    "trademark": "QR Code เป็นเครื่องหมายการค้าจดทะเบียนของ DENSO WAVE INCORPORATED",
+    "description": "สะดวกสำหรับติดคู่กับปฏิทินร้านค้า"
   },
   "calendar": {
     "today": "วันนี้",
@@ -190,6 +191,9 @@
     "SG": "สิงคโปร์",
     "HK": "ฮ่องกง",
     "NZ": "นิวซีแลนด์"
+  },
+  "onboarding": {
+    "qrTip": "สร้าง QR Code ได้ด้วย ↓"
   },
   "emoji": {
     "title": "เพิ่มอีโมจิ",

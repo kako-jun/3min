@@ -36,7 +36,8 @@
     "safety": "URL của bạn không bao giờ được gửi đến bất kỳ máy chủ nào. Được tạo cục bộ trong trình duyệt mà không có theo dõi hoặc URL chuyển hướng.",
     "madeInJapan": "Made in Japan",
     "openSource": "Mã nguồn có sẵn trên GitHub",
-    "trademark": "Mã QR là nhãn hiệu đã đăng ký của DENSO WAVE INCORPORATED"
+    "trademark": "Mã QR là nhãn hiệu đã đăng ký của DENSO WAVE INCORPORATED",
+    "description": "Tiện lợi khi trưng bày cùng lịch kinh doanh"
   },
   "calendar": {
     "today": "Hôm nay",
@@ -190,6 +191,9 @@
     "SG": "Singapore",
     "HK": "Hồng Kông",
     "NZ": "New Zealand"
+  },
+  "onboarding": {
+    "qrTip": "Bạn cũng có thể tạo mã QR ↓"
   },
   "emoji": {
     "title": "Thêm emoji",

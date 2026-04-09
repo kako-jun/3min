@@ -36,7 +36,8 @@
     "safety": "输入的URL不会发送到服务器。在浏览器内生成，不添加任何跳转链接。",
     "madeInJapan": "日本制造",
     "openSource": "源代码已在GitHub公开",
-    "trademark": "QR码是株式会社电装波动的注册商标"
+    "trademark": "QR码是株式会社电装波动的注册商标",
+    "description": "与营业日历一起张贴在店内很方便"
   },
   "calendar": {
     "today": "今天",
@@ -176,6 +177,9 @@
     "SG": "新加坡",
     "HK": "香港",
     "NZ": "新西兰"
+  },
+  "onboarding": {
+    "qrTip": "还可以创建二维码 ↓"
   },
   "emoji": {
     "title": "添加表情",
