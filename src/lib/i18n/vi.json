@@ -193,7 +193,8 @@
     "NZ": "New Zealand"
   },
   "onboarding": {
-    "qrTip": "Bạn cũng có thể tạo mã QR ↓"
+    "qrTip": "Bạn cũng có thể tạo mã QR",
+    "calendarTip": "Bạn cũng có thể tạo lịch"
   },
   "emoji": {
     "title": "Thêm emoji",
