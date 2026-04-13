@@ -59,3 +59,7 @@ npm run lint     # フォーマット + 型チェック
 - [開発の背景](docs/background.md)
 - [アーキテクチャ](docs/architecture.md)
 - [主要機能](docs/features.md)
+
+## デザインシステム
+
+UIの生成・修正時は `DESIGN.md` に定義されたデザインシステムに従うこと。定義外の色・フォント・スペーシングを勝手に使わない。
