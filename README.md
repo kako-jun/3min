@@ -1,10 +1,10 @@
 # 3 min. Calendar
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Made%20with-React-61DAFB?style=flat-square&logo=react" alt="Made with React">
-  <img src="https://img.shields.io/badge/Build-Vite-646CFF?style=flat-square&logo=vite" alt="Build with Vite">
-  <img src="https://img.shields.io/badge/PWA-Offline%20Ready-5A0FC8?style=flat-square&logo=pwa" alt="PWA Offline Ready">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/Made%20with-React-61DAFB?logo=react" alt="Made with React">
+  <img src="https://img.shields.io/badge/Build-Vite-646CFF?logo=vite" alt="Build with Vite">
+  <img src="https://img.shields.io/badge/PWA-Offline%20Ready-5A0FC8?logo=pwa" alt="PWA Offline Ready">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
 <p align="center">
