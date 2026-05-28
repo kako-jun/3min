@@ -48,7 +48,7 @@ export function VisitorCounter() {
         type="total"
         style={{ fontFamily: 'inherit' }}
       ></nostalgic-counter>{' '}
-      visits
+      views
     </div>
   )
 }
