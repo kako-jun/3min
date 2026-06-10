@@ -84,20 +84,32 @@ export function DayEditor({ reserveBottom = 0 }: DayEditorProps) {
     const recalc = () => {
       const top = container.getBoundingClientRect().top
       const available = window.innerHeight - top - reserveBottom
-      setMaxHeight(Math.max(MIN_LIST_HEIGHT, available))
+      // 丸めて同値なら React が setState をバイパスする（微小変動での再描画を避ける）
+      setMaxHeight(Math.max(MIN_LIST_HEIGHT, Math.round(available)))
+    }
+
+    // body 全体を監視するため入力中の文字変化等でも多発する。1フレームに集約して無駄な再計算を防ぐ
+    let rafId = 0
+    const scheduleRecalc = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        recalc()
+      })
     }
 
     recalc()
-    window.addEventListener('resize', recalc)
-    window.addEventListener('orientationchange', recalc)
+    window.addEventListener('resize', scheduleRecalc)
+    window.addEventListener('orientationchange', scheduleRecalc)
 
     // テーマ変更等でカレンダー高が変わると top も変わるので、レイアウト変化に追従する
-    const ro = new ResizeObserver(recalc)
+    const ro = new ResizeObserver(scheduleRecalc)
     ro.observe(document.body)
 
     return () => {
-      window.removeEventListener('resize', recalc)
-      window.removeEventListener('orientationchange', recalc)
+      if (rafId) cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', scheduleRecalc)
+      window.removeEventListener('orientationchange', scheduleRecalc)
       ro.disconnect()
     }
   }, [reserveBottom])

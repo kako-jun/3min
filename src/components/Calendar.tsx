@@ -27,14 +27,15 @@ export function Calendar() {
   const [comment, setComment] = useState('')
   // コメント入力欄ラッパ。実測してDayEditorが下に確保すべき余白として渡す（画面外に消さない）
   const commentBoxRef = useRef<HTMLDivElement>(null)
-  const [commentReserve, setCommentReserve] = useState(0)
+  // 単一行inputの概算初期値。useLayoutEffectの実測で即上書きされるが、初回フレームでリストが過大高さになるのを防ぐ
+  const [commentReserve, setCommentReserve] = useState(44)
 
   // コメント欄の高さを実測し、DayEditorの下端reserveとして反映する
   useLayoutEffect(() => {
     const box = commentBoxRef.current
     if (!box) return
     const measure = () => {
-      // ラッパのmt-2(8px)を含む占有高さ＋下に少し余白を残す
+      // offsetHeightはマージンを含まないので、ラッパのmt-2(8px)分を足して下の余白を確保する
       setCommentReserve(box.offsetHeight + 8)
     }
     measure()
