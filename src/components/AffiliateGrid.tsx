@@ -39,7 +39,7 @@ export function AffiliateGrid() {
                   decoding="async"
                   width={120}
                   height={120}
-                  className="absolute inset-0 h-full w-full scale-110 object-cover transition-transform duration-200 ease-out group-hover:scale-[1.18]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-105"
                   onError={(e) => {
                     ;(e.currentTarget as HTMLImageElement).style.visibility = 'hidden'
                   }}
