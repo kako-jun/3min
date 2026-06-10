@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faReply } from '@fortawesome/free-solid-svg-icons'
@@ -25,15 +25,26 @@ export function Calendar() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [isCopying, setIsCopying] = useState(false)
   const [comment, setComment] = useState('')
-  const [isWideScreen, setIsWideScreen] = useState(false)
+  // コメント入力欄ラッパ。実測してDayEditorが下に確保すべき余白として渡す（画面外に消さない）
+  const commentBoxRef = useRef<HTMLDivElement>(null)
+  const [commentReserve, setCommentReserve] = useState(0)
 
-  // 画面幅を監視（lg: 1024px以上）
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)')
-    setIsWideScreen(mediaQuery.matches)
-    const handler = (e: MediaQueryListEvent) => setIsWideScreen(e.matches)
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
+  // コメント欄の高さを実測し、DayEditorの下端reserveとして反映する
+  useLayoutEffect(() => {
+    const box = commentBoxRef.current
+    if (!box) return
+    const measure = () => {
+      // ラッパのmt-2(8px)を含む占有高さ＋下に少し余白を残す
+      setCommentReserve(box.offsetHeight + 8)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    const ro = new ResizeObserver(measure)
+    ro.observe(box)
+    return () => {
+      window.removeEventListener('resize', measure)
+      ro.disconnect()
+    }
   }, [])
 
   // 月が変わったらコメントを読み込む
@@ -94,9 +105,9 @@ export function Calendar() {
         </div>
         {/* 日ごとの編集領域 */}
         <div className="lg:w-1/2">
-          <DayEditor showAllDays={isWideScreen} />
+          <DayEditor reserveBottom={commentReserve} />
           {/* コメント入力欄 */}
-          <div className="mt-2">
+          <div ref={commentBoxRef} className="mt-2">
             <input
               id="calendar-comment-input"
               type="text"
