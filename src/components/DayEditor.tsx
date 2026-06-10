@@ -30,6 +30,8 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
   const [clipboard, setClipboard] = useState<Partial<DayEntry>>({})
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const selectedRowRef = useRef<HTMLDivElement>(null)
+  // 表の行タップ由来の選択はスクロールさせるべき日付を記録（カレンダー由来と区別）
+  const skipScrollDateRef = useRef<string | null>(null)
 
   // アニメーション方向を追跡
   const prevSelectedDateRef = useRef<string | null>(null)
@@ -69,6 +71,14 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
     [clipboard, updateEntry]
   )
 
+  const handleRowSelect = useCallback(
+    (date: string) => {
+      skipScrollDateRef.current = date
+      setSelectedDate(date)
+    },
+    [setSelectedDate]
+  )
+
   const currentMonthPrefix = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
   const isValidSelection = selectedDate && selectedDate.startsWith(currentMonthPrefix)
 
@@ -106,10 +116,20 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
         }
       })
 
-  // 選択日が変わったらスクロール（showAllDaysモードのみ）
+  // 選択日が変わったとき、カレンダー由来かつ画面外のときだけスクロールして見せる（showAllDaysモードのみ）。
+  // 表の行タップ由来はスクロールしない。
   useEffect(() => {
-    if (showAllDays && selectedRowRef.current && scrollContainerRef.current) {
-      selectedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    if (!showAllDays || !selectedRowRef.current || !scrollContainerRef.current) return
+    const fromRowTap = skipScrollDateRef.current === selectedDate
+    skipScrollDateRef.current = null
+    if (fromRowTap) return
+    const row = selectedRowRef.current
+    const container = scrollContainerRef.current
+    const rowRect = row.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const fullyVisible = rowRect.top >= containerRect.top && rowRect.bottom <= containerRect.bottom
+    if (!fullyVisible) {
+      row.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [showAllDays, selectedDate])
 
@@ -153,7 +173,7 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
               onUpdate={updateEntry}
               onCopy={handleCopy}
               onPaste={handlePaste}
-              onSelect={setSelectedDate}
+              onSelect={handleRowSelect}
             />
           </div>
         ))}
