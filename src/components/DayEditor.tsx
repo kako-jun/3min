@@ -30,7 +30,7 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
   const [clipboard, setClipboard] = useState<Partial<DayEntry>>({})
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const selectedRowRef = useRef<HTMLDivElement>(null)
-  // 表の行タップ由来の選択はスクロールさせるべき日付を記録（カレンダー由来と区別）
+  // 表内の操作（行タップ・入力フォーカス等）由来の選択日を記録する。この日付の選択ではスクロールしない（カレンダー由来と区別）
   const skipScrollDateRef = useRef<string | null>(null)
 
   // アニメーション方向を追跡
@@ -117,12 +117,12 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
       })
 
   // 選択日が変わったとき、カレンダー由来かつ画面外のときだけスクロールして見せる（showAllDaysモードのみ）。
-  // 表の行タップ由来はスクロールしない。
+  // 表内の操作由来はスクロールしない。
+  // フラグは「一度きり」の意味なので、どの経路（early return 含む）でも必ず先頭でクリアする。
   useEffect(() => {
-    if (!showAllDays || !selectedRowRef.current || !scrollContainerRef.current) return
     const fromRowTap = skipScrollDateRef.current === selectedDate
     skipScrollDateRef.current = null
-    if (fromRowTap) return
+    if (!showAllDays || !selectedRowRef.current || !scrollContainerRef.current || fromRowTap) return
     const row = selectedRowRef.current
     const container = scrollContainerRef.current
     const rowRect = row.getBoundingClientRect()
