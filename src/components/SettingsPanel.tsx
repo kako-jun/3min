@@ -516,7 +516,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
             {/* Amazon affiliate × 3 商品 + Amazon トップ応援ボタン */}
             <hr
-              className="w-full max-w-sm"
+              className="mt-2 w-full max-w-sm"
               style={{ borderColor: appTheme.textMuted, opacity: 0.2 }}
             />
             <div className="flex w-full max-w-sm flex-col items-center gap-3">
