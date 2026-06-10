@@ -76,7 +76,9 @@
     "aboutApp": "このアプリについて"
   },
   "about": {
-    "author": "作者"
+    "author": "作者",
+    "amazonSupport": "Amazon で応援する",
+    "amazonHint": "リンク先の商品でなくても、\nここから買い物するだけで応援になります"
   },
   "actions": {
     "share": "シェア",

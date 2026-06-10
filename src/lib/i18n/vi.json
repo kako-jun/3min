@@ -90,7 +90,9 @@
     "aboutApp": "Về ứng dụng này"
   },
   "about": {
-    "author": "Tác giả"
+    "author": "Tác giả",
+    "amazonSupport": "Ủng hộ qua Amazon",
+    "amazonHint": "Dù không phải sản phẩm này,\nchỉ cần mua sắm qua đây là đã ủng hộ"
   },
   "actions": {
     "share": "Chia sẻ",

@@ -76,7 +76,9 @@
     "aboutApp": "이 앱에 대해"
   },
   "about": {
-    "author": "제작자"
+    "author": "제작자",
+    "amazonSupport": "Amazon에서 응원하기",
+    "amazonHint": "이 상품이 아니어도,\n여기서 쇼핑하면 응원이 됩니다"
   },
   "actions": {
     "share": "공유",

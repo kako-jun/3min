@@ -90,7 +90,9 @@
     "aboutApp": "Sobre este app"
   },
   "about": {
-    "author": "Autor"
+    "author": "Autor",
+    "amazonSupport": "Apoiar na Amazon",
+    "amazonHint": "Mesmo outros produtos,\ncomprar por aqui já ajuda"
   },
   "actions": {
     "share": "Compartilhar",

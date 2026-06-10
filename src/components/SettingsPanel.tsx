@@ -18,7 +18,7 @@ import {
   faHeart,
   faHouse,
 } from '@fortawesome/free-solid-svg-icons'
-import { faGithub, faReadme } from '@fortawesome/free-brands-svg-icons'
+import { faGithub, faReadme, faAmazon } from '@fortawesome/free-brands-svg-icons'
 import { useCalendarStore } from '../lib/store'
 import { SUPPORTED_COUNTRIES, type CountryCode } from '../lib/holidays'
 import { APP_THEMES, type AppTheme, type Settings } from '../lib/types'
@@ -27,6 +27,7 @@ import { exportData, importData, type ExportData } from '../lib/storage'
 import { ToggleSwitch } from './ui/ToggleSwitch'
 import { ImageSelector } from './ui/ImageSelector'
 import { VisitorCounter } from './VisitorCounter'
+import { AffiliateGrid } from './AffiliateGrid'
 
 const APP_THEME_IDS: AppTheme[] = ['light', 'dark']
 
@@ -512,6 +513,29 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               <FontAwesomeIcon icon={faHeart} className="text-pink-500" />
               <span>Sponsor on GitHub</span>
             </a>
+
+            {/* Amazon affiliate × 3 商品 + Amazon トップ応援ボタン */}
+            <hr
+              className="w-full max-w-sm"
+              style={{ borderColor: appTheme.textMuted, opacity: 0.2 }}
+            />
+            <div className="flex w-full max-w-sm flex-col items-center gap-3">
+              <AffiliateGrid />
+              <a
+                href="https://amzn.to/4vcZqRx"
+                target="_blank"
+                rel="noopener noreferrer sponsored nofollow"
+                className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm transition-all hover:opacity-80"
+                style={{
+                  backgroundColor: appTheme.bg,
+                  borderColor: appTheme.textMuted,
+                  color: appTheme.text,
+                }}
+              >
+                <FontAwesomeIcon icon={faAmazon} />
+                <span>{t('about.amazonSupport')}</span>
+              </a>
+            </div>
           </div>
         </div>
 

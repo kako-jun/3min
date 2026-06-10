@@ -90,7 +90,9 @@
     "aboutApp": "यो एपको बारेमा"
   },
   "about": {
-    "author": "लेखक"
+    "author": "लेखक",
+    "amazonSupport": "Amazon मा सहयोग गर्नुहोस्",
+    "amazonHint": "यी सामान नभए पनि,\nयहाँबाट किनमेल गर्दा सहयोग पुग्छ"
   },
   "actions": {
     "share": "साझा गर्नुहोस्",

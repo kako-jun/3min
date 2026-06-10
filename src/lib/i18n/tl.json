@@ -90,7 +90,9 @@
     "aboutApp": "Tungkol sa app na ito"
   },
   "about": {
-    "author": "May-akda"
+    "author": "May-akda",
+    "amazonSupport": "Suportahan sa Amazon",
+    "amazonHint": "Kahit ibang produkto,\nmamili lang dito ay malaking tulong na"
   },
   "actions": {
     "share": "Ibahagi",

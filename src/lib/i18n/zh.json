@@ -76,7 +76,9 @@
     "aboutApp": "关于此应用"
   },
   "about": {
-    "author": "作者"
+    "author": "作者",
+    "amazonSupport": "在 Amazon 上支持",
+    "amazonHint": "即使不是这些商品，\n只要通过这里购物就能支持我们"
   },
   "actions": {
     "share": "分享",
