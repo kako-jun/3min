@@ -1,51 +1,31 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useCallback, useRef, useEffect, useLayoutEffect } from 'react'
 import { useCalendarStore } from '../lib/store'
-import { format, addDays, getDaysInMonth } from 'date-fns'
-import { APP_THEMES } from '../lib/types'
+import { format, getDaysInMonth } from 'date-fns'
 import type { DayEntry } from '../lib/types'
 import { serializeEntry, deserializeEntry } from '../lib/entry'
 import { DayRow } from './DayRow'
 
-/** "YYYY-MM-DD"文字列をローカル時間のDateに変換（UTCずれ防止） */
-const parseLocalDate = (dateStr: string): Date => {
-  const parts = dateStr.split('-').map(Number)
-  return new Date(parts[0] ?? 0, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-}
-
 interface DayEditorProps {
-  showAllDays?: boolean
+  /** リスト下に確保する余白px（コメント入力欄＋マージン分）。Calendar側が実測して渡す。 */
+  reserveBottom?: number
 }
 
-export function DayEditor({ showAllDays = false }: DayEditorProps) {
-  const { t } = useTranslation()
+/** 極端に低いlandscapeでも最低限の行が見える下限。1行≈88pxなので2行強を確保する。 */
+const MIN_LIST_HEIGHT = 180
+
+export function DayEditor({ reserveBottom = 0 }: DayEditorProps) {
   const view = useCalendarStore((state) => state.view)
   const getEntry = useCalendarStore((state) => state.getEntry)
   const updateEntry = useCalendarStore((state) => state.updateEntry)
   const selectedDate = useCalendarStore((state) => state.selectedDate)
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate)
-  const settings = useCalendarStore((state) => state.settings)
-  const appTheme = APP_THEMES[settings.appTheme]
   const [clipboard, setClipboard] = useState<Partial<DayEntry>>({})
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const selectedRowRef = useRef<HTMLDivElement>(null)
   // 表内の操作（行タップ・入力フォーカス等）由来の選択日を記録する。この日付の選択ではスクロールしない（カレンダー由来と区別）
   const skipScrollDateRef = useRef<string | null>(null)
-
-  // アニメーション方向を追跡
-  const prevSelectedDateRef = useRef<string | null>(null)
-
-  let direction = 0
-  if (selectedDate && prevSelectedDateRef.current && selectedDate !== prevSelectedDateRef.current) {
-    const prev = parseLocalDate(prevSelectedDateRef.current).getTime()
-    const curr = parseLocalDate(selectedDate).getTime()
-    direction = curr > prev ? 1 : -1
-  }
-
-  useEffect(() => {
-    prevSelectedDateRef.current = selectedDate
-  })
+  // 画面下端まで使い切る動的な最大高さ
+  const [maxHeight, setMaxHeight] = useState<number>(MIN_LIST_HEIGHT)
 
   const handleCopy = useCallback((entry: Partial<DayEntry>) => {
     setClipboard(entry)
@@ -79,50 +59,68 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
     [setSelectedDate]
   )
 
-  const currentMonthPrefix = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
-  const isValidSelection = selectedDate && selectedDate.startsWith(currentMonthPrefix)
+  // 月の全日を生成（唯一のレンダリング対象）
+  const allDaysOfMonth = Array.from(
+    { length: getDaysInMonth(new Date(view.year, view.month)) },
+    (_, i) => {
+      const date = new Date(view.year, view.month, i + 1)
+      const dateString = format(date, 'yyyy-MM-dd')
+      return {
+        date,
+        dateString,
+        entry: getEntry(dateString),
+        isSelected: dateString === selectedDate,
+      }
+    }
+  )
 
-  // showAllDaysモード: 月の全日を生成
-  const allDaysOfMonth = showAllDays
-    ? Array.from({ length: getDaysInMonth(new Date(view.year, view.month)) }, (_, i) => {
-        const date = new Date(view.year, view.month, i + 1)
-        const dateString = format(date, 'yyyy-MM-dd')
-        return {
-          date,
-          dateString,
-          entry: getEntry(dateString),
-          isSelected: dateString === selectedDate,
-          isPlaceholder: false,
-        }
+  // 動的な最大高さを計算する。
+  // maxHeight = ビューポート高さ − リスト上端top − 下に残す余白（コメント欄＋マージン）。
+  // window.innerHeight は 100dvh 相当でモバイルのアドレスバー伸縮に追従する。
+  useLayoutEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const recalc = () => {
+      const top = container.getBoundingClientRect().top
+      const available = window.innerHeight - top - reserveBottom
+      // 丸めて同値なら React が setState をバイパスする（微小変動での再描画を避ける）
+      setMaxHeight(Math.max(MIN_LIST_HEIGHT, Math.round(available)))
+    }
+
+    // body 全体を監視するため入力中の文字変化等でも多発する。1フレームに集約して無駄な再計算を防ぐ
+    let rafId = 0
+    const scheduleRecalc = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        recalc()
       })
-    : []
+    }
 
-  // 通常モード: 選択日の前後1日を含む3日分
-  const selectedDateObj = selectedDate
-    ? parseLocalDate(selectedDate)
-    : new Date(view.year, view.month, 1)
-  const daysToShow = showAllDays
-    ? allDaysOfMonth
-    : [-1, 0, 1].map((offset) => {
-        const date = addDays(selectedDateObj, offset)
-        const dateString = format(date, 'yyyy-MM-dd')
-        const isInCurrentMonth = dateString.startsWith(currentMonthPrefix)
-        return {
-          date,
-          dateString,
-          entry: isInCurrentMonth ? getEntry(dateString) : undefined,
-          isSelected: offset === 0,
-          isPlaceholder: !isInCurrentMonth,
-        }
-      })
+    recalc()
+    window.addEventListener('resize', scheduleRecalc)
+    window.addEventListener('orientationchange', scheduleRecalc)
 
-  // 選択日が変わったとき、カレンダー由来かつ画面外のときだけスクロールして見せる（showAllDaysモードのみ）。
+    // テーマ変更等でカレンダー高が変わると top も変わるので、レイアウト変化に追従する
+    const ro = new ResizeObserver(scheduleRecalc)
+    ro.observe(document.body)
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      window.removeEventListener('resize', scheduleRecalc)
+      window.removeEventListener('orientationchange', scheduleRecalc)
+      ro.disconnect()
+    }
+  }, [reserveBottom])
+
+  // 選択日が変わったとき、カレンダー由来かつ画面外のときだけスクロールして見せる。
   // 表内の操作由来はスクロールしない。
-  // フラグは「一度きり」の意味なので、どの経路（early return 含む）でも必ず先頭でクリアする。
+  // フラグは「一度きり」の意味なので、どの経路でも必ず先頭でクリアする。
   useEffect(() => {
     const fromRowTap = skipScrollDateRef.current === selectedDate
     skipScrollDateRef.current = null
-    if (!showAllDays || !selectedRowRef.current || !scrollContainerRef.current || fromRowTap) return
+    if (!selectedRowRef.current || !scrollContainerRef.current || fromRowTap) return
     const row = selectedRowRef.current
     const container = scrollContainerRef.current
     const rowRect = row.getBoundingClientRect()
@@ -131,94 +129,27 @@ export function DayEditor({ showAllDays = false }: DayEditorProps) {
     if (!fullyVisible) {
       row.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
-  }, [showAllDays, selectedDate])
+  }, [selectedDate])
 
-  // 選択された日がない場合（通常モードのみ）
-  if (!showAllDays && !isValidSelection) {
-    return (
-      <div
-        className="rounded p-4 text-center text-sm"
-        style={{ backgroundColor: appTheme.surface, color: appTheme.textMuted }}
-      >
-        {t('editor.selectDay')}
-      </div>
-    )
-  }
-
-  // アニメーションバリアント
-  const rowVariants = {
-    initial: (dir: number) => ({ y: dir * 20, opacity: 0 }),
-    animate: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'tween' as const, duration: 0.15, ease: 'easeOut' as const },
-    },
-    exit: (dir: number) => ({
-      y: dir * -20,
-      opacity: 0,
-      transition: { type: 'tween' as const, duration: 0.15, ease: 'easeIn' as const },
-    }),
-  }
-
-  // showAllDaysモード: スクロール可能なリスト
-  if (showAllDays) {
-    return (
-      <div ref={scrollContainerRef} className="flex max-h-[500px] flex-col gap-1 overflow-y-auto">
-        {daysToShow.map(({ date, dateString, entry, isSelected }) => (
-          <div key={dateString} ref={isSelected ? selectedRowRef : undefined}>
-            <DayRow
-              date={date}
-              entry={entry}
-              isSelected={isSelected}
-              onUpdate={updateEntry}
-              onCopy={handleCopy}
-              onPaste={handlePaste}
-              onSelect={handleRowSelect}
-            />
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  // 通常モード: アニメーション付き3日表示
   return (
-    <div className="flex flex-col gap-2 overflow-hidden">
-      <AnimatePresence initial={false} custom={direction} mode="popLayout">
-        {daysToShow.map(({ date, dateString, entry, isSelected, isPlaceholder }) =>
-          isPlaceholder ? (
-            <motion.div
-              key={dateString}
-              custom={direction}
-              variants={rowVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="h-[88px] rounded"
-              style={{ backgroundColor: appTheme.surface, opacity: 0.3 }}
-            />
-          ) : (
-            <motion.div
-              key={dateString}
-              custom={direction}
-              variants={rowVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-            >
-              <DayRow
-                date={date}
-                entry={entry}
-                isSelected={isSelected}
-                onUpdate={updateEntry}
-                onCopy={handleCopy}
-                onPaste={handlePaste}
-                onSelect={setSelectedDate}
-              />
-            </motion.div>
-          )
-        )}
-      </AnimatePresence>
+    <div
+      ref={scrollContainerRef}
+      className="flex flex-col gap-1 overflow-y-auto"
+      style={{ maxHeight }}
+    >
+      {allDaysOfMonth.map(({ date, dateString, entry, isSelected }) => (
+        <div key={dateString} ref={isSelected ? selectedRowRef : undefined}>
+          <DayRow
+            date={date}
+            entry={entry}
+            isSelected={isSelected}
+            onUpdate={updateEntry}
+            onCopy={handleCopy}
+            onPaste={handlePaste}
+            onSelect={handleRowSelect}
+          />
+        </div>
+      ))}
     </div>
   )
 }

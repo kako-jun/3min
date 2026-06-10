@@ -223,6 +223,8 @@ Font rendering: `optimizeLegibility`, antialiased.
 
 Single breakpoint. The app is fundamentally two-pane on desktop, stacked on mobile.
 
+The day editor is a single all-days scroll list in both layouts (no 3-day fixed mode). Its height grows dynamically to the bottom of the viewport — tall devices show more days, short devices fewer. The list reserves the comment box's measured height so the comment input below stays on screen whenever the viewport can fit the calendar plus the minimum list height (on very short viewports a minimum list height is enforced and the page scrolls instead).
+
 ### Canvas Scaling
 
 Calendar canvas (500x500 base) scales to fit container width via JavaScript `matchMedia`.
@@ -245,7 +247,7 @@ Colors: neutral, red, orange, yellow, green, blue, purple
 - Time-of-day colors are fixed regardless of theme (amber/lime/green/orange/purple)
 - 150ms transitions everywhere. Consistent, fast feedback
 - Inter + Zen Kaku Gothic Antique for Japanese support
-- Two-pane on desktop, stacked on mobile. Single breakpoint at 1024px
+- Two-pane on desktop, stacked on mobile. Single breakpoint at 1024px. The day editor is always a single all-days scroll list (no 3-day fixed mode) that fills down to the bottom of the viewport
 - Compact: max text size 14px for UI, canvas uses its own render sizes
 - Ring-based selection indicators (`ring-2 ring-offset-1`) instead of borders or shadows
 
