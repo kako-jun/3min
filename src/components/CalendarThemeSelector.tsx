@@ -31,17 +31,20 @@ export function CalendarThemeSelector() {
   const { t } = useTranslation()
   const settings = useCalendarStore((state) => state.settings)
   const view = useCalendarStore((state) => state.view)
-  const getCalendarTheme = useCalendarStore((state) => state.getCalendarTheme)
-  const getCalendarGridStyle = useCalendarStore((state) => state.getCalendarGridStyle)
+  // スライスを直接購読する。getter 関数経由だと参照が安定で、テーマ/グリッド変更時に
+  // この選択リング（白枠）が再レンダされず追従しない（Canvas はスライス購読済みなので本体だけ反映される）
+  const calendarThemes = useCalendarStore((state) => state.calendarThemes)
+  const calendarGridStyles = useCalendarStore((state) => state.calendarGridStyles)
   const updateCalendarTheme = useCalendarStore((state) => state.updateCalendarTheme)
   const updateCalendarGridStyle = useCalendarStore((state) => state.updateCalendarGridStyle)
   const appTheme = APP_THEMES[settings.appTheme]
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // 現在表示中の月のテーマとグリッドスタイルを取得
-  const currentThemeId = getCalendarTheme(view.year, view.month)
-  const currentGridStyle = getCalendarGridStyle(view.year, view.month)
+  // 現在表示中の月のテーマとグリッドスタイルを取得（store の getter と同じフォールバック）
+  const monthKey = `${view.year}-${String(view.month + 1).padStart(2, '0')}`
+  const currentThemeId = calendarThemes[monthKey] ?? settings.calendarTheme
+  const currentGridStyle = calendarGridStyles[monthKey] ?? 'rounded'
 
   const handleThemeChange = (theme: CalendarThemeId) => {
     updateCalendarTheme(view.year, view.month, theme)
