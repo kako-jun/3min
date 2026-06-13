@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Đã sao chép vào clipboard",
+    "pasted": "Đã dán",
     "downloaded": "Đã tải xuống",
     "shareFailed": "Chia sẻ thất bại",
     "downloadFailed": "Tải xuống thất bại"

@@ -104,6 +104,7 @@
   },
   "messages": {
     "copied": "클립보드에 복사되었습니다",
+    "pasted": "붙여넣었습니다",
     "downloaded": "다운로드 완료",
     "shareFailed": "공유 실패",
     "downloadFailed": "다운로드 실패"

@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "क्लिपबोर्डमा प्रतिलिपि गरियो",
+    "pasted": "टाँसियो",
     "downloaded": "डाउनलोड भयो",
     "shareFailed": "साझा गर्न असफल",
     "downloadFailed": "डाउनलोड असफल"

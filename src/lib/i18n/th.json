@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+    "pasted": "วางแล้ว",
     "downloaded": "ดาวน์โหลดแล้ว",
     "shareFailed": "แชร์ล้มเหลว",
     "downloadFailed": "ดาวน์โหลดล้มเหลว"

@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Copiado al portapapeles",
+    "pasted": "Pegado",
     "downloaded": "Descargado",
     "shareFailed": "Error al compartir",
     "downloadFailed": "Error al descargar"

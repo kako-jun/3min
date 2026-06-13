@@ -104,6 +104,7 @@
   },
   "messages": {
     "copied": "已复制到剪贴板",
+    "pasted": "已粘贴",
     "downloaded": "已下载",
     "shareFailed": "分享失败",
     "downloadFailed": "下载失败"

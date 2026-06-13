@@ -32,21 +32,24 @@ export function DayEditor({ reserveBottom = 0 }: DayEditorProps) {
     navigator.clipboard.writeText(serializeEntry(entry)).catch(() => {})
   }, [])
 
+  // 実際に貼り付けたら true を返す（DayRow のフィードバック表示用）
   const handlePaste = useCallback(
-    async (date: string) => {
+    async (date: string): Promise<boolean> => {
       try {
         const systemClipboard = await navigator.clipboard.readText()
         if (systemClipboard) {
           const parsed = deserializeEntry(systemClipboard)
           if (parsed) {
             updateEntry(date, parsed)
-            return
+            return true
           }
         }
       } catch {}
       if (Object.keys(clipboard).length > 0) {
         updateEntry(date, clipboard)
+        return true
       }
+      return false
     },
     [clipboard, updateEntry]
   )

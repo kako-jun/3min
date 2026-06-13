@@ -104,6 +104,7 @@
   },
   "messages": {
     "copied": "クリップボードにコピーしました",
+    "pasted": "貼り付けました",
     "downloaded": "ダウンロードしました",
     "shareFailed": "共有に失敗しました",
     "downloadFailed": "ダウンロードに失敗しました"
