@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Nakopya sa clipboard",
+    "pasted": "Na-paste",
     "downloaded": "Na-download",
     "shareFailed": "Nabigo ang pagbabahagi",
     "downloadFailed": "Nabigo ang pag-download"

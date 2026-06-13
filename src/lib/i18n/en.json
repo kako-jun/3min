@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Copied to clipboard",
+    "pasted": "Pasted",
     "downloaded": "Downloaded",
     "shareFailed": "Share failed",
     "downloadFailed": "Download failed"

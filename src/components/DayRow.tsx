@@ -18,7 +18,7 @@ interface DayRowProps {
   isSelected: boolean
   onUpdate: (date: string, updates: Partial<Omit<DayEntry, 'date'>>) => void
   onCopy: (entry: Partial<DayEntry>) => void
-  onPaste: (date: string) => void
+  onPaste: (date: string) => Promise<boolean>
   onSelect: (date: string) => void
 }
 
@@ -56,6 +56,21 @@ export function DayRow({
   const entryTimeFrom = entry?.timeFrom ?? ''
   const entryTimeTo = entry?.timeTo ?? ''
   const freeText = entry?.text ?? ''
+
+  // コピー/ペーストの完了フィードバック（行内の小さなトースト）
+  const [toast, setToast] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const showToast = (msg: string) => {
+    setToast(msg)
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    toastTimerRef.current = setTimeout(() => setToast(null), 1500)
+  }
+  useEffect(
+    () => () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    },
+    []
+  )
 
   // IME入力中フラグ（Android日本語入力対応）
   const isComposingRef = useRef(false)
@@ -168,6 +183,16 @@ export function DayRow({
       style={{ backgroundColor: appTheme.surface }}
       onClick={handleFocus}
     >
+      {/* コピー/ペースト完了トースト（行内に収める＝スクロールコンテナのクリップ対策） */}
+      {toast && (
+        <div
+          className="pointer-events-none absolute left-1/2 top-1 z-50 -translate-x-1/2 whitespace-nowrap rounded px-2 py-0.5 text-xs shadow-lg"
+          style={{ backgroundColor: appTheme.accent, color: '#ffffff' }}
+        >
+          {toast}
+        </div>
+      )}
+
       {/* 選択枠（アニメーション付き） */}
       {isSelected && (
         <motion.div
@@ -258,6 +283,7 @@ export function DayRow({
               timeTo: localTimeTo,
               text: localFreeText,
             })
+            showToast(t('messages.copied'))
           }}
           className="shrink-0 rounded px-2 py-1 text-xs transition-opacity hover:opacity-80"
           style={{ backgroundColor: appTheme.bg, color: appTheme.text }}
@@ -268,9 +294,10 @@ export function DayRow({
 
         {/* ペーストボタン */}
         <button
-          onClick={() => {
+          onClick={async () => {
             handleFocus()
-            onPaste(dateString)
+            const pasted = await onPaste(dateString)
+            if (pasted) showToast(t('messages.pasted'))
           }}
           className="shrink-0 rounded px-2 py-1 text-xs transition-opacity hover:opacity-80"
           style={{ backgroundColor: appTheme.bg, color: appTheme.text }}

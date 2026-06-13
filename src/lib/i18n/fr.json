@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Copié dans le presse-papiers",
+    "pasted": "Collé",
     "downloaded": "Téléchargé",
     "shareFailed": "Échec du partage",
     "downloadFailed": "Échec du téléchargement"

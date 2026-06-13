@@ -118,6 +118,7 @@
   },
   "messages": {
     "copied": "Copiado para a área de transferência",
+    "pasted": "Colado",
     "downloaded": "Baixado",
     "shareFailed": "Falha ao compartilhar",
     "downloadFailed": "Falha ao baixar"
