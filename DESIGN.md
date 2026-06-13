@@ -104,6 +104,7 @@ Font rendering: `optimizeLegibility`, antialiased.
 - Padding: `8px`
 - Border radius: `4px`
 - Selection ring: `2px inset` with accent color, 150ms easeOut
+- Copy/Paste feedback: on copy (and on a paste that actually applied), show a small accent-color toast pill centered at the top of the row for ~1.5s (`messages.copied` / `messages.pasted`). Kept inside the row bounds because the list scroll container clips overflow.
 
 ### Toggle Switch
 
