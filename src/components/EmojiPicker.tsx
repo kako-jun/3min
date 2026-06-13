@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -31,15 +31,17 @@ export function EmojiPicker({ onSelect, appTheme }: EmojiPickerProps) {
   const popupRef = useRef<HTMLDivElement>(null)
   const theme = APP_THEMES[appTheme]
 
-  // ポップアップ位置を計算
-  useEffect(() => {
-    if (!isOpen || !buttonRef.current) return
+  // ポップアップ位置を計算。
+  // 高さは固定見積もりだと言語(タブの flex-wrap 行数)や幅でズレてボタンから浮くため、
+  // 描画後の実寸を useLayoutEffect で測ってボタンのすぐ上に配置する（描画前に補正＝ちらつき無し）。
+  useLayoutEffect(() => {
+    if (!isOpen || !buttonRef.current || !popupRef.current) return
 
     const rect = buttonRef.current.getBoundingClientRect()
-    const popupWidth = 256 // w-64 = 16rem = 256px
-    const popupHeight = 280 // 推定高さ
+    const popupWidth = popupRef.current.offsetWidth || 256 // w-64 = 256px
+    const popupHeight = popupRef.current.offsetHeight // 実測（タブ折返しで可変）
 
-    // 画面内に収まるよう調整
+    // ボタンのすぐ上に出す
     let top = rect.top - popupHeight - 4
     let left = rect.right - popupWidth
 
@@ -54,7 +56,7 @@ export function EmojiPicker({ onSelect, appTheme }: EmojiPickerProps) {
     }
 
     setPopupPosition({ top, left })
-  }, [isOpen])
+  }, [isOpen, selectedCategory])
 
   // クリック外側で閉じる
   useEffect(() => {
