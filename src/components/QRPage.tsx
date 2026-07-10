@@ -93,7 +93,7 @@ export function QRPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-2">
+    <div className="mx-auto max-w-6xl px-2 pb-8">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <AppHeader />
