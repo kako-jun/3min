@@ -224,7 +224,7 @@ Font rendering: `optimizeLegibility`, antialiased.
 
 Single breakpoint. The app is fundamentally two-pane on desktop, stacked on mobile.
 
-The day editor is a single all-days scroll list in both layouts (no 3-day fixed mode). Its height grows dynamically to the bottom of the viewport — tall devices show more days, short devices fewer. The list reserves the comment box's measured height so the comment input below stays on screen whenever the viewport can fit the calendar plus the minimum list height (on very short viewports a minimum list height is enforced and the page scrolls instead).
+The day editor is a single all-days scroll list in both layouts (no 3-day fixed mode). Its height grows dynamically to the bottom of the viewport — tall devices show more days, short devices fewer. The list reserves the comment box's measured height so the comment input below always stays on screen: as long as the calendar and header alone haven't already consumed that reserved space, the list height shrinks below the minimum list height if needed to keep the comment box visible. Only on extremely short viewports — where the calendar and header alone exceed or reach the available height minus the reserved comment box space — does the minimum list height get enforced instead, pushing the comment box off-screen and making the page scroll.
 
 ### Canvas Scaling
 

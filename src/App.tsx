@@ -46,7 +46,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-full pb-8" style={{ backgroundColor: appTheme.bg, color: appTheme.text }}>
+    <div className="min-h-full" style={{ backgroundColor: appTheme.bg, color: appTheme.text }}>
       <Routes>
         <Route path="/" element={<Navigate to="/calendar" replace />} />
         <Route path="/calendar" element={<Calendar />} />
