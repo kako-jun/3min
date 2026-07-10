@@ -88,7 +88,7 @@ export function DayEditor({ reserveBottom = 0 }: DayEditorProps) {
       const top = container.getBoundingClientRect().top
       const available = window.innerHeight - top - reserveBottom
       // 丸めて同値なら React が setState をバイパスする（微小変動での再描画を避ける）
-      setMaxHeight(Math.max(MIN_LIST_HEIGHT, Math.round(available)))
+      setMaxHeight(available > 0 ? Math.round(available) : MIN_LIST_HEIGHT)
     }
 
     // body 全体を監視するため入力中の文字変化等でも多発する。1フレームに集約して無駄な再計算を防ぐ
