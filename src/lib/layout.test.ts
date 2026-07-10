@@ -22,13 +22,15 @@ describe('computeDayEditorMaxHeight', () => {
     expect(computeDayEditorMaxHeight(0, MIN)).toBe(180)
   })
 
-  it('uses available as-is just above the zero boundary (available=1)', () => {
-    expect(computeDayEditorMaxHeight(1, MIN)).toBe(1)
+  it('falls back to minListHeight when available rounds to 0 (0 < available < 1, subpixel value)', () => {
+    // Guards against checking `available > 0` on the pre-rounded value: 0.3 > 0 is
+    // true, but Math.round(0.3) is 0, which must still fall back to minListHeight
+    // instead of returning maxHeight: 0.
+    expect(computeDayEditorMaxHeight(0.3, MIN)).toBe(180)
   })
 
-  it('uses available even when it is below minListHeight (Issue #41 core fix)', () => {
-    // Old implementation clamped this up to 180, pushing the comment box off-screen.
-    expect(computeDayEditorMaxHeight(100, MIN)).toBe(100)
+  it('uses available as-is just above the zero boundary (available=1)', () => {
+    expect(computeDayEditorMaxHeight(1, MIN)).toBe(1)
   })
 
   it('uses available just below minListHeight (available=179, old impl would give 180)', () => {
@@ -41,10 +43,6 @@ describe('computeDayEditorMaxHeight', () => {
 
   it('uses available just above minListHeight (available=181)', () => {
     expect(computeDayEditorMaxHeight(181, MIN)).toBe(181)
-  })
-
-  it('uses available unchanged when comfortably above minListHeight (available=300)', () => {
-    expect(computeDayEditorMaxHeight(300, MIN)).toBe(300)
   })
 
   it('scales to large available values (available=1000)', () => {
