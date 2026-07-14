@@ -151,6 +151,18 @@ interface ExportData {
 }
 ```
 
+## PWA更新方針
+
+mypace / Agasteer と揃えた「明示ハンドラ方式」を採用（`src/main.tsx`）。
+
+- `vite-plugin-pwa` は `registerType: 'prompt'` + `injectRegister: false` とし、`virtual:pwa-register` の `registerSW()` を `main.tsx` から直接呼び出す（自動生成される`registerSW.js`スクリプトへの暗黙依存はしない）
+- 新SW検知（`onNeedRefresh`）で以下を行う:
+  1. 直近10秒以内に更新済みなら何もしない（`sessionStorage`によるreloadループ防止のcooldown）
+  2. 入力欄（`input` / `textarea` / `contentEditable`）にフォーカスがある間はreloadをdefer（3秒間隔で再チェック、最大60秒でタイムアウトして強制更新）
+  3. overlayを表示し（`pwa.updateRestarting`をi18nで表示）、1.5秒後に`updateSW(true)`でskipWaitingをトリガー
+  4. `controllerchange`イベントを待って`window.location.reload()`。2秒待っても発火しなければフォールバックでreload
+- ワークボックス側は`clientsClaim: true`のみ設定し、`skipWaiting`は設定しない（=新SWは待機状態を維持し、上記の明示的なskipWaiting呼び出しでのみ活性化する）
+
 ## 設計上の注意点
 
 ### 画像比率の一致（最重要）
