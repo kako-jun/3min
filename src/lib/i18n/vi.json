@@ -218,5 +218,10 @@
   },
   "pwa": {
     "updateRestarting": "Có phiên bản mới. Đang khởi động lại..."
+  },
+  "pwaInstall": {
+    "message": "Thêm vào màn hình chính để sử dụng thuận tiện hơn",
+    "install": "Cài đặt",
+    "later": "Để sau"
   }
 }

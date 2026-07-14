@@ -218,5 +218,10 @@
   },
   "pwa": {
     "updateRestarting": "Nueva versión disponible. Reiniciando..."
+  },
+  "pwaInstall": {
+    "message": "Añade esta app a tu pantalla de inicio para un acceso más rápido",
+    "install": "Instalar",
+    "later": "Más tarde"
   }
 }

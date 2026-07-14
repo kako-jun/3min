@@ -110,6 +110,7 @@ interface ThemeColors {
     - `calendar:themes`: 月ごとのテーマ
     - `calendar:gridStyles`: 月ごとのグリッドスタイル
     - `onboarding:dismissed`: オンボーディングツールチップの表示済みフラグ
+    - `pwa:installDismissedAt`: PWAインストール促しバナーを却下した日時（7日間再表示を抑制）
 
 ## データ管理
 

@@ -218,5 +218,10 @@
   },
   "pwa": {
     "updateRestarting": "New version available. Restarting..."
+  },
+  "pwaInstall": {
+    "message": "Add to your home screen for quicker access",
+    "install": "Install",
+    "later": "Later"
   }
 }

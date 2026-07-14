@@ -5,6 +5,7 @@ import { APP_THEMES } from './lib/types'
 import { Calendar } from './components/Calendar'
 import { QRPage } from './components/QRPage'
 import { NotFound } from './components/NotFound'
+import { InstallPrompt } from './components/InstallPrompt'
 import { useLanguageFont } from './hooks/useLanguageFont'
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
 
   return (
     <div className="min-h-full" style={{ backgroundColor: appTheme.bg, color: appTheme.text }}>
+      <InstallPrompt />
       <Routes>
         <Route path="/" element={<Navigate to="/calendar" replace />} />
         <Route path="/calendar" element={<Calendar />} />

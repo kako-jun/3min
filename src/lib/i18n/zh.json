@@ -204,5 +204,10 @@
   },
   "pwa": {
     "updateRestarting": "有新版本可用，正在重启..."
+  },
+  "pwaInstall": {
+    "message": "添加到主屏幕，使用更方便",
+    "install": "安装",
+    "later": "稍后"
   }
 }
