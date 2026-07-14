@@ -3,30 +3,30 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 import i18n from './lib/i18n'
+import {
+  DEFER_CHECK_INTERVAL_MS,
+  isUpdateCooldownActive,
+  shouldContinueDeferring,
+  SW_UPDATE_STORAGE_KEY,
+} from './lib/pwaUpdate'
 import App from './App'
 import './index.css'
 
-// SW更新ループ防止用のcooldown（更新直後の再検知を無視する）
-const SW_UPDATE_KEY = '3min-sw-update-time'
-const COOLDOWN_MS = 10000 // 10秒
+// overlayを見せてからskipWaitingを送るまでの間（ユーザーに気づかせる猶予）
+const OVERLAY_DELAY_MS = 1500
+// controllerchangeが来ない場合のfallback reloadまでの猶予
+const FALLBACK_RELOAD_MS = 2000
 
-function shouldSkipUpdate(): boolean {
-  const lastUpdate = sessionStorage.getItem(SW_UPDATE_KEY)
-  if (!lastUpdate) return false
-  const elapsed = Date.now() - parseInt(lastUpdate, 10)
-  return elapsed < COOLDOWN_MS
+function readLastUpdatedAt(): number | null {
+  const raw = sessionStorage.getItem(SW_UPDATE_STORAGE_KEY)
+  if (!raw) return null
+  const n = Number(raw)
+  return Number.isFinite(n) ? n : null
 }
 
-// テキスト入力中は即reloadすると困るため、入力欄にフォーカスがある間はreloadをdeferする
-function isEditingActiveElement(): boolean {
-  const el = document.activeElement
-  if (!el) return false
-  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return true
-  return (el as HTMLElement).isContentEditable === true
+function markUpdated(): void {
+  sessionStorage.setItem(SW_UPDATE_STORAGE_KEY, String(Date.now()))
 }
-
-const DEFER_CHECK_INTERVAL_MS = 3000
-const MAX_DEFER_MS = 60000 // 入力中がずっと続いても最大1分で強制更新する
 
 // Service Workerを登録し、更新検知時のハンドリングを行う
 const updateSW = registerSW({
@@ -41,10 +41,14 @@ const updateSW = registerSW({
   },
   onNeedRefresh() {
     // 直前に更新したばかりならスキップ（reloadループ防止）
-    if (shouldSkipUpdate()) {
+    if (isUpdateCooldownActive(readLastUpdatedAt(), Date.now())) {
       console.info('SW update skipped (cooldown)')
       return
     }
+
+    // cooldownはdefer待機に入る前に記録する。defer待機中（入力フォーム操作中など）に
+    // onNeedRefreshが複数回発火しても、2回目以降はここで弾かれ、deferループが並走しない。
+    markUpdated()
 
     const runUpdate = () => {
       console.info('New version available, reloading...')
@@ -78,38 +82,34 @@ const updateSW = registerSW({
       overlay.appendChild(message)
       document.body.appendChild(overlay)
 
-      // 更新タイムスタンプを記録
-      sessionStorage.setItem(SW_UPDATE_KEY, Date.now().toString())
-
-      // 新SWが制御を握ったらreload
-      const reloadOnControllerChange = () => {
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload()
-        })
+      // controllerchange経由のreloadとfallback timerのreloadが両方発火しうるが、
+      // 実際にreloadするのは一度だけにする
+      let reloaded = false
+      const reloadOnce = () => {
+        if (reloaded) return
+        reloaded = true
+        window.location.reload()
       }
 
-      // 1.5秒後にreload処理を開始
+      navigator.serviceWorker.addEventListener('controllerchange', reloadOnce)
+
+      // 1.5秒後にskipWaitingをトリガー
       setTimeout(async () => {
         try {
-          // updateSW呼び出し前にリスナーを設定しておく
-          reloadOnControllerChange()
-          // skipWaitingをトリガー → controllerchangeイベントが発火するはず
           await updateSW(true)
           // フォールバック: 2秒以内にcontrollerchangeが来なければ強制reload
-          setTimeout(() => {
-            window.location.reload()
-          }, 2000)
+          setTimeout(reloadOnce, FALLBACK_RELOAD_MS)
         } catch (e) {
           console.error('SW update failed:', e)
-          window.location.reload()
+          reloadOnce()
         }
-      }, 1500)
+      }, OVERLAY_DELAY_MS)
     }
 
     // 入力フォーム操作中は即reloadせず、フォーカスが外れるまで待つ
     let deferredMs = 0
     const waitForIdle = () => {
-      if (isEditingActiveElement() && deferredMs < MAX_DEFER_MS) {
+      if (shouldContinueDeferring(document.activeElement, deferredMs)) {
         deferredMs += DEFER_CHECK_INTERVAL_MS
         setTimeout(waitForIdle, DEFER_CHECK_INTERVAL_MS)
         return
