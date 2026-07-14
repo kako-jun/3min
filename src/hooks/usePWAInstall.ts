@@ -60,10 +60,13 @@ export function usePWAInstall(): UsePWAInstallReturn {
     try {
       await deferredPrompt.prompt()
       const { outcome } = await deferredPrompt.userChoice
-      setDeferredPrompt(null)
       return outcome
     } catch {
+      // 同一イベントへの.prompt()再呼び出しはブラウザに拒否されるため、
+      // 失敗時もイベントを破棄してバナーを再表示可能な状態に戻す
       return null
+    } finally {
+      setDeferredPrompt(null)
     }
   }, [deferredPrompt])
 
