@@ -160,9 +160,21 @@ mypace / hanoba と揃えた「明示ハンドラ方式」を採用。判定ロ�
   1. `isUpdateCooldownActive()`で直近10秒以内に更新済みかを判定し、該当すれば何もしない
   2. cooldownチェック通過後、**defer待機に入る前に**`sessionStorage`へ更新時刻を記録する（defer待機中に`onNeedRefresh`が複数回発火しても、2回目以降はcooldownで弾かれ、deferループが並走しないようにするため）
   3. `shouldContinueDeferring()`で入力欄（`input` / `textarea` / `contentEditable`）にフォーカスがある間はreloadをdefer（3秒間隔で再チェック、最大60秒でタイムアウトして強制更新）
-  4. overlayを表示し（`pwa.updateRestarting`をi18nで表示）、1.5秒後に`updateSW(true)`でskipWaitingをトリガー
-  5. `controllerchange`イベントを待って`window.location.reload()`。2秒待っても発火しなければフォールバックでreload。両方が発火しても実際にreloadするのは一度だけ（`reloaded`フラグでガード）
+  4. overlayを表示し（`pwa.updateRestarting`をi18nで表示）、1.5秒後に`updateSW(true)`でskipWaitingをトリガーする。**送信直前にもう一度`shouldContinueDeferring()`を評価し、入力中ならdefer待機へ戻る**
+  5. `controllerchange`イベントを待って`window.location.reload()`。2秒待っても発火しなければフォールバックでreload。両方が発火しても実際にreloadするのは一度だけ（`reloaded`フラグでガード）。controllerchangeハンドラ内・fallback内でも`shouldContinueDeferring()`を再評価するコードはあるが、下記の理由で実務上ほぼ機能しない（ベストエフォート）
 - ワークボックス側は`clientsClaim: true`のみ設定し、`skipWaiting`は設定しない（=新SWは待機状態を維持し、上記の明示的なskipWaiting呼び出しでのみ活性化する）
+
+### 再入力チェックの既知の制約（ベストエフォート）
+
+`shouldContinueDeferring()`による再チェックのうち、**確実に機能するのは「skipWaiting送信直前」の1箇所のみ**。「controllerchangeハンドラ内」「fallback内」の再チェックは、以下の理由でほぼ効かない:
+
+- `vite-plugin-pwa`の`registerSW()`（`registerType: 'prompt'`）は、`onNeedRefresh`発火時に内部の`showSkipWaitingPrompt()`が`navigator.serviceWorker`の`controllerchange`に対して`wb.addEventListener('controlling', (event) => { if (event.isUpdate) window.location.reload(); })`を**無条件**登録してから`onNeedRefresh`を呼ぶ（`vite-plugin-pwa/dist/client/build/register.js`）。この内部リスナーはアプリ起動時（`wb.register()`完了時）に登録されるため、main.tsx側の自前リスナー（`triggerSkipWaiting()`実行時＝defer完了後にようやく登録）より常に先に発火する
+- `event.isUpdate`は`Boolean(navigator.serviceWorker.controller)`（`workbox-window/Workbox.js`）で、既存controllerがある通常の「アプリ更新中」シナリオでは常に`true`
+- そのため`updateSW(true)`後に実際の`controllerchange`が発生すると、main.tsx側の`shouldContinueDeferring()`が「まだdeferすべき」と判定するより先に、ライブラリ側が無条件で`window.location.reload()`を確定させてしまう
+
+**この制約を受け入れる理由**: 3minの入力欄はデバウンス無しの都度保存方式のため、この経路でreloadされてもデータは失われない。実害は「入力中に画面が暗転してreloadされる」というUX上の割り込みのみであり、データ損失リスクではない。この残存リスクは許容する（kako-jun確認済み）。
+
+完全に塞ぐには、`vite-plugin-pwa`の`registerSW`ラッパーを迂回し、`workbox-window`の`Workbox`インスタンスを自前で制御する再設計が必要。現時点では実施せず、将来のfollow-up候補として記録するに留める。
 
 ## 設計上の注意点
 

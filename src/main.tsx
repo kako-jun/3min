@@ -127,6 +127,13 @@ const updateSW = registerSW({
     // reload直前の最終チェックポイント（controllerchangeハンドラ / fallback
     // タイマーの両方がここを経由する）。ここでも再入力を検知したらreloadせず
     // defer側へ戻る — skipWaitingは既にトリガー済みなので再送しない。
+    //
+    // 注意（ベストエフォート）: このチェックはほぼ機能しない。vite-plugin-pwaの
+    // registerSW()が内部でonNeedRefresh発火時に navigator.serviceWorker の
+    // controllerchangeへ無条件reloadリスナーを登録済みで、それが本ハンドラより
+    // 先に発火し reload を確定させてしまうため（詳細: docs/architecture.md
+    // 「再入力チェックの既知の制約」）。3minは入力欄がデバウンス無し都度保存
+    // なのでデータ損失はしないが、入力中に画面が暗転する割り込みは残る。
     const attemptReload = () => {
       if (shouldContinueDeferring(document.activeElement, deferredMs)) {
         deferAgain(attemptReload)
@@ -146,12 +153,16 @@ const updateSW = registerSW({
 
       showOverlay()
 
-      // 新SWが制御を握ったら（このタイミングでも再チェックする）reload判定へ
+      // 新SWが制御を握ったら（このタイミングでも再チェックする）reload判定へ。
+      // ただしvite-plugin-pwa自身がonNeedRefresh発火時に無条件reloadリスナーを
+      // 先に登録済みのため、実際にはそちらが先に発火し本チェックは通らないことが
+      // ほとんど（ベストエフォート。docs/architecture.md参照）
       navigator.serviceWorker.addEventListener('controllerchange', attemptReload, { once: true })
 
       updateSW(true)
         .then(() => {
           // フォールバック: 2秒以内にcontrollerchangeが来なければ強制的にreload判定へ
+          // （こちらも上と同じ理由でベストエフォート）
           setTimeout(attemptReload, FALLBACK_RELOAD_MS)
         })
         .catch((e) => {
