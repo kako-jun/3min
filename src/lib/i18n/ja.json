@@ -201,5 +201,8 @@
   "aria": {
     "previousMonth": "前月",
     "nextMonth": "翌月"
+  },
+  "pwa": {
+    "updateRestarting": "新しいバージョンがあります。再起動します..."
   }
 }

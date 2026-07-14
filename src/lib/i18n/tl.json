@@ -215,5 +215,8 @@
   "aria": {
     "previousMonth": "Nakaraang buwan",
     "nextMonth": "Susunod na buwan"
+  },
+  "pwa": {
+    "updateRestarting": "May bagong bersyon. Nagre-restart..."
   }
 }
