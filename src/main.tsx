@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 import i18n from './lib/i18n'
 import {
+  canStartUpdateFlow,
   DEFER_CHECK_INTERVAL_MS,
   isUpdateCooldownActive,
   shouldContinueDeferring,
@@ -28,6 +29,15 @@ function markUpdated(): void {
   sessionStorage.setItem(SW_UPDATE_STORAGE_KEY, String(Date.now()))
 }
 
+// モジュールレベルの「更新フロー進行中」ガード（reloadループ防止の一次防衛）。
+// UPDATE_COOLDOWN_MS(10秒) は MAX_DEFER_MS(60秒) より短いため、sessionStorage
+// のcooldownだけでは、入力継続中にcooldownが経過した後もう一度onNeedRefresh
+// が発火するケースを防げない（cooldownチェックを素通りして2本目のdefer待機/
+// runUpdateフローが並走し、overlayが二重生成される）。このフラグはreloadで
+// ページごと消えるので、成功パスではfalseに戻さない
+// （machigai-saladのServiceWorkerRegister.tsxと同型）。
+let applying = false
+
 // Service Workerを登録し、更新検知時のハンドリングを行う
 const updateSW = registerSW({
   immediate: true,
@@ -40,20 +50,33 @@ const updateSW = registerSW({
     }
   },
   onNeedRefresh() {
-    // 直前に更新したばかりならスキップ（reloadループ防止）
+    // 既に他の更新フローが進行中ならスキップ（並走防止の一次ガード）
+    if (!canStartUpdateFlow(applying)) {
+      console.info('SW update skipped (already applying)')
+      return
+    }
+
+    // 直前に更新したばかりならスキップ（reloadループ防止の二次ガード）
     if (isUpdateCooldownActive(readLastUpdatedAt(), Date.now())) {
       console.info('SW update skipped (cooldown)')
       return
     }
 
+    applying = true
+
     // cooldownはdefer待機に入る前に記録する。defer待機中（入力フォーム操作中など）に
     // onNeedRefreshが複数回発火しても、2回目以降はここで弾かれ、deferループが並走しない。
     markUpdated()
 
-    const runUpdate = () => {
+    let deferredMs = 0
+    let overlay: HTMLDivElement | null = null
+    let reloaded = false
+
+    const showOverlay = () => {
+      if (overlay) return
       console.info('New version available, reloading...')
 
-      const overlay = document.createElement('div')
+      overlay = document.createElement('div')
       overlay.style.cssText = `
         position: fixed;
         top: 0;
@@ -81,40 +104,71 @@ const updateSW = registerSW({
 
       overlay.appendChild(message)
       document.body.appendChild(overlay)
+    }
 
-      // controllerchange経由のreloadとfallback timerのreloadが両方発火しうるが、
-      // 実際にreloadするのは一度だけにする
-      let reloaded = false
-      const reloadOnce = () => {
-        if (reloaded) return
-        reloaded = true
-        window.location.reload()
+    // 入力欄にフォーカスが戻っていたらoverlayを隠し、再度defer待機に戻る。
+    // 呼び出し元がリトライ役（waitForIdle/triggerSkipWaiting/attemptReloadの
+    // いずれか）を渡し、DEFER_CHECK_INTERVAL_MS後に同じチェックポイントへ戻す。
+    const deferAgain = (retry: () => void) => {
+      overlay?.remove()
+      overlay = null
+      deferredMs += DEFER_CHECK_INTERVAL_MS
+      setTimeout(retry, DEFER_CHECK_INTERVAL_MS)
+    }
+
+    // controllerchange経由のreloadとfallback timerのreloadが両方発火しうるが、
+    // 実際にreloadするのは一度だけにする
+    const reloadOnce = () => {
+      if (reloaded) return
+      reloaded = true
+      window.location.reload()
+    }
+
+    // reload直前の最終チェックポイント（controllerchangeハンドラ / fallback
+    // タイマーの両方がここを経由する）。ここでも再入力を検知したらreloadせず
+    // defer側へ戻る — skipWaitingは既にトリガー済みなので再送しない。
+    const attemptReload = () => {
+      if (shouldContinueDeferring(document.activeElement, deferredMs)) {
+        deferAgain(attemptReload)
+        return
+      }
+      showOverlay()
+      reloadOnce()
+    }
+
+    // skipWaiting送信直前のチェックポイント。ここで再入力を検知したら
+    // defer側へ戻り、同じチェックポイントを再試行する。
+    const triggerSkipWaiting = () => {
+      if (shouldContinueDeferring(document.activeElement, deferredMs)) {
+        deferAgain(triggerSkipWaiting)
+        return
       }
 
-      navigator.serviceWorker.addEventListener('controllerchange', reloadOnce)
+      showOverlay()
 
-      // 1.5秒後にskipWaitingをトリガー
-      setTimeout(async () => {
-        try {
-          await updateSW(true)
-          // フォールバック: 2秒以内にcontrollerchangeが来なければ強制reload
-          setTimeout(reloadOnce, FALLBACK_RELOAD_MS)
-        } catch (e) {
+      // 新SWが制御を握ったら（このタイミングでも再チェックする）reload判定へ
+      navigator.serviceWorker.addEventListener('controllerchange', attemptReload, { once: true })
+
+      updateSW(true)
+        .then(() => {
+          // フォールバック: 2秒以内にcontrollerchangeが来なければ強制的にreload判定へ
+          setTimeout(attemptReload, FALLBACK_RELOAD_MS)
+        })
+        .catch((e) => {
           console.error('SW update failed:', e)
-          reloadOnce()
-        }
-      }, OVERLAY_DELAY_MS)
+          attemptReload()
+        })
     }
 
     // 入力フォーム操作中は即reloadせず、フォーカスが外れるまで待つ
-    let deferredMs = 0
     const waitForIdle = () => {
       if (shouldContinueDeferring(document.activeElement, deferredMs)) {
         deferredMs += DEFER_CHECK_INTERVAL_MS
         setTimeout(waitForIdle, DEFER_CHECK_INTERVAL_MS)
         return
       }
-      runUpdate()
+      showOverlay()
+      setTimeout(triggerSkipWaiting, OVERLAY_DELAY_MS)
     }
 
     waitForIdle()

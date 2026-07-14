@@ -3,6 +3,7 @@ import {
   isUpdateCooldownActive,
   isEditingElement,
   shouldContinueDeferring,
+  canStartUpdateFlow,
   UPDATE_COOLDOWN_MS,
   MAX_DEFER_MS,
 } from './pwaUpdate'
@@ -122,5 +123,58 @@ describe('shouldContinueDeferring', () => {
   it('respects a custom maxDeferMs override', () => {
     expect(shouldContinueDeferring(editingEl, 999, 1_000)).toBe(true)
     expect(shouldContinueDeferring(editingEl, 1_000, 1_000)).toBe(false)
+  })
+
+  /**
+   * Regression for the "defer terminates, then reload fires blind" bug
+   * (Issue #43 review, fix 2): the original main.tsx evaluated this decision
+   * exactly once, at the end of the initial idle-polling loop. Once that loop
+   * decided to proceed, nothing rechecked document.activeElement again during
+   * the ~1.5-3.5s window before the overlay/skipWaiting/reload sequence
+   * actually completed — a user who resumed typing in that window got
+   * reloaded out from under their keystrokes.
+   *
+   * The fix re-runs this exact same function at each reload-commit
+   * checkpoint (right before sending skipWaiting, inside the controllerchange
+   * handler, and inside the fallback timer). These tests pin the decisions at
+   * those checkpoints specifically, using the same deferredMs value that
+   * would be carried over from the original loop exit (main.tsx does not
+   * reset deferredMs between checkpoints).
+   */
+  describe('reload-checkpoint re-check (regression: defer resumed after the initial loop exited idle)', () => {
+    it('says "keep deferring" if editing resumed before a checkpoint, even though the loop originally exited idle (deferredMs=0)', () => {
+      expect(shouldContinueDeferring(editingEl, 0)).toBe(true)
+    })
+
+    it('says "proceed" if still idle at the checkpoint (matches the original loop-exit decision)', () => {
+      expect(shouldContinueDeferring(idleEl, 0)).toBe(false)
+    })
+
+    it('says "proceed" even if editing resumed, when the loop originally force-exited at MAX_DEFER_MS (the forced-through decision is not re-litigated later)', () => {
+      expect(shouldContinueDeferring(editingEl, MAX_DEFER_MS)).toBe(false)
+    })
+  })
+})
+
+describe('canStartUpdateFlow', () => {
+  /**
+   * Regression for the "cooldown shorter than max-defer" concurrency bug
+   * (Issue #43 review, fix 1): UPDATE_COOLDOWN_MS (10s) is shorter than
+   * MAX_DEFER_MS (60s), so while a first update flow is deferred by continued
+   * typing, a second onNeedRefresh firing after the 10s cooldown window
+   * elapses would slip past isUpdateCooldownActive() and start a second,
+   * concurrent update flow (duplicate overlay, duplicate skipWaiting,
+   * duplicate reload timers) unless something else blocks it. This function
+   * is that primary guard — main.tsx evaluates it before the cooldown check,
+   * driven by a module-level `applying` flag that stays true once an update
+   * flow has started (see main.tsx for why it's never reset on the success
+   * path).
+   */
+  it('returns true when no update flow is currently applying', () => {
+    expect(canStartUpdateFlow(false)).toBe(true)
+  })
+
+  it('returns false when an update flow is already applying (blocks a concurrent second flow)', () => {
+    expect(canStartUpdateFlow(true)).toBe(false)
   })
 })

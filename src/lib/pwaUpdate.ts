@@ -43,6 +43,11 @@ export function isEditingElement(el: Element | null): boolean {
 /**
  * defer待機ループを続けるべきか（true=まだ待つ、false=更新処理を進めてよい）。
  * 編集中であっても、deferredMsがmaxDeferMsに達したら強制的に進める（無限defer防止）。
+ *
+ * main.tsx側はこの関数を「defer待機の初回判定」だけでなく、reload実行直前の
+ * 各チェックポイント（skipWaiting送信直前 / controllerchangeハンドラ内 /
+ * fallbackタイマー内）でも再評価する。deferredMsが既にmaxDeferMsへ達している
+ * 場合はどの時点で呼んでも一貫してfalse（強制続行の判断を後から覆さない）。
  */
 export function shouldContinueDeferring(
   el: Element | null,
@@ -50,4 +55,21 @@ export function shouldContinueDeferring(
   maxDeferMs: number = MAX_DEFER_MS
 ): boolean {
   return isEditingElement(el) && deferredMs < maxDeferMs
+}
+
+/**
+ * 新しい onNeedRefresh 呼び出しが、自前の更新フロー（overlay表示〜reload）を
+ * 開始してよいか（true=開始してよい, false=既に他の更新フローが進行中なので
+ * 何もしない）。
+ *
+ * これがreloadループ防止の一次ガード。isUpdateCooldownActive()による
+ * sessionStorageベースのcooldownだけでは不十分：UPDATE_COOLDOWN_MS(10秒)は
+ * MAX_DEFER_MS(60秒)より短いため、入力継続中にcooldownが経過した後もう一度
+ * onNeedRefreshが発火すると、cooldownチェックを素通りして1本目のdefer待機と
+ * 並走する2本目のrunUpdateフローが開始されてしまう（overlay/SKIP_WAITING/
+ * reloadタイマーの二重発生）。呼び出し側（main.tsx）は、進行中フラグを
+ * cooldownチェックより先に評価すること。
+ */
+export function canStartUpdateFlow(isApplying: boolean): boolean {
+  return !isApplying
 }
