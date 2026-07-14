@@ -218,5 +218,10 @@
   },
   "pwa": {
     "updateRestarting": "May bagong bersyon. Nagre-restart..."
+  },
+  "pwaInstall": {
+    "message": "Idagdag sa home screen para mas madaling gamitin",
+    "install": "I-install",
+    "later": "Mamaya"
   }
 }

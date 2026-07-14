@@ -279,6 +279,35 @@ export async function saveOnboardingDismissed(dismissed: Record<string, boolean>
   })
 }
 
+/** PWAインストール促しの却下日時を読み込み */
+export async function loadPWAInstallDismissedAt(): Promise<number | null> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readonly')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.get('pwa:installDismissedAt')
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => {
+      const result = request.result as { key: string; value: number } | undefined
+      resolve(result?.value ?? null)
+    }
+  })
+}
+
+/** PWAインストール促しの却下日時を保存 */
+export async function savePWAInstallDismissedAt(timestamp: number): Promise<void> {
+  const database = await openDB()
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(OBJECT_STORE_DATA, 'readwrite')
+    const store = transaction.objectStore(OBJECT_STORE_DATA)
+    const request = store.put({ key: 'pwa:installDismissedAt', value: timestamp })
+
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => resolve()
+  })
+}
+
 /** エクスポート用データ構造 */
 export interface ExportData {
   version: number

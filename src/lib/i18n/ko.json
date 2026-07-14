@@ -204,5 +204,10 @@
   },
   "pwa": {
     "updateRestarting": "새 버전이 있습니다. 재시작합니다..."
+  },
+  "pwaInstall": {
+    "message": "홈 화면에 추가하면 더 편리하게 사용할 수 있어요",
+    "install": "설치",
+    "later": "나중에"
   }
 }
