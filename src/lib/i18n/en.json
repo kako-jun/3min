@@ -215,5 +215,8 @@
   "aria": {
     "previousMonth": "Previous month",
     "nextMonth": "Next month"
+  },
+  "pwa": {
+    "updateRestarting": "New version available. Restarting..."
   }
 }

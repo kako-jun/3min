@@ -9,10 +9,15 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // registerType: 'prompt' + injectRegister: false で virtual:pwa-register を
+      // main.tsx から明示的に呼び出し、overlay表示 → skipWaiting → controllerchange
+      // 待ち → reload の流れを自前で制御する（mypace方式）。
+      registerType: 'prompt',
+      injectRegister: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,xml,txt}'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        clientsClaim: true,
       },
       manifest: {
         name: '3 min. Calendar',

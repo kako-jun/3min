@@ -201,5 +201,8 @@
   "aria": {
     "previousMonth": "이전 달",
     "nextMonth": "다음 달"
+  },
+  "pwa": {
+    "updateRestarting": "새 버전이 있습니다. 재시작합니다..."
   }
 }
